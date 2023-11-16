@@ -1,0 +1,57 @@
+{
+  "name": "motard-data-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/motard-data-api/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/motard-data-api",
+        "main": "apps/motard-data-api/src/main.ts",
+        "tsConfig": "apps/motard-data-api/tsconfig.app.json",
+        "assets": ["apps/motard-data-api/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/motard-data-api/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "motard-data-api:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "motard-data-api:build:development"
+        },
+        "production": {
+          "buildTarget": "motard-data-api:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/motard-data-api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/motard-data-api/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
