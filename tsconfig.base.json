@@ -19,7 +19,7 @@
         "libs/backend/backend-nestjs/src/index.ts"
       ],
       "@cswf-abiyikli-23/backend/dto": ["libs/backend/dto/src/index.ts"],
-      "@cswf-abiyikli-23/frontend/frontend-angular/": [
+      "@cswf-abiyikli-23/frontend/frontend-angular": [
         "libs/frontend/frontend-angular/src/index.ts"
       ],
       "@cswf-abiyikli-23/frontend/shared": [

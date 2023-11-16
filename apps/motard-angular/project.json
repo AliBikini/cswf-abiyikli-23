@@ -19,8 +19,9 @@
           "apps/motard-angular/src/favicon.ico",
           "apps/motard-angular/src/assets"
         ],
-        "styles": ["apps/motard-angular/src/styles.css"],
-        "scripts": [],
+        "styles": ["apps/motard-angular/src/styles.css", "node_modules/bootstrap/dist/css/bootstrap.css"],
+        "scripts": ["node_modules/@popperjs/core/dist/umd/popper.min.js",
+        "node_modules/bootstrap/dist/js/bootstrap.js"],
         "preserveSymlinks": true
       },
       "configurations": {

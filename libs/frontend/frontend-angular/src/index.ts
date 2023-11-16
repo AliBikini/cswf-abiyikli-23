@@ -1,1 +1,1 @@
-export * from './lib/frontend-angular/frontend-angular.component';
+export * from './lib/frontend-angular.module';
