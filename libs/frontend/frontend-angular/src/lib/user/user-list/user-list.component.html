@@ -1,5 +1,21 @@
-<p>user-list-component works</p>
-<div *ngFor="let user of users">
-    <h2>{{ user.nameFirst }} {{ user.nameLast }}</h2>
-    <p>Email: {{ user.email }}</p>
-</div>
+<h1>Users</h1>
+
+<button class="btn btn-primary">New</button>
+
+<ul class="list-group">
+    <div *ngFor="let user of users">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col">
+                    {{ user.nameFirst }} {{ user.nameLast }}
+                </div>
+                <div class="col">
+                    {{ user.email }}
+                </div>
+                <div class="col">
+                    <button class="btn btn-primary">Edit</button>
+                </div>
+            </div>
+        </li>
+    </div>
+</ul>
