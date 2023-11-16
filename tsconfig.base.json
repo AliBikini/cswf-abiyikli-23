@@ -14,7 +14,19 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@cswf-abiyikli-23/backend/backend-nestjs": [
+        "libs/backend/backend-nestjs/src/index.ts"
+      ],
+      "@cswf-abiyikli-23/backend/dto": ["libs/backend/dto/src/index.ts"],
+      "@cswf-abiyikli-23/frontend/frontend-angular/": [
+        "libs/frontend/frontend-angular/src/index.ts"
+      ],
+      "@cswf-abiyikli-23/frontend/shared": [
+        "libs/frontend/shared/src/index.ts"
+      ],
+      "@cswf-abiyikli-23/shared/api": ["libs/shared/api/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
