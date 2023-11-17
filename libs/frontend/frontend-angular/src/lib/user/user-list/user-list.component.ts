@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IUser } from '@cswf-abiyikli-23/shared/api';
 import { Subscription } from 'rxjs';
 import { UserService } from '../user.service';
@@ -8,7 +8,7 @@ import { UserService } from '../user.service';
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css'],
 })
-export class UserListComponent 
+export class UserListComponent implements OnInit, OnDestroy
 {
   users: IUser[] | null = null;
   subscription: Subscription | undefined = undefined;

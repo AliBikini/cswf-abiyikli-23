@@ -1,4 +1,4 @@
-import { IUser } from "@cswf-abiyikli-23/shared/api";
+import { Gender, IUser, UserRole } from "@cswf-abiyikli-23/shared/api";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { BehaviorSubject } from "rxjs";
 
@@ -13,30 +13,45 @@ export class UserService
             nameFirst: 'Ali',
             nameLast: 'Biyikli',
             email: "ali@outlook.com",
+            dateBirth: new Date("1998-07-02"),
+            gender: Gender.male,
+            userRole: UserRole.user
         },
         {
             id: '1',
             nameFirst: 'Seher',
             nameLast: 'Akdag',
             email: "seher@outlook.com",
+            dateBirth: new Date("1998-08-18"),
+            gender: Gender.female,
+            userRole: UserRole.user
         },
         {
             id: '2',
             nameFirst: 'Pascal',
             nameLast: 'Stool',
             email: "ps@outlook.com",
+            dateBirth: new Date("2019-01-16"),
+            gender: Gender.male,
+            userRole: UserRole.user
         },
         {
             id: '3',
             nameFirst: 'Pietje',
             nameLast: 'Heushout',
             email: "ph@outlook.com",
+            dateBirth: new Date("2019-01-16"),
+            gender: Gender.male,
+            userRole: UserRole.user
         },
         {
             id: '4',
             nameFirst: 'Wadayaohn',
             nameLast: 'Dawuld',
             email: "wd@outlook.com",
+            dateBirth: new Date("2019-01-16"),
+            gender: Gender.male,
+            userRole: UserRole.user
         },
     ]);
 
@@ -61,7 +76,7 @@ export class UserService
      * return signature - we still want to respond with the complete
      * object
      */
-    create(user: Pick<IUser, 'nameFirst' | 'nameLast' | 'email'>): IUser 
+    create(user: Pick<IUser, 'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole'>): IUser 
     {
         Logger.log('create', this.TAG);
         const current = this.users$.value;

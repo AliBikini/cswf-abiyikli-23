@@ -1,19 +1,32 @@
 <h1>Users</h1>
 
-<button class="btn btn-primary">New</button>
+<div style="padding-bottom: 12px;">
+    <a routerLink="new" class="btn btn-primary">New</a>
+</div>
 
 <ul class="list-group">
     <div *ngFor="let user of users">
         <li class="list-group-item">
             <div class="row">
-                <div class="col">
+                <div class="col-4">
                     {{ user.nameFirst }} {{ user.nameLast }}
                 </div>
-                <div class="col">
+                <div class="col-4">
                     {{ user.email }}
                 </div>
                 <div class="col">
-                    <button class="btn btn-primary">Edit</button>
+                    <div class="row">
+                        <div class="col">
+                        </div>
+                        <div class="col">
+                        </div>
+                        <div class="col d-grid gap-2">
+                            <a routerLink="{{user.id}}" class="btn btn-primary">View</a>
+                        </div>
+                        <div class="col d-grid gap-2">
+                            <a routerLink="{{user.id}}/edit" class="btn btn-primary">Edit</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </li>

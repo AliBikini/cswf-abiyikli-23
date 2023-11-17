@@ -4,14 +4,16 @@ import
     IsString,
     IsBoolean,
     IsOptional,
-    IsDate
+    IsDate,
 } from 'class-validator';
 
 import 
 {
+    Gender,
     IUserCreate,
     IUserUpdate,
-    IUserUpsert
+    IUserUpsert,
+    UserRole
 } from '@cswf-abiyikli-23/shared/api';
 
 /**
@@ -31,6 +33,16 @@ export class UserCreateDto implements IUserCreate
     @IsString()
     @IsNotEmpty()
     email!: string;
+
+    @IsDate()
+    @IsNotEmpty()
+    dateBirth!: Date;
+
+    @IsNotEmpty()
+    gender!: Gender;
+
+    @IsNotEmpty()
+    userRole!: UserRole;
 }
 
 export class UserUpsertDto implements IUserUpsert 
@@ -50,6 +62,16 @@ export class UserUpsertDto implements IUserUpsert
     @IsString()
     @IsNotEmpty()
     email!: string;
+    
+    @IsDate()
+    @IsNotEmpty()
+    dateBirth!: Date;
+    
+    @IsNotEmpty()
+    gender!: Gender;
+
+    @IsNotEmpty()
+    userRole!: UserRole;
 }
 
 export class UserUpdateDto implements IUserUpdate 
@@ -65,4 +87,14 @@ export class UserUpdateDto implements IUserUpdate
     @IsString()
     @IsOptional()
     email!: string;
+    
+    @IsDate()
+    @IsNotEmpty()
+    dateBirth!: Date;
+    
+    @IsNotEmpty()
+    gender!: Gender;
+
+    @IsNotEmpty()
+    userRole!: UserRole;
 }

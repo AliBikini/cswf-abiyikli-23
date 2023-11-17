@@ -44,11 +44,13 @@ export class UserService
      *
      */
     public read(id: string | null, options?: any): Observable<IUser> {
-        console.log(`read ${this.endpoint}`);
+        const endPointSingle = `${this.endpoint}/${id}`;
+        console.log(`read ${endPointSingle}`);
+
         return this.http
-            .get<ApiResponse<IUser>>(this.endpoint, {
+            .get<ApiResponse<IUser>>(endPointSingle, {
                 ...options,
-                ...httpOptions,
+                ...httpOptions
             })
             .pipe(
                 tap(console.log),

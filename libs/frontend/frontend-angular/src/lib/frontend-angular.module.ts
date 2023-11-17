@@ -7,6 +7,8 @@ import { UserListComponent } from './user/user-list/user-list.component';
 import { UserDetailComponent } from './user/user-detail/user-detail.component';
 import { UserService } from './user/user.service';
 import { NavbarComponent } from './shared/navbar/navbar.component';
+import { UserEditComponent } from './user/user-edit/user-edit.component';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
@@ -27,14 +29,15 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, HttpClientModule, RouterLink, RouterModule.forChild(routes)],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, RouterLink, RouterModule.forChild(routes)],
   declarations: [
     NavbarComponent,
     AboutComponent,
     UserListComponent,
-    UserDetailComponent
+    UserDetailComponent,
+    UserEditComponent
   ],
   providers: [UserService],
-  exports: [NavbarComponent, AboutComponent, UserListComponent, UserDetailComponent],
+  exports: [NavbarComponent, AboutComponent, UserListComponent, UserDetailComponent, UserEditComponent],
 })
 export class FrontendAngularModule {}

@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IUser } from '@cswf-abiyikli-23/shared/api';
 import { UserService } from '../user.service';
+import { Subscription, tap } from 'rxjs';
 
 @Component({
   selector: 'avans-nx-workshop-user-detail',
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.css'],
 })
-export class UserDetailComponent  implements OnInit
+export class UserDetailComponent  implements OnInit, OnDestroy
 {
   userId: string | null = null;
   user: IUser | null = null;
+  subscription: Subscription | null = null;
+  dateString: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -20,12 +23,21 @@ export class UserDetailComponent  implements OnInit
 
   ngOnInit(): void 
   {
-    this.route.paramMap.subscribe((params) => {
-      this.userId = params.get('id');
-      this.userService.read(this.userId).subscribe((resp) => 
+    this.subscription = this.route.paramMap.pipe
+    (
+    ).subscribe
+    ((params) => 
       {
-        this.user = resp;
-      }); 
-    });
+        this.userId = params.get('id');
+        this.userService.read(this.userId).subscribe((resp) => 
+        {
+          this.user = resp;
+        }); 
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) this.subscription.unsubscribe();
   }
 }
