@@ -30,20 +30,20 @@ jobs:
       - name: Zip artifacts for deployment
         run: |
           echo ${GITHUB_WORKSPACE}
-          cd ${GITHUB_WORKSPACE}/dist/apps/backend-app/ && zip ${GITHUB_WORKSPACE}/backend-app-release.zip ./* -r
-          cd ${GITHUB_WORKSPACE}/dist/apps/frontend-app/ && zip ${GITHUB_WORKSPACE}/frontend-app-release.zip ./* -r
+          cd ${GITHUB_WORKSPACE}/dist/apps/motard-data-api/ && zip ${GITHUB_WORKSPACE}/motard-data-api-release.zip ./* -r
+          cd ${GITHUB_WORKSPACE}/dist/apps/motard-angular/ && zip ${GITHUB_WORKSPACE}/motard-angular-release.zip ./* -r
 
       - name: Upload frontend-app artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: frontend-app
-          path: frontend-app-release.zip
+          path: motard-angular-release.zip
           
       - name: Upload backend-app artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: backend-app
-          path: backend-app-release.zip
+          path: motard-data-api-release.zip
           
           
   deploy-frontend-app:
@@ -59,7 +59,7 @@ jobs:
           name: frontend-app
 
       - name: Unzip artifact for deployment
-        run: unzip frontend-app-release.zip
+        run: unzip motard-angular-release.zip
         
       - name: Deploy to static azure web app
         id: builddeploy
@@ -68,7 +68,7 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.MOTARD_ANGULAR_PUBLISHTOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
-          app_location: "/" # App source code path
+          app_location: "/browser/" # App source code path
           api_location: "" # Api source code path - optional
           output_location: "" # Built app content directory - optional
 
@@ -87,7 +87,7 @@ jobs:
           name: backend-app
 
       - name: Unzip artifact for deployment
-        run: unzip backend-app-release.zip
+        run: unzip motard-data-api-release.zip
 
       - name: Install dependencies
         run: npm install
@@ -96,7 +96,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'Motard'
+          app-name: 'motard-data-api'
           slot-name: 'Production'
           publish-profile: ${{ secrets.MOTARD_DATA_API_PUBLISHPROFILE }}
           package: .
