@@ -30,8 +30,8 @@ jobs:
       - name: Zip artifacts for deployment
         run: |
           echo ${GITHUB_WORKSPACE}
-          cd ${GITHUB_WORKSPACE}/dist/apps/backend-app/ && zip ${GITHUB_WORKSPACE}/backend-app-release.zip ./* -r
-          cd ${GITHUB_WORKSPACE}/dist/apps/frontend-app/ && zip ${GITHUB_WORKSPACE}/frontend-app-release.zip ./* -r
+          cd ${GITHUB_WORKSPACE}/dist/apps/motard-data-api/ && zip ${GITHUB_WORKSPACE}/motard-data-api-release.zip ./* -r
+          cd ${GITHUB_WORKSPACE}/dist/apps/motard-angular/ && zip ${GITHUB_WORKSPACE}/motard-angular-release.zip ./* -r
 
       - name: Upload frontend-app artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -59,7 +59,7 @@ jobs:
           name: frontend-app
 
       - name: Unzip artifact for deployment
-        run: unzip frontend-app-release.zip
+        run: unzip motard-angular-release.zip
         
       - name: Deploy to static azure web app
         id: builddeploy
@@ -87,7 +87,7 @@ jobs:
           name: backend-app
 
       - name: Unzip artifact for deployment
-        run: unzip backend-app-release.zip
+        run: unzip motard-data-api-release.zip
 
       - name: Install dependencies
         run: npm install
