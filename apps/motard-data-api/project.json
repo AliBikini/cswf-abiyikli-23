@@ -16,7 +16,8 @@
         "tsConfig": "apps/motard-data-api/tsconfig.app.json",
         "assets": ["apps/motard-data-api/src/assets"],
         "isolatedConfig": true,
-        "webpackConfig": "apps/motard-data-api/webpack.config.js"
+        "webpackConfig": "apps/motard-data-api/webpack.config.js",
+        "generatePackageJson": true
       },
       "configurations": {
         "development": {},

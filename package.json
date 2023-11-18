@@ -2,7 +2,11 @@
   "name": "@cswf-abiyikli-23/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "deploy": "nx run motard-angular:build",
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "~17.0.0",
