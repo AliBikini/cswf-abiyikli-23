@@ -37,13 +37,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: frontend-app
-          path: frontend-app-release.zip
+          path: motard-angular-release.zip
           
       - name: Upload backend-app artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: backend-app
-          path: backend-app-release.zip
+          path: motard-data-api-release.zip
           
           
   deploy-frontend-app:
