@@ -32,7 +32,7 @@
         <div class="col">
             <div class="mb-3">
                 <label for="dateBirth" class="form-label">Date of birth</label>
-                <input type="date" class="form-control" id="dateBirth" formControlName="dateBirth">
+                <input type="date" class="form-control" id="dateBirth" formControlName="dateBirth" value="{{ user?.dateBirth | date:'yyyy-MM-dd' }}">
             </div>
         </div>
 
@@ -54,6 +54,12 @@
               </div>
         </div>
     </div>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <div class="row">
+        <div class="col-1">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        <div class="col-1" *ngIf="userId">
+            <button class="btn btn-danger">Delete</button>
+        </div>
+    </div>
   </form>
