@@ -1,4 +1,6 @@
 <h2>{{ user?.nameFirst }} {{ user?.nameLast }}</h2>
 <p>Email: {{ user?.email }}</p>
 <p>Date of birth: {{ user?.dateBirth | date: 'longDate' }}</p>
+<p>Gender: {{ user?.gender }}</p>
+<p>Role: {{ user?.userRole }}</p>
 <a routerLink="edit" class="btn btn-primary">Edit</a>

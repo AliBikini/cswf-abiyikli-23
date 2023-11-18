@@ -51,7 +51,7 @@ export class UserEditComponent implements OnInit, OnDestroy
         }
         else
         {
-          this.user = { id: '-1', nameFirst: 'test', nameLast: '', email: '', dateBirth: new Date, gender: Gender.male, userRole: UserRole.user }
+          this.user = { id: '-1', nameFirst: '', nameLast: '', email: '', dateBirth: new Date, gender: Gender.male, userRole: UserRole.user }
           this.applyUserToForm();
         }
       }
