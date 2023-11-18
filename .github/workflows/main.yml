@@ -96,7 +96,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'Motard'
+          app-name: 'motard-data-api'
           slot-name: 'Production'
           publish-profile: ${{ secrets.MOTARD_DATA_API_PUBLISHPROFILE }}
           package: .
