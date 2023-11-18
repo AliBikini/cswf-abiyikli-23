@@ -25,7 +25,8 @@
       "@cswf-abiyikli-23/frontend/shared": [
         "libs/frontend/shared/src/index.ts"
       ],
-      "@cswf-abiyikli-23/shared/api": ["libs/shared/api/src/index.ts"]
+      "@cswf-abiyikli-23/shared/api": ["libs/shared/api/src/index.ts"],
+      "@cswf-abiyikli-23/shared/util-env": ["libs/shared/util-env/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
