@@ -55,11 +55,14 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-1">
-            <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="col-1" *ngIf="!userId">
+            <button type="submit" class="btn btn-primary">Create</button>
         </div>
         <div class="col-1" *ngIf="userId">
-            <button class="btn btn-danger">Delete</button>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+        <div class="col-1" *ngIf="userId">
+            <button type="button" class="btn btn-danger" (click)="deleteUser()">Delete</button>
         </div>
     </div>
   </form>

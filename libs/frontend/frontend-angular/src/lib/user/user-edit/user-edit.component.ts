@@ -78,5 +78,52 @@ export class UserEditComponent implements OnInit, OnDestroy
   onSubmitForm() 
   {
     console.warn(this.userForm.value);
+
+    if (this.userId)
+    {
+      this.updateExistingUser(this.userId);
+    }
+    else
+    {
+      this.createNewUser();
+    }
+  }
+
+  createNewUser()
+  {
+    this.userService.create({ 
+      nameFirst: this.userForm.value.nameFirst,  
+      nameLast: this.userForm.value.nameLast,  
+      email: this.userForm.value.email,  
+      dateBirth: this.userForm.value.dateBirth,  
+      userRole: this.userForm.value.userRole,  
+      gender: this.userForm.value.gender
+    }).subscribe((resp) => {
+      console.log("New user added!");
+    })
+  }
+
+  updateExistingUser(id: string)
+  {
+    this.userService.update(id, { 
+      nameFirst: this.userForm.value.nameFirst,  
+      nameLast: this.userForm.value.nameLast,  
+      email: this.userForm.value.email,  
+      dateBirth: this.userForm.value.dateBirth,  
+      userRole: this.userForm.value.userRole,  
+      gender: this.userForm.value.gender
+    }).subscribe((resp) => {
+      console.log("User updated!");
+    })
+  }
+
+  deleteUser()
+  {
+    if (this.userId)
+    {
+      this.userService.delete(this.userId).subscribe((resp) => {
+        console.log("User deleted!");
+      })
+    }
   }
 }

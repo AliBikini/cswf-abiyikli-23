@@ -1,7 +1,7 @@
 import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { map, catchError, tap } from 'rxjs/operators';
-import { ApiResponse, IUser } from '@cswf-abiyikli-23/shared/api';
+import { ApiResponse, IUser, IUserCreate, IUserUpdate } from '@cswf-abiyikli-23/shared/api';
 import { Injectable } from '@angular/core';
 import { environment } from '@cswf-abiyikli-23/shared/util-env';
 
@@ -52,6 +52,54 @@ export class UserService
             .get<ApiResponse<IUser>>(endPointSingle, {
                 ...options,
                 ...httpOptions
+            })
+            .pipe(
+                tap(console.log),
+                map((response: any) => response.results as IUser),
+                catchError(this.handleError)
+            );
+    }
+
+    public create(optionsCreate: IUserCreate): Observable<IUser> 
+    {
+        console.log(`read ${this.endpoint}`);
+
+        return this.http
+            .post<ApiResponse<IUser>>(this.endpoint, {
+                ...optionsCreate,
+                ...httpOptions
+            })
+            .pipe(
+                tap(console.log),
+                map((response: any) => response.results as IUser),
+                catchError(this.handleError)
+            );
+    }
+
+    public update(id: string, optionsUpdate: IUserUpdate): Observable<IUser> 
+    {
+        const endpointUpdate = `${this.endpoint}/${id}`;
+        console.log(`update ${endpointUpdate}`);
+
+        return this.http
+            .post<ApiResponse<IUser>>(endpointUpdate, {
+                ...optionsUpdate,
+                ...httpOptions
+            })
+            .pipe(
+                tap(console.log),
+                map((response: any) => response.results as IUser),
+                catchError(this.handleError)
+            );
+    }
+
+    public delete(id: string)
+    {
+        const endpointDelete = `${this.endpoint}/${id}`;
+        console.log(`delete ${endpointDelete}`);
+
+        return this.http
+            .delete<ApiResponse<IUser>>(endpointDelete, {
             })
             .pipe(
                 tap(console.log),
