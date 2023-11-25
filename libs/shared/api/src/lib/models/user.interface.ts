@@ -13,7 +13,7 @@ export enum Gender
     other = 'Other',
 }
 
-export interface IUser 
+export type IUser =
 {
     id: Id;
     nameFirst: string;

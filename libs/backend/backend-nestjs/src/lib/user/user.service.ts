@@ -6,10 +6,10 @@ import { BehaviorSubject } from "rxjs";
 export class UserService 
 {
     TAG = 'MealService';
-    private usersTwo$ = new BehaviorSubject<Map<string, IUser>>(new Map());
+    private users$ = new BehaviorSubject<Map<string, IUser>>(new Map());
 
     constructor() {
-        this.usersTwo$.value.set("0", {
+        this.users$.value.set("0", {
             id: '0',
             nameFirst: 'Ali',
             nameLast: 'Biyikli',
@@ -18,7 +18,7 @@ export class UserService
             gender: Gender.male,
             userRole: UserRole.user
         });
-        this.usersTwo$.value.set("1", {
+        this.users$.value.set("1", {
             id: '1',
             nameFirst: 'Seher',
             nameLast: 'Akdag',
@@ -27,7 +27,7 @@ export class UserService
             gender: Gender.female,
             userRole: UserRole.user
         });
-        this.usersTwo$.value.set("2", {
+        this.users$.value.set("2", {
             id: '2',
             nameFirst: 'Pascal',
             nameLast: 'Stool',
@@ -36,7 +36,7 @@ export class UserService
             gender: Gender.male,
             userRole: UserRole.user
         });
-        this.usersTwo$.value.set("3", {
+        this.users$.value.set("3", {
             id: '3',
             nameFirst: 'Pietje',
             nameLast: 'Heushout',
@@ -45,7 +45,7 @@ export class UserService
             gender: Gender.male,
             userRole: UserRole.user
         });
-        this.usersTwo$.value.set("4", {
+        this.users$.value.set("4", {
             id: '4',
             nameFirst: 'Wadayaohn',
             nameLast: 'Dawuld',
@@ -56,64 +56,16 @@ export class UserService
         });
     }
 
-    private users$ = new BehaviorSubject<IUser[]>([
-        {
-            id: '0',
-            nameFirst: 'Ali',
-            nameLast: 'Biyikli',
-            email: "ali@outlook.com",
-            dateBirth: new Date("1998-07-02"),
-            gender: Gender.male,
-            userRole: UserRole.user
-        },
-        {
-            id: '1',
-            nameFirst: 'Seher',
-            nameLast: 'Akdag',
-            email: "seher@outlook.com",
-            dateBirth: new Date("1998-08-18"),
-            gender: Gender.female,
-            userRole: UserRole.user
-        },
-        {
-            id: '2',
-            nameFirst: 'Pascal',
-            nameLast: 'Stool',
-            email: "ps@outlook.com",
-            dateBirth: new Date("2019-01-16"),
-            gender: Gender.male,
-            userRole: UserRole.user
-        },
-        {
-            id: '3',
-            nameFirst: 'Pietje',
-            nameLast: 'Heushout',
-            email: "ph@outlook.com",
-            dateBirth: new Date("2019-01-16"),
-            gender: Gender.male,
-            userRole: UserRole.user
-        },
-        {
-            id: '4',
-            nameFirst: 'Wadayaohn',
-            nameLast: 'Dawuld',
-            email: "wd@outlook.com",
-            dateBirth: new Date("2019-01-16"),
-            gender: Gender.male,
-            userRole: UserRole.user
-        },
-    ]);
-
     getAll(): IUser[] 
     {
         Logger.log('getAll', this.TAG);
-        return [...this.usersTwo$.value.values()];
+        return [...this.users$.value.values()];
     }
 
     get(id: string): IUser 
     {
         Logger.log(`get(${id})`, this.TAG);
-        const user = this.usersTwo$.value.get(id);
+        const user = this.users$.value.get(id);
         if (!user) {
             throw new NotFoundException(`User could not be found!`);
         }
@@ -134,14 +86,14 @@ export class UserService
             ...user,
             id: `meal-${Math.floor(Math.random() * 10000)}`
         };
-        this.usersTwo$.value.set(userNew.id, userNew);
+        this.users$.value.set(userNew.id, userNew);
         return userNew;
     }
 
     update(id: string, user: Pick<IUser, 'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole'>): IUser 
     {
         Logger.log(`update(${id})`, this.TAG);
-        const userToUpdate = this.usersTwo$.value.get(id);
+        const userToUpdate = this.users$.value.get(id);
         if (!userToUpdate) {
             throw new NotFoundException(`User could not be found!`);
         }
@@ -159,11 +111,11 @@ export class UserService
     delete(id: string)
     {
         Logger.log(`update(${id})`, this.TAG);
-        const userToUpdate = this.usersTwo$.value.get(id);
+        const userToUpdate = this.users$.value.get(id);
         if (!userToUpdate) {
             throw new NotFoundException(`User could not be found!`);
         }
 
-        this.usersTwo$.value.delete(id);
+        this.users$.value.delete(id);
     }
 }
