@@ -12,35 +12,29 @@ export enum MotorcycleBody
     enduro = 'Enduro'
 }
 
-export enum MotorcycleFuelType 
+export enum MotorcycleFuel 
 {
     gasoline = 'Gasoline',
     diesel = 'Diesel',
     electric = 'Electric'
 }
 
-export enum Gender 
-{
-    male = 'Male',
-    female = 'Female',
-    other = 'Other',
-}
-
-export interface IMotorcycle 
+export type TMotorcycle =
 {
     id: Id;
-    modelName: string;
+    nameModel: string;
     body: MotorcycleBody;
     year: string;
-    fuelType: MotorcycleFuelType;
+    fuelType: MotorcycleFuel;
     seatHeight: string;
     horsePower: string;
     topSpeed: string;
+    linkImage: string;
 }
 
-export type IMotorcycleCreate = Pick<
-    IMotorcycle,
-    'modelName' | 'body' | 'year' | 'fuelType' | 'seatHeight' | 'horsePower' | 'topSpeed'
+export type TMotorcycleCreate = Pick<
+    TMotorcycle,
+    'nameModel' | 'body' | 'year' | 'fuelType' | 'seatHeight' | 'horsePower' | 'topSpeed' | 'linkImage'
     >;
-export type IMotorcycleUpdate = Partial<Omit<IMotorcycle, 'id'>>;
-export type IMotorcycleUpsert = IMotorcycle;
+export type TMotorcycleUpdate = Partial<Omit<TMotorcycle, 'id'>>;
+export type TMotorcycleUpsert = TMotorcycle;

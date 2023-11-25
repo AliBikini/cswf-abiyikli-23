@@ -1,12 +1,12 @@
-import { Gender, IUser, UserRole } from "@cswf-abiyikli-23/shared/api";
+import { Gender, TUser, UserRole } from "@cswf-abiyikli-23/shared/api";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { BehaviorSubject } from "rxjs";
 
 @Injectable()
 export class UserService 
 {
-    TAG = 'MealService';
-    private users$ = new BehaviorSubject<Map<string, IUser>>(new Map());
+    TAG = 'UserService';
+    private users$ = new BehaviorSubject<Map<string, TUser>>(new Map());
 
     constructor() {
         this.users$.value.set("0", {
@@ -56,13 +56,13 @@ export class UserService
         });
     }
 
-    getAll(): IUser[] 
+    getAll(): TUser[] 
     {
         Logger.log('getAll', this.TAG);
         return [...this.users$.value.values()];
     }
 
-    get(id: string): IUser 
+    get(id: string): TUser 
     {
         Logger.log(`get(${id})`, this.TAG);
         const user = this.users$.value.get(id);
@@ -77,11 +77,11 @@ export class UserService
      * return signature - we still want to respond with the complete
      * object
      */
-    create(user: Pick<IUser, 'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole'>): IUser 
+    create(user: Pick<TUser, 'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole'>): TUser 
     {
         Logger.log('create', this.TAG);
         // Use the incoming data, a randomized ID, and a default value of `false` to create the new to-do
-        const userNew: IUser = 
+        const userNew: TUser = 
         {
             ...user,
             id: `meal-${Math.floor(Math.random() * 10000)}`
@@ -90,7 +90,7 @@ export class UserService
         return userNew;
     }
 
-    update(id: string, user: Pick<IUser, 'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole'>): IUser 
+    update(id: string, user: Pick<TUser, 'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole'>): TUser 
     {
         Logger.log(`update(${id})`, this.TAG);
         const userToUpdate = this.users$.value.get(id);

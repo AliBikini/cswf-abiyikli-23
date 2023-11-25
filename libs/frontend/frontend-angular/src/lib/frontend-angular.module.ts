@@ -9,6 +9,11 @@ import { UserService } from './user/user.service';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { UserEditComponent } from './user/user-edit/user-edit.component';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MotorcycleListComponent } from './motorcycle/motorcycle-list/motorcycle-list.component';
+import { MotorcycleService } from './motorcycle/motorcycle.service';
+import { FormsModule } from '@angular/forms';
+import { MotorcycleEditComponent } from './motorcycle/motorcycle-edit/motorcycle-edit.component';
+import { MotorcycleDetailComponent } from './motorcycle/motorcycle-detail/motorcycle-detail.component';
 
 const routes: Routes = [
   {
@@ -29,15 +34,18 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule, RouterLink, RouterModule.forChild(routes)],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, RouterLink, RouterModule.forChild(routes)],
   declarations: [
     NavbarComponent,
     AboutComponent,
     UserListComponent,
     UserDetailComponent,
-    UserEditComponent
+    UserEditComponent,
+    MotorcycleListComponent,
+    MotorcycleEditComponent,
+    MotorcycleDetailComponent
   ],
-  providers: [UserService],
+  providers: [UserService, MotorcycleService],
   exports: [NavbarComponent, AboutComponent, UserListComponent, UserDetailComponent, UserEditComponent],
 })
 export class FrontendAngularModule {}

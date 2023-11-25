@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Gender, IUser, UserRole } from '@cswf-abiyikli-23/shared/api';
+import { Gender, TUser, UserRole } from '@cswf-abiyikli-23/shared/api';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../user.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { RouterModule } from '@nestjs/core';
 
 @Component({
   selector: 'cswf-abiyikli-23-user-edit',
@@ -15,7 +16,7 @@ export class UserEditComponent implements OnInit, OnDestroy
 {
 
   userId: string | null = null;
-  user: IUser | null = null;
+  user: TUser | null = null;
   subscription: Subscription | null = null;
 
   userForm = new FormGroup
@@ -30,7 +31,8 @@ export class UserEditComponent implements OnInit, OnDestroy
   
   constructor (    
     private route: ActivatedRoute,
-    private userService: UserService){}
+    private userService: UserService,
+    private router: Router){}
 
   ngOnInit(): void 
   {
@@ -100,6 +102,7 @@ export class UserEditComponent implements OnInit, OnDestroy
       gender: this.userForm.value.gender
     }).subscribe((resp) => {
       console.log("New user added!");
+      this.redirectTo(`/user/${resp.id}`);
     })
   }
 
@@ -114,6 +117,7 @@ export class UserEditComponent implements OnInit, OnDestroy
       gender: this.userForm.value.gender
     }).subscribe((resp) => {
       console.log("User updated!");
+      this.redirectTo(`/user/${this.userId}`);
     })
   }
 
@@ -123,7 +127,13 @@ export class UserEditComponent implements OnInit, OnDestroy
     {
       this.userService.delete(this.userId).subscribe((resp) => {
         console.log("User deleted!");
+        this.redirectTo("/user");
       })
     }
+  }
+
+  redirectTo(url: string)
+  {
+    this.router.navigateByUrl(url)
   }
 }

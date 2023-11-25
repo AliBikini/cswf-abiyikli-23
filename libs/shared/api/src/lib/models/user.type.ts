@@ -13,7 +13,7 @@ export enum Gender
     other = 'Other',
 }
 
-export type IUser =
+export type TUser =
 {
     id: Id;
     nameFirst: string;
@@ -24,9 +24,9 @@ export type IUser =
     userRole: UserRole;
 }
 
-export type IUserCreate = Pick<
-    IUser,
+export type TUserCreate = Pick<
+    TUser,
     'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole'
     >;
-export type IUserUpdate = Partial<Omit<IUser, 'id'>>;
-export type IUserUpsert = IUser;
+export type TUserUpdate = Partial<Omit<TUser, 'id'>>;
+export type TUserUpsert = TUser;

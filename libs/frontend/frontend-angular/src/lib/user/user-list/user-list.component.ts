@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IUser } from '@cswf-abiyikli-23/shared/api';
+import { TUser } from '@cswf-abiyikli-23/shared/api';
 import { Subscription } from 'rxjs';
 import { UserService } from '../user.service';
 
@@ -10,7 +10,7 @@ import { UserService } from '../user.service';
 })
 export class UserListComponent implements OnInit, OnDestroy
 {
-  users: IUser[] | null = null;
+  users: TUser[] | null = null;
   subscription: Subscription | undefined = undefined;
 
   constructor(private userService: UserService) {}

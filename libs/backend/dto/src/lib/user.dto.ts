@@ -10,9 +10,9 @@ import
 import 
 {
     Gender,
-    IUserCreate,
-    IUserUpdate,
-    IUserUpsert,
+    TUserCreate,
+    TUserUpdate,
+    TUserUpsert,
     UserRole
 } from '@cswf-abiyikli-23/shared/api';
 
@@ -20,7 +20,7 @@ import
  * Use the `Pick` utility type to extract only the properties we want for
  * new to-do items
  */
-export class UserCreateDto implements IUserCreate 
+export class UserCreateDto implements TUserCreate 
 {
     @IsString()
     @IsNotEmpty()
@@ -45,7 +45,7 @@ export class UserCreateDto implements IUserCreate
     userRole!: UserRole;
 }
 
-export class UserUpsertDto implements IUserUpsert 
+export class UserUpsertDto implements TUserUpsert 
 {
     @IsString()
     @IsNotEmpty()
@@ -74,7 +74,7 @@ export class UserUpsertDto implements IUserUpsert
     userRole!: UserRole;
 }
 
-export class UserUpdateDto implements IUserUpdate 
+export class UserUpdateDto implements TUserUpdate 
 {
     @IsString()
     @IsOptional()
