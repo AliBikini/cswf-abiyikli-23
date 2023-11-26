@@ -1,4 +1,5 @@
 import { Id} from "./id.type";
+import { TMotorcycle } from "./motorcycle.type";
 
 export enum UserRole 
 {
@@ -13,7 +14,7 @@ export enum Gender
     other = 'Other',
 }
 
-export interface IUser 
+export type TUser =
 {
     id: Id;
     nameFirst: string;
@@ -22,11 +23,12 @@ export interface IUser
     dateBirth: Date;
     gender: Gender;
     userRole: UserRole;
+    motorcyclesOwned : TMotorcycle[];
 }
 
-export type IUserCreate = Pick<
-    IUser,
-    'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole'
+export type TUserCreate = Pick<
+    TUser,
+    'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole' | 'motorcyclesOwned'
     >;
-export type IUserUpdate = Partial<Omit<IUser, 'id'>>;
-export type IUserUpsert = IUser;
+export type TUserUpdate = Partial<Omit<TUser, 'id'>>;
+export type TUserUpsert = TUser;

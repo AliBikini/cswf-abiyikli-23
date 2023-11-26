@@ -9,6 +9,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { ApiResponseInterceptor } from '@cswf-abiyikli-23/backend/dto';
+import { environment } from '@cswf-abiyikli-23/shared/util-env'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,6 +20,8 @@ async function bootstrap() {
   app.enableCors(corsOptions);
 
   app.useGlobalInterceptors(new ApiResponseInterceptor());
+
+  console.log(JSON.stringify(environment));
 
   const port = process.env.PORT || 3000;
   await app.listen(port);

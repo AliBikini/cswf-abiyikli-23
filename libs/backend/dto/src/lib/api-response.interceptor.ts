@@ -1,4 +1,4 @@
-import { ApiResponse } from '@cswf-abiyikli-23/shared/api';
+import { TApiResponse } from '@cswf-abiyikli-23/shared/api';
 import {
     Injectable,
     NestInterceptor,
@@ -14,7 +14,7 @@ export class ApiResponseInterceptor implements NestInterceptor {
     intercept(
         context: ExecutionContext,
         next: CallHandler
-    ): Observable<ApiResponse<unknown>> {
+    ): Observable<TApiResponse<unknown>> {
         return next.handle().pipe(
             map((results) => {
                 if (results) {

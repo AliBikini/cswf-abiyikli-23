@@ -1,10 +1,12 @@
-export interface ApiMetaInfo{
+export type TApiMetaInfo = 
+{
     version: string
     type: 'object' | 'list' | 'none'
     count: number
 }
 
-export interface ApiResponse<T> {
+export type TApiResponse<T> = 
+{
     results?: T[] | T
-    info: ApiMetaInfo
+    info: TApiMetaInfo
 }

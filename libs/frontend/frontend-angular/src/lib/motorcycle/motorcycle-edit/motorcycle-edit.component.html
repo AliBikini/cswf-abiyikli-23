@@ -1,0 +1,101 @@
+<div *ngIf="motorcycleId">
+    <h2>Edit: {{ motorcycle?.nameModel }}</h2>
+</div>
+
+<div *ngIf="!motorcycleId">
+    <h2>Add new motorcycle</h2>
+</div>
+
+<form [formGroup]="motorcycleForm" (ngSubmit)="onSubmitForm()">
+    <div class="row">
+        <div class="col-6">
+            <div class="mb-3">
+                <label for="nameModel" class="form-label">Name model</label>
+                <input type="text" class="form-control" id="nameModel" formControlName="nameModel">
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="mb-3">
+                <label for="year" class="form-label">Year</label>
+                <input type="text" class="form-control" id="year" formControlName="year">
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="form-group">
+                <label for="bodySelect">Body</label>
+                <select id="bodySelect" class="form-control form-control" formControlName="body">
+                    <option *ngFor="let body of MotorcycleBody | keyvalue"> 
+                        {{ body.value }} 
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="padding-bottom: 24px;">
+        <div class="col">
+            <label class="form-label">Fuel type</label>
+            <div class="custom-control custom-radio">
+                <input id="gasoline" type="radio" class="custom-control-input" value="Gasoline" name="fuelType" formControlName="fuelType">
+                <label class="custom-control-label" for="gasoline">Gasoline</label>
+            </div>
+
+            <div class="custom-control custom-radio">
+              <input id="electric" type="radio" class="custom-control-input" value="Electric" name="fuelType" formControlName="fuelType">
+              <label class="custom-control-label" for="electric">Electric</label>
+            </div>
+
+            <div class="custom-control custom-radio">
+                <input id="diesel" type="radio" class="custom-control-input" value="Diesel" name="fuelType" formControlName="fuelType">
+                <label class="custom-control-label" for="diesel">Diesel</label>
+              </div>
+        </div>
+
+        <div class="col">
+            <div class="mb-3">
+                <label for="seatHeight" class="form-label">Seat height</label>
+                <input type="text" class="form-control" id="seatHeight" formControlName="seatHeight">
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="mb-3">
+                <label for="horsePower" class="form-label">Horsepower</label>
+                <input type="text" class="form-control" id="horsePower" formControlName="horsePower">
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="mb-3">
+                <label for="topSpeed" class="form-label">Top speed</label>
+                <input type="text" class="form-control" id="topSpeed" formControlName="topSpeed">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="mb-3">
+                <label for="linkImage" class="form-label">Link image</label>
+                <input type="text" class="form-control" id="linkImage" formControlName="linkImage" [(ngModel)]="linkImageDynamic">
+            </div>
+        </div>
+        <div class="col">
+            <img src="{{ linkImageDynamic }}" class="img-thumbnail" alt="...">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-1" *ngIf="!motorcycleId">
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+        <div class="col-1" *ngIf="motorcycleId">
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+        <div class="col-1" *ngIf="motorcycleId">
+            <button type="button" class="btn btn-danger" (click)="deleteMotorcycle()">Delete</button>
+        </div>
+    </div>
+</form>
