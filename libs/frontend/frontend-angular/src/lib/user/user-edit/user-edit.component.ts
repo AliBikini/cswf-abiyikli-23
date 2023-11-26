@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Gender, TUser, UserRole } from '@cswf-abiyikli-23/shared/api';
+import { Gender, TMotorcycle, TUser, UserRole } from '@cswf-abiyikli-23/shared/api';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../user.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { RouterModule } from '@nestjs/core';
+import { MotorcycleService } from '../../motorcycle/motorcycle.service';
 
 @Component({
   selector: 'cswf-abiyikli-23-user-edit',
@@ -18,20 +19,24 @@ export class UserEditComponent implements OnInit, OnDestroy
   userId: string | null = null;
   user: TUser | null = null;
   subscription: Subscription | null = null;
+  motorcycles: TMotorcycle[] | null = [];
 
-  userForm = new FormGroup
+  userForm = this.fb.group
   ({
     nameFirst: new FormControl,
     nameLast: new FormControl,
     email: new FormControl,
     dateBirth: new FormControl,
     gender: new FormControl,
-    userRole: new FormControl
+    userRole: new FormControl,
+    motorcyclesOwned: this.fb.array<TMotorcycle>([])
   })
   
   constructor (    
     private route: ActivatedRoute,
     private userService: UserService,
+    private motorcycleService: MotorcycleService,
+    private fb: FormBuilder,
     private router: Router){}
 
   ngOnInit(): void 
@@ -41,21 +46,37 @@ export class UserEditComponent implements OnInit, OnDestroy
     ).subscribe
     ((params) => 
       {
-        this.userId = params.get('id');
+        this.motorcycleService.list().subscribe((resp) => 
+        {
+          this.motorcycles = resp;
 
-        if (this.userId)
-        {
-          this.userService.read(this.userId).subscribe((resp) => 
+          this.userForm = this.fb.group
+          ({
+            nameFirst: new FormControl,
+            nameLast: new FormControl,
+            email: new FormControl,
+            dateBirth: new FormControl,
+            gender: new FormControl,
+            userRole: new FormControl,
+            motorcyclesOwned: this.fb.array([this.motorcycles?.at(0)!])
+          })
+
+          this.userId = params.get('id');
+
+          if (this.userId)
           {
-            this.user = resp;
+            this.userService.read(this.userId).subscribe((resp) => 
+            {
+              this.user = resp;
+              this.applyUserToForm();
+            }); 
+          }
+          else
+          {
+            this.user = { id: '-1', nameFirst: '', nameLast: '', email: '', dateBirth: new Date, gender: Gender.male, userRole: UserRole.user, motorcyclesOwned: [ this.motorcycles?.at(0)! ] }
             this.applyUserToForm();
-          }); 
-        }
-        else
-        {
-          this.user = { id: '-1', nameFirst: '', nameLast: '', email: '', dateBirth: new Date, gender: Gender.male, userRole: UserRole.user }
-          this.applyUserToForm();
-        }
+          }
+        })
       }
     );
   }
@@ -69,12 +90,26 @@ export class UserEditComponent implements OnInit, OnDestroy
       email: this.user?.email,
       dateBirth: this.user?.dateBirth,
       gender: this.user?.gender,
-      userRole: this.user?.userRole
+      userRole: this.user?.userRole,
+      motorcyclesOwned: this.user!.motorcyclesOwned as TMotorcycle[]
     })
   }
 
   ngOnDestroy(): void {
     if (this.subscription) this.subscription.unsubscribe();
+  }
+
+  onChangeMotorcycleOwnedSelect(param: any)
+  {
+    console.log(param);
+  }
+
+  addOwnedMotorcycle() {
+    this.motorcyclesOwnedArray.push(this.fb.group(this.motorcycles!.at(0)!));
+  }
+
+  deleteOwnedMotorcycle(index: number) {
+    this.motorcyclesOwnedArray.removeAt(index);
   }
 
   onSubmitForm() 
@@ -99,7 +134,8 @@ export class UserEditComponent implements OnInit, OnDestroy
       email: this.userForm.value.email,  
       dateBirth: this.userForm.value.dateBirth,  
       userRole: this.userForm.value.userRole,  
-      gender: this.userForm.value.gender
+      gender: this.userForm.value.gender,
+      motorcyclesOwned: this.userForm.value.motorcyclesOwned as TMotorcycle[]
     }).subscribe((resp) => {
       console.log("New user added!");
       this.redirectTo(`/user/${resp.id}`);
@@ -114,7 +150,8 @@ export class UserEditComponent implements OnInit, OnDestroy
       email: this.userForm.value.email,  
       dateBirth: this.userForm.value.dateBirth,  
       userRole: this.userForm.value.userRole,  
-      gender: this.userForm.value.gender
+      gender: this.userForm.value.gender,
+      motorcyclesOwned: this.userForm.value.motorcyclesOwned as TMotorcycle[]
     }).subscribe((resp) => {
       console.log("User updated!");
       this.redirectTo(`/user/${this.userId}`);
@@ -135,5 +172,9 @@ export class UserEditComponent implements OnInit, OnDestroy
   redirectTo(url: string)
   {
     this.router.navigateByUrl(url)
+  }
+
+  get motorcyclesOwnedArray(): FormArray {
+    return this.userForm!.get('motorcyclesOwned') as FormArray;
   }
 }

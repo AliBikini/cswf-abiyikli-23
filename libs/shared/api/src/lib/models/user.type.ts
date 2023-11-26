@@ -1,4 +1,5 @@
 import { Id} from "./id.type";
+import { TMotorcycle } from "./motorcycle.type";
 
 export enum UserRole 
 {
@@ -22,11 +23,12 @@ export type TUser =
     dateBirth: Date;
     gender: Gender;
     userRole: UserRole;
+    motorcyclesOwned : TMotorcycle[];
 }
 
 export type TUserCreate = Pick<
     TUser,
-    'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole'
+    'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole' | 'motorcyclesOwned'
     >;
 export type TUserUpdate = Partial<Omit<TUser, 'id'>>;
 export type TUserUpsert = TUser;

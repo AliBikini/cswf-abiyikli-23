@@ -28,7 +28,7 @@
         <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
     </div>
 
-    <div class="row">
+    <div class="row" style="padding-bottom: 24px;">
         <div class="col">
             <div class="mb-3">
                 <label for="dateBirth" class="form-label">Date of birth</label>
@@ -54,7 +54,47 @@
               </div>
         </div>
     </div>
-    <div class="row">
+
+    <div class="container border">
+        <div class="row">
+            <div class="col-2">
+                <button type="button" class="button button-primary" (click)="addOwnedMotorcycle()">Add motorcycle owned</button>
+            </div>
+            <div class="col">
+                <select id="motorcycleOwnedSelect" class="form-control form-control">
+                    <option *ngFor="let motorcycle of motorcycles"> 
+                        {{ motorcycle.nameModel }} 
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label for="motorcycleOwnedSelect">Owned motorcycles</label>
+                <ul class="list-group" formArrayName="motorcyclesOwned">
+                    <div *ngFor="let motorcycle of motorcyclesOwnedArray.controls; let i = index">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col">
+                                    <select id="motorcycleOwnedSelect{{i}}" class="form-control form-control" [formControlName]="i" name="motorcyclesOwnedArray{{i}}">
+                                        <option *ngFor="let motorcycle of motorcycles" [ngValue]="motorcycle"> 
+                                            {{ motorcycle.nameModel }} 
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="button button-primary" (click)="deleteOwnedMotorcycle(i)">Delete</button>
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="padding-top: 24px;">
         <div class="col-1" *ngIf="!userId">
             <button type="submit" class="btn btn-primary">Create</button>
         </div>

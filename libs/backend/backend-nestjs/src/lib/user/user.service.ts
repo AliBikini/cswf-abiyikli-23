@@ -1,4 +1,4 @@
-import { Gender, TUser, UserRole } from "@cswf-abiyikli-23/shared/api";
+import { Gender, MotorcycleBody, MotorcycleFuel, TUser, UserRole } from "@cswf-abiyikli-23/shared/api";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { BehaviorSubject } from "rxjs";
 
@@ -16,7 +16,20 @@ export class UserService
             email: "ali@outlook.com",
             dateBirth: new Date("1998-07-02"),
             gender: Gender.male,
-            userRole: UserRole.user
+            userRole: UserRole.user,
+            motorcyclesOwned: [
+                {
+                    id: '0',
+                    nameModel: 'Triumph Street Triple 675',
+                    year: '2011',
+                    body: MotorcycleBody.naked,
+                    fuelType: MotorcycleFuel.gasoline,
+                    seatHeight: "88cm",
+                    horsePower: "105",
+                    topSpeed: "240",
+                    linkImage: "https://cloud.leparking-moto.fr/2021/07/06/19/01/triumph-street-triple-triumph-street-triple-r-675-2011-blanc_153809063.jpg"
+                }
+            ]
         });
         this.users$.value.set("1", {
             id: '1',
@@ -25,7 +38,8 @@ export class UserService
             email: "seher@outlook.com",
             dateBirth: new Date("1998-08-18"),
             gender: Gender.female,
-            userRole: UserRole.user
+            userRole: UserRole.user,
+            motorcyclesOwned: []
         });
         this.users$.value.set("2", {
             id: '2',
@@ -34,7 +48,8 @@ export class UserService
             email: "ps@outlook.com",
             dateBirth: new Date("2019-01-16"),
             gender: Gender.male,
-            userRole: UserRole.user
+            userRole: UserRole.user,
+            motorcyclesOwned: []
         });
         this.users$.value.set("3", {
             id: '3',
@@ -43,7 +58,8 @@ export class UserService
             email: "ph@outlook.com",
             dateBirth: new Date("2019-01-16"),
             gender: Gender.male,
-            userRole: UserRole.user
+            userRole: UserRole.user,
+            motorcyclesOwned: []
         });
         this.users$.value.set("4", {
             id: '4',
@@ -52,7 +68,8 @@ export class UserService
             email: "wd@outlook.com",
             dateBirth: new Date("2019-01-16"),
             gender: Gender.male,
-            userRole: UserRole.user
+            userRole: UserRole.user,
+            motorcyclesOwned: []
         });
     }
 
@@ -84,6 +101,7 @@ export class UserService
         const userNew: TUser = 
         {
             ...user,
+            motorcyclesOwned: [],
             id: `meal-${Math.floor(Math.random() * 10000)}`
         };
         this.users$.value.set(userNew.id, userNew);

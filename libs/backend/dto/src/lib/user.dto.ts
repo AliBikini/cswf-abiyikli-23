@@ -10,6 +10,7 @@ import
 import 
 {
     Gender,
+    TMotorcycle,
     TUserCreate,
     TUserUpdate,
     TUserUpsert,
@@ -43,6 +44,9 @@ export class UserCreateDto implements TUserCreate
 
     @IsNotEmpty()
     userRole!: UserRole;
+
+    @IsOptional()
+    motorcyclesOwned!: TMotorcycle[];
 }
 
 export class UserUpsertDto implements TUserUpsert 
@@ -72,6 +76,9 @@ export class UserUpsertDto implements TUserUpsert
 
     @IsNotEmpty()
     userRole!: UserRole;
+
+    @IsOptional()
+    motorcyclesOwned!: TMotorcycle[];
 }
 
 export class UserUpdateDto implements TUserUpdate 
