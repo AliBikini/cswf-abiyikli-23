@@ -53,7 +53,7 @@ export class UserUpsertDto implements TUserUpsert
 {
     @IsString()
     @IsNotEmpty()
-    id!: string;
+    _id!: string;
 
     @IsString()
     @IsNotEmpty()

@@ -1,15 +1,16 @@
-import { Gender, MotorcycleBody, MotorcycleFuel, TUser, UserRole } from "@cswf-abiyikli-23/shared/api";
+import { IUserService } from "./iuser.service";
+import { Gender, Motorcycle, MotorcycleBody, MotorcycleFuel, User, UserRole } from "@cswf-abiyikli-23/shared/api";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { BehaviorSubject } from "rxjs";
 
 @Injectable()
-export class UserService 
+export class UserServiceMemory implements IUserService
 {
-    TAG = 'UserService';
-    private users$ = new BehaviorSubject<Map<string, TUser>>(new Map());
+    TAG = 'UserServiceMemory';
+    private users = new Map<string, User>(new Map());
 
-    constructor() {
-        this.users$.value.set("0", {
+    constructor()
+    {
+        this.users.set("0", {
             _id: '0',
             nameFirst: 'Ali',
             nameLast: 'Biyikli',
@@ -17,21 +18,9 @@ export class UserService
             dateBirth: new Date("1998-07-02"),
             gender: Gender.male,
             userRole: UserRole.user,
-            motorcyclesOwned: [
-                {
-                    id: '0',
-                    nameModel: 'Triumph Street Triple 675',
-                    year: '2011',
-                    body: MotorcycleBody.naked,
-                    fuel: MotorcycleFuel.gasoline,
-                    seatHeight: "88cm",
-                    horsePower: "105",
-                    topSpeed: "240",
-                    linkImage: "https://cloud.leparking-moto.fr/2021/07/06/19/01/triumph-street-triple-triumph-street-triple-r-675-2011-blanc_153809063.jpg"
-                }
-            ]
+            motorcyclesOwned: [ new Motorcycle() ]
         });
-        this.users$.value.set("1", {
+        this.users.set("1", {
             _id: '1',
             nameFirst: 'Seher',
             nameLast: 'Akdag',
@@ -41,7 +30,7 @@ export class UserService
             userRole: UserRole.user,
             motorcyclesOwned: []
         });
-        this.users$.value.set("2", {
+        this.users.set("2", {
             _id: '2',
             nameFirst: 'Pascal',
             nameLast: 'Stool',
@@ -51,7 +40,7 @@ export class UserService
             userRole: UserRole.user,
             motorcyclesOwned: []
         });
-        this.users$.value.set("3", {
+        this.users.set("3", {
             _id: '3',
             nameFirst: 'Pietje',
             nameLast: 'Heushout',
@@ -61,7 +50,7 @@ export class UserService
             userRole: UserRole.user,
             motorcyclesOwned: []
         });
-        this.users$.value.set("4", {
+        this.users.set("4", {
             _id: '4',
             nameFirst: 'Wadayaohn',
             nameLast: 'Dawuld',
@@ -73,45 +62,36 @@ export class UserService
         });
     }
 
-    getAll(): TUser[] 
-    {
+    async getAll(): Promise<User[]> {
         Logger.log('getAll', this.TAG);
-        return [...this.users$.value.values()];
+        return [...this.users.values()];
     }
 
-    get(id: string): TUser 
-    {
+    async get(id: string): Promise<User> {
         Logger.log(`get(${id})`, this.TAG);
-        const user = this.users$.value.get(id);
+        const user = this.users.get(id);
         if (!user) {
             throw new NotFoundException(`User could not be found!`);
         }
         return user;
     }
 
-        /**
-     * Update the arg signature to match the DTO, but keep the
-     * return signature - we still want to respond with the complete
-     * object
-     */
-    create(user: Pick<TUser, 'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole'>): TUser 
-    {
+    async create(user: User): Promise<User> {
         Logger.log('create', this.TAG);
         // Use the incoming data, a randomized ID, and a default value of `false` to create the new to-do
-        const userNew: TUser = 
+        const userNew: User = 
         {
             ...user,
             motorcyclesOwned: [],
             _id: `meal-${Math.floor(Math.random() * 10000)}`
         };
-        this.users$.value.set(userNew._id, userNew);
+        this.users.set(userNew._id, userNew);
         return userNew;
     }
 
-    update(id: string, user: Pick<TUser, 'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'userRole'>): TUser 
-    {
+    async update(id: string, user: User): Promise<User> {
         Logger.log(`update(${id})`, this.TAG);
-        const userToUpdate = this.users$.value.get(id);
+        const userToUpdate = this.users.get(id);
         if (!userToUpdate) {
             throw new NotFoundException(`User could not be found!`);
         }
@@ -126,14 +106,13 @@ export class UserService
         return userToUpdate;
     }
 
-    delete(id: string)
-    {
+    delete(id: string): void {
         Logger.log(`update(${id})`, this.TAG);
-        const userToUpdate = this.users$.value.get(id);
+        const userToUpdate = this.users.get(id);
         if (!userToUpdate) {
             throw new NotFoundException(`User could not be found!`);
         }
 
-        this.users$.value.delete(id);
+        this.users.delete(id);
     }
 }

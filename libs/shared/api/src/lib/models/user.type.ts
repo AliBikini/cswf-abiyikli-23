@@ -16,7 +16,7 @@ export enum Gender
 
 export type TUser =
 {
-    id: Id;
+    _id: Id;
     nameFirst: string;
     nameLast: string;
     email: string;

@@ -34,7 +34,7 @@ export class MotorcycleCreateDto implements TMotorcycleCreate
     year!: string;
 
     @IsNotEmpty()
-    fuelType!: MotorcycleFuel;
+    fuel!: MotorcycleFuel;
 
     @IsString()
     @IsNotEmpty()
@@ -71,7 +71,7 @@ export class MotorcycleUpsertDto implements TMotorcycleUpsert
     year!: string;
 
     @IsNotEmpty()
-    fuelType!: MotorcycleFuel;
+    fuel!: MotorcycleFuel;
 
     @IsString()
     @IsNotEmpty()
@@ -104,7 +104,7 @@ export class MotorcycleUpdateDto implements TMotorcycleUpdate
     year!: string;
 
     @IsNotEmpty()
-    fuelType!: MotorcycleFuel;
+    fuel!: MotorcycleFuel;
 
     @IsString()
     @IsOptional()

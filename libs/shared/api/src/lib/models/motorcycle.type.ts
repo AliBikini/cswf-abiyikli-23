@@ -25,7 +25,7 @@ export type TMotorcycle =
     nameModel: string;
     body: MotorcycleBody;
     year: string;
-    fuelType: MotorcycleFuel;
+    fuel: MotorcycleFuel;
     seatHeight: string;
     horsePower: string;
     topSpeed: string;
@@ -34,7 +34,7 @@ export type TMotorcycle =
 
 export type TMotorcycleCreate = Pick<
     TMotorcycle,
-    'nameModel' | 'body' | 'year' | 'fuelType' | 'seatHeight' | 'horsePower' | 'topSpeed' | 'linkImage'
+    'nameModel' | 'body' | 'year' | 'fuel' | 'seatHeight' | 'horsePower' | 'topSpeed' | 'linkImage'
     >;
 export type TMotorcycleUpdate = Partial<Omit<TMotorcycle, 'id'>>;
 export type TMotorcycleUpsert = TMotorcycle;

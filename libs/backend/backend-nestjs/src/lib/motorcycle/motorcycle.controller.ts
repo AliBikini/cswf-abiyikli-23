@@ -1,33 +1,33 @@
-import { Controller, Delete } from '@nestjs/common';
-import { MotorcycleService } from './motorcycle.service';
+import { Controller, Delete, Inject } from '@nestjs/common';
 import { Get, Param, Post, Body } from '@nestjs/common';
-import { TMotorcycle } from '@cswf-abiyikli-23/shared/api';
-import { MotorcycleCreateDto, MotorcycleUpdateDto } from '@cswf-abiyikli-23/backend/dto';
+import { Motorcycle } from '@cswf-abiyikli-23/shared/api';
+import { IMotorcycleService } from './imotorcycle.service';
 
 @Controller('motorcycle')
-export class MotorcycleController {
-    constructor(private motorcycleService: MotorcycleService)
+export class MotorcycleController 
+{
+    constructor(@Inject(IMotorcycleService)private motorcycleService: IMotorcycleService)
     {
 
     }
 
     @Get('')
-    getAll(): TMotorcycle[] {
+    getAll(): Motorcycle[] {
         return this.motorcycleService.getAll();
     }
 
     @Get(':id')
-    getOne(@Param('id') id: string): TMotorcycle {
+    getOne(@Param('id') id: string): Motorcycle {
         return this.motorcycleService.get(id);
     }
 
     @Post('')
-    create(@Body() data: MotorcycleCreateDto): TMotorcycle {
+    create(@Body() data: Motorcycle): Motorcycle {
         return this.motorcycleService.create(data);
     }
 
     @Post(':id')
-    update(@Param('id') id: string, @Body() data: MotorcycleUpdateDto): TMotorcycle {
+    update(@Param('id') id: string, @Body() data: Motorcycle): Motorcycle {
         return this.motorcycleService.update(id, data);
     }
 

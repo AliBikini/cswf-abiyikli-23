@@ -1,16 +1,15 @@
-import { MotorcycleCreateDto, MotorcycleUpdateDto } from "@cswf-abiyikli-23/backend/dto";
-import { TMotorcycle, MotorcycleBody, MotorcycleFuel } from "@cswf-abiyikli-23/shared/api";
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { BehaviorSubject } from "rxjs";
+import { Motorcycle, MotorcycleBody, MotorcycleFuel } from "@cswf-abiyikli-23/shared/api";
+import { IMotorcycleService } from "./imotorcycle.service";
+import { Logger, NotFoundException } from "@nestjs/common";
 
-@Injectable()
-export class MotorcycleService 
+export class MotorcycleServiceMemory implements IMotorcycleService
 {
-    TAG = 'MotorcycleService';
-    private motorcycles$ = new BehaviorSubject<Map<string, TMotorcycle>>(new Map());
+    TAG: string = "MotorcycleServiceMemory";
+    private motorcycles = new Map<string, Motorcycle>(new Map());
 
-    constructor() {
-        this.motorcycles$.value.set("0", {
+    constructor()
+    {
+        this.motorcycles.set("0", {
             id: '0',
             nameModel: 'Triumph Street Triple 675',
             year: '2011',
@@ -21,7 +20,7 @@ export class MotorcycleService
             topSpeed: "240",
             linkImage: "https://cloud.leparking-moto.fr/2021/07/06/19/01/triumph-street-triple-triumph-street-triple-r-675-2011-blanc_153809063.jpg"
         });
-        this.motorcycles$.value.set("1", {
+        this.motorcycles.set("1", {
             id: '1',
             nameModel: 'Kawasaki Vulcan S',
             year: '2018',
@@ -32,7 +31,7 @@ export class MotorcycleService
             topSpeed: "200",
             linkImage: "https://www.motoveda.nl/uploads/img/IMG_22-11-01_13-44-54.jpg"
         });
-        this.motorcycles$.value.set("2", {
+        this.motorcycles.set("2", {
             id: '2',
             nameModel: 'Honda CMX500 Rebel',
             year: '2022',
@@ -43,7 +42,7 @@ export class MotorcycleService
             topSpeed: "180",
             linkImage: "https://www.honda.nl/content/dam/central/motorcycles/street/cmx500-rebel_2022/XL-Module/Honda_Rebel_2_Mobile2.jpg/_jcr_content/renditions/m_r.jpg"
         });
-        this.motorcycles$.value.set("3", {
+        this.motorcycles.set("3", {
             id: '3',
             nameModel: 'Suzuki GSX-R750',
             year: '2023',
@@ -54,7 +53,7 @@ export class MotorcycleService
             topSpeed: "300",
             linkImage: "https://www.suzuki.ca/wp-content/uploads/GSX-R750M3_CHL_Right.jpg"
         });
-        this.motorcycles$.value.set("4", {
+        this.motorcycles.set("4", {
             id: '4',
             nameModel: 'Kawasaki KLR650',
             year: '1987-1990',
@@ -67,57 +66,53 @@ export class MotorcycleService
         });
     }
 
-    getAll(): TMotorcycle[] 
-    {
+    getAll(): Motorcycle[] {
         Logger.log('getAll', this.TAG);
-        return [...this.motorcycles$.value.values()];
+        return [...this.motorcycles.values()];
     }
 
-    get(id: string): TMotorcycle 
-    {
+    get(id: string): Motorcycle {
         Logger.log(`get(${id})`, this.TAG);
-        const user = this.motorcycles$.value.get(id);
-        if (!user) {
+        const motorcycle = this.motorcycles.get(id);
+        if (!motorcycle) {
             throw new NotFoundException(`User could not be found!`);
         }
-        return user;
+       
+        return motorcycle;
     }
 
-    create(motorcycle: MotorcycleCreateDto): TMotorcycle 
-    {
+    create(motorcycle: Motorcycle): Motorcycle {
         Logger.log('create', this.TAG);
         // Use the incoming data, a randomized ID, and a default value of `false` to create the new to-do
-        const motorcycleNew: TMotorcycle = 
+        const motorcycleNew: Motorcycle = 
         {
             ...motorcycle,
             id: `motorcycle-${Math.floor(Math.random() * 10000)}`
         };
-        this.motorcycles$.value.set(motorcycleNew.id, motorcycleNew);
+        this.motorcycles.set(motorcycleNew.id, motorcycleNew);
         return motorcycleNew;
     }
 
-    update(id: string, motorcycle: MotorcycleUpdateDto): TMotorcycle 
-    {
+    update(id: string, motorcycle: Motorcycle): Motorcycle {
         Logger.log(`update(${id})`, this.TAG);
-        let motorcycleToUpdate = this.motorcycles$.value.get(id);
+        let motorcycleToUpdate = this.motorcycles.get(id);
         if (!motorcycleToUpdate) {
             throw new NotFoundException(`User could not be found!`);
         }
 
         motorcycleToUpdate = { ...motorcycleToUpdate, ...motorcycle }
-        this.motorcycles$.value.set(motorcycleToUpdate.id, motorcycleToUpdate);
+        this.motorcycles.set(motorcycleToUpdate.id, motorcycleToUpdate);
 
         return motorcycleToUpdate;
     }
 
-    delete(id: string)
-    {
+    delete(id: string): void {
         Logger.log(`update(${id})`, this.TAG);
-        const motorcycleToDelte = this.motorcycles$.value.get(id);
-        if (!motorcycleToDelte) {
+        const motorcycleToDelete = this.motorcycles.get(id);
+        if (!motorcycleToDelete) {
             throw new NotFoundException(`User could not be found!`);
         }
 
-        this.motorcycles$.value.delete(id);
+        this.motorcycles.delete(id);
     }
 }
