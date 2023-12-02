@@ -9,12 +9,17 @@ import { MotorcycleServiceMemory } from './motorcycle/motorcycle.service.memory'
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { UserSchemaTemplate, UserSchema } from './user/user.schema';
+import { MotorcycleServiceMongo } from './motorcycle/motorcycle.service.mongo';
+import { MongooseConnection } from './mongooseConnection/mongooseConnection';
+import { Schemas } from './mongooseConnection/schemas';
 
 @Module({
   controllers: [UserController, MotorcycleController],
   providers: [
     { provide: IUserService, useClass: UserServiceMongo }, 
-    { provide: IMotorcycleService, useClass: MotorcycleServiceMemory },
+    { provide: IMotorcycleService, useClass: MotorcycleServiceMongo },
+    MongooseConnection,
+    Schemas
   ],
   imports: [
     ConfigModule.forRoot(),

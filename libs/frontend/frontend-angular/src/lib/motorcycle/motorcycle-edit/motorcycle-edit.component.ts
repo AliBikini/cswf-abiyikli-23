@@ -56,7 +56,7 @@ export class MotorcycleEditComponent implements OnInit, OnDestroy
         }
         else
         {
-          this.motorcycle = { id: '-1', nameModel: '', body: MotorcycleBody.other, fuel: MotorcycleFuel.gasoline, horsePower: '0', seatHeight: '0', topSpeed: '0', year: '', linkImage: '' }
+          this.motorcycle = { _id: '-1', nameModel: '', body: MotorcycleBody.other, fuel: MotorcycleFuel.gasoline, horsePower: '0', seatHeight: '0', topSpeed: '0', year: '', linkImage: '' }
           this.applyMotorcycleToForm();
         }
       }

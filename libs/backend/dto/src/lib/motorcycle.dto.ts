@@ -57,7 +57,7 @@ export class MotorcycleUpsertDto implements TMotorcycleUpsert
 {
     @IsString()
     @IsNotEmpty()
-    id!: string;
+    _id!: string;
 
     @IsString()
     @IsNotEmpty()

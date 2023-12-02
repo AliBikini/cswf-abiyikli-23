@@ -1,4 +1,5 @@
 export interface IEnvironment
 {
-    dataApiUrl:string;
+    dataApiUrl: string;
+    mongoConnString: string;
 }

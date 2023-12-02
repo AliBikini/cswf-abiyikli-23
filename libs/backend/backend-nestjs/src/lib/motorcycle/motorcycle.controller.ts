@@ -12,22 +12,22 @@ export class MotorcycleController
     }
 
     @Get('')
-    getAll(): Motorcycle[] {
+    getAll(): Promise<Motorcycle[]> {
         return this.motorcycleService.getAll();
     }
 
     @Get(':id')
-    getOne(@Param('id') id: string): Motorcycle {
+    getOne(@Param('id') id: string): Promise<Motorcycle> {
         return this.motorcycleService.get(id);
     }
 
     @Post('')
-    create(@Body() data: Motorcycle): Motorcycle {
+    create(@Body() data: Motorcycle): Promise<Motorcycle> {
         return this.motorcycleService.create(data);
     }
 
     @Post(':id')
-    update(@Param('id') id: string, @Body() data: Motorcycle): Motorcycle {
+    update(@Param('id') id: string, @Body() data: Motorcycle): Promise<Motorcycle> {
         return this.motorcycleService.update(id, data);
     }
 

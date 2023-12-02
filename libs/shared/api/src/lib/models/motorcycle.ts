@@ -4,7 +4,7 @@ import { Gender, TUser, UserRole } from "./user.type";
 
 export class Motorcycle implements TMotorcycle
 {
-    id: Id = "0";
+    _id: Id = "0";
     nameModel: string = '';
     body: MotorcycleBody = MotorcycleBody.other;
     year: string = '';
@@ -14,9 +14,9 @@ export class Motorcycle implements TMotorcycle
     topSpeed: string = '';
     linkImage: string = '';
     
-    constructor(id = "", nameModel = '', body = MotorcycleBody.other, year = '', fuel = MotorcycleFuel.gasoline, seatHeight = '', horsePower = '', topSpeed = '', linkImage = '')
+    constructor(_id = "", nameModel = '', body = MotorcycleBody.other, year = '', fuel = MotorcycleFuel.gasoline, seatHeight = '', horsePower = '', topSpeed = '', linkImage = '')
     {
-        this.id = id;
+        this._id = _id;
         this.nameModel = nameModel;
         this.body = body;
         this.year = year;

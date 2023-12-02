@@ -1,36 +1,51 @@
 import { IUserService } from "./iuser.service";
-import { Gender, MotorcycleBody, MotorcycleFuel, User, UserRole } from "@cswf-abiyikli-23/shared/api";
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { MongoClient } from "mongodb";
-import { Observable } from "rxjs";
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
-import { UserSchemaTemplate as UserModel, UserDocument, UserSchema } from './user.schema';
-
+import { User } from "@cswf-abiyikli-23/shared/api";
+import { Injectable, Logger } from "@nestjs/common";
+import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
 
 @Injectable()
 export class UserServiceMongo implements IUserService
 {
     TAG = 'UserServiceMongo';
 
-    constructor(@InjectModel(UserModel.name) private userModel: Model<UserDocument>)
+    conn: MongooseConnection | null = null;
+
+    constructor(conn: MongooseConnection)
     {
+        this.conn = conn;
     }
 
     async getAll(): Promise<User[]> {
-        console.log("pow");
-        return await this.userModel.find({});
+        Logger.log('getAll', this.TAG);
+        const result = await this.conn?.schemas?.modelUser!.find().populate("motorcyclesOwned").exec();
+        Logger.log(result, this.TAG);
+        return result as unknown as User[];
     }
-    get(id: string): Promise<User> {
-        throw new Error("Method not implemented.");
+
+    async get(id: string): Promise<User> {
+        Logger.log('get', this.TAG);
+        const result = await this.conn?.schemas?.modelUser!.findOne({ _id : id }).populate("motorcyclesOwned").exec();
+        Logger.log(result, this.TAG);
+        return result as User;
     }
-    create(user: User): Promise<User> {
-        throw new Error("Method not implemented.");
+
+    async create(user: User): Promise<User> 
+    {
+        const userNew = new this.conn!.schemas!.modelUser!({
+            ...user,
+        })
+
+        await userNew.save();
+        return userNew;
     }
-    update(id: string, user: User): Promise<User> {
-        throw new Error("Method not implemented.");
+
+    async update(id: string, user: User): Promise<User> {
+        Logger.log('update', this.TAG);
+        await this.conn?.schemas?.modelUser!.updateOne({ _id : id }, { ...user }).exec();
+        return await this.get(id);
     }
-    delete(id: string): void {
-        throw new Error("Method not implemented.");
+    
+    async delete(id: string): Promise<void> {
+        await this.conn?.schemas?.modelUser!.deleteOne({ _id : id }).exec();
     }
 }

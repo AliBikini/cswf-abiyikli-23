@@ -2,12 +2,15 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 //import { v4 as uuid } from 'uuid';
 import { Id } from "libs/shared/api/src/lib/models/id.type";
-//import isEmail from 'validator/lib/isEmail';
+import isEmail from 'validator/lib/isEmail';
+import { IsMongoId } from 'class-validator';
+import { Gender, UserRole } from '@cswf-abiyikli-23/shared/api';
 
 export type UserDocument = UserSchemaTemplate & Document;
 
 @Schema()
-export class UserSchemaTemplate {
+export class UserSchemaTemplate 
+{
   @Prop({type: String})
   id!: Id;
 
@@ -25,19 +28,24 @@ export class UserSchemaTemplate {
     required: true,
     unique: true
   })
-  email!: string[];
+  email!: string;
 
   @Prop({
     required: true,
-    unique: true
   })
-  dateBirth!: string[];
+  dateBirth!: Date;
 
   @Prop({
     required: true,
-    unique: true
+    type: String,
   })
-  userRole!: string[];
+  userRole!: UserRole;
+
+  @Prop({
+    required: true,
+    type: String,
+  })
+  gender!: Gender;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserSchemaTemplate);

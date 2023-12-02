@@ -11,7 +11,7 @@ export class MotorcycleService
 
     constructor() {
         this.motorcycles$.value.set("0", {
-            id: '0',
+            _id: '0',
             nameModel: 'Triumph Street Triple 675',
             year: '2011',
             body: MotorcycleBody.naked,
@@ -22,7 +22,7 @@ export class MotorcycleService
             linkImage: "https://cloud.leparking-moto.fr/2021/07/06/19/01/triumph-street-triple-triumph-street-triple-r-675-2011-blanc_153809063.jpg"
         });
         this.motorcycles$.value.set("1", {
-            id: '1',
+            _id: '1',
             nameModel: 'Kawasaki Vulcan S',
             year: '2018',
             body: MotorcycleBody.cruiser,
@@ -33,7 +33,7 @@ export class MotorcycleService
             linkImage: "https://www.motoveda.nl/uploads/img/IMG_22-11-01_13-44-54.jpg"
         });
         this.motorcycles$.value.set("2", {
-            id: '2',
+            _id: '2',
             nameModel: 'Honda CMX500 Rebel',
             year: '2022',
             body: MotorcycleBody.cruiser,
@@ -44,7 +44,7 @@ export class MotorcycleService
             linkImage: "https://www.honda.nl/content/dam/central/motorcycles/street/cmx500-rebel_2022/XL-Module/Honda_Rebel_2_Mobile2.jpg/_jcr_content/renditions/m_r.jpg"
         });
         this.motorcycles$.value.set("3", {
-            id: '3',
+            _id: '3',
             nameModel: 'Suzuki GSX-R750',
             year: '2023',
             body: MotorcycleBody.sport,
@@ -55,7 +55,7 @@ export class MotorcycleService
             linkImage: "https://www.suzuki.ca/wp-content/uploads/GSX-R750M3_CHL_Right.jpg"
         });
         this.motorcycles$.value.set("4", {
-            id: '4',
+            _id: '4',
             nameModel: 'Kawasaki KLR650',
             year: '1987-1990',
             body: MotorcycleBody.dualSport,
@@ -90,9 +90,9 @@ export class MotorcycleService
         const motorcycleNew: TMotorcycle = 
         {
             ...motorcycle,
-            id: `motorcycle-${Math.floor(Math.random() * 10000)}`
+            _id: `motorcycle-${Math.floor(Math.random() * 10000)}`
         };
-        this.motorcycles$.value.set(motorcycleNew.id, motorcycleNew);
+        this.motorcycles$.value.set(motorcycleNew._id, motorcycleNew);
         return motorcycleNew;
     }
 
@@ -105,7 +105,7 @@ export class MotorcycleService
         }
 
         motorcycleToUpdate = { ...motorcycleToUpdate, ...motorcycle }
-        this.motorcycles$.value.set(motorcycleToUpdate.id, motorcycleToUpdate);
+        this.motorcycles$.value.set(motorcycleToUpdate._id, motorcycleToUpdate);
 
         return motorcycleToUpdate;
     }

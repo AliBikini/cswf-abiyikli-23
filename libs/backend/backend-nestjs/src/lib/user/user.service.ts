@@ -19,7 +19,7 @@ export class UserService
             userRole: UserRole.user,
             motorcyclesOwned: [
                 {
-                    id: '0',
+                    _id: '0',
                     nameModel: 'Triumph Street Triple 675',
                     year: '2011',
                     body: MotorcycleBody.naked,

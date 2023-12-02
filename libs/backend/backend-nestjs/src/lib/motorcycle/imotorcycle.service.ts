@@ -5,10 +5,10 @@ export interface IMotorcycleService
 {
     TAG: string;
 
-    getAll(): Motorcycle[]
-    get(id: Id): Motorcycle
-    create(motorcycle: Motorcycle): Motorcycle
-    update(id: Id, motorcycle: Motorcycle): Motorcycle
+    getAll(): Promise<Motorcycle[]>
+    get(id: Id): Promise<Motorcycle>
+    create(motorcycle: Motorcycle): Promise<Motorcycle>
+    update(id: Id, motorcycle: Motorcycle): Promise<Motorcycle>
     delete(id: Id): void;
 }
 

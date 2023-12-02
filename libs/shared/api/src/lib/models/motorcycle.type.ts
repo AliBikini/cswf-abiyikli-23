@@ -21,7 +21,7 @@ export enum MotorcycleFuel
 
 export type TMotorcycle =
 {
-    id: Id;
+    _id: Id;
     nameModel: string;
     body: MotorcycleBody;
     year: string;
