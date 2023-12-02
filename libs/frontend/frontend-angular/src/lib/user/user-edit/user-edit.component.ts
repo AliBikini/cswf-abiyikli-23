@@ -28,7 +28,6 @@ export class UserEditComponent implements OnInit, OnDestroy
     email: new FormControl,
     dateBirth: new FormControl,
     gender: new FormControl,
-    userRole: new FormControl,
     motorcyclesOwned: this.fb.array<TMotorcycle>([])
   })
   
@@ -57,7 +56,6 @@ export class UserEditComponent implements OnInit, OnDestroy
             email: new FormControl,
             dateBirth: new FormControl,
             gender: new FormControl,
-            userRole: new FormControl,
             motorcyclesOwned: this.fb.array([this.motorcycles?.at(0)!])
           })
 
@@ -90,7 +88,6 @@ export class UserEditComponent implements OnInit, OnDestroy
       email: this.user?.email,
       dateBirth: this.user?.dateBirth,
       gender: this.user?.gender,
-      userRole: this.user?.userRole,
       motorcyclesOwned: this.user!.motorcyclesOwned as TMotorcycle[]
     })
   }
@@ -133,7 +130,7 @@ export class UserEditComponent implements OnInit, OnDestroy
       nameLast: this.userForm.value.nameLast,  
       email: this.userForm.value.email,  
       dateBirth: this.userForm.value.dateBirth,  
-      userRole: this.userForm.value.userRole,  
+      userRole: IdentityRole.user, 
       gender: this.userForm.value.gender,
       motorcyclesOwned: this.userForm.value.motorcyclesOwned as TMotorcycle[]
     }).subscribe((resp) => {
@@ -149,7 +146,7 @@ export class UserEditComponent implements OnInit, OnDestroy
       nameLast: this.userForm.value.nameLast,  
       email: this.userForm.value.email,  
       dateBirth: this.userForm.value.dateBirth,  
-      userRole: this.userForm.value.userRole,  
+      userRole: IdentityRole.user, 
       gender: this.userForm.value.gender,
       motorcyclesOwned: this.userForm.value.motorcyclesOwned as TMotorcycle[]
     }).subscribe((resp) => {

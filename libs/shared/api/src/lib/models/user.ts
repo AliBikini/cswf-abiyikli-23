@@ -1,4 +1,5 @@
 import { Id } from "./id.type";
+import { IdentityRole } from "./identity";
 import { Motorcycle } from "./motorcycle";
 
 export enum Gender 
@@ -17,11 +18,12 @@ export type TUser =
     dateBirth: Date;
     gender: Gender;
     motorcyclesOwned : Motorcycle[];
+    userRole: IdentityRole;
 }
 
 export type TUserCreate = Pick<
     TUser,
-    'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'motorcyclesOwned'
+    'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'motorcyclesOwned' | 'userRole'
     >;
 export type TUserUpdate = Partial<Omit<TUser, 'id'>>;
 export type TUserUpsert = TUser;
@@ -35,8 +37,9 @@ export class User implements TUser
     dateBirth: Date = new Date();
     gender: Gender = Gender.other;
     motorcyclesOwned: Motorcycle[] = [];
+    userRole: IdentityRole = IdentityRole.user;
     
-    constructor(_id = "", nameFirst = '', nameLast = '', email = '', password = '', dateBirth = new Date(), gender = Gender.other, motorcyclesOwned = [])
+    constructor(_id = "", nameFirst = '', nameLast = '', email = '', dateBirth = new Date(), gender = Gender.other, motorcyclesOwned = [])
     {
         this._id = _id;
         this.nameFirst = nameFirst;
