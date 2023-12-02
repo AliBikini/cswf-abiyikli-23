@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Gender, TMotorcycle, TUser, UserRole } from '@cswf-abiyikli-23/shared/api';
+import { Gender, TMotorcycle, TUser, IdentityRole } from '@cswf-abiyikli-23/shared/api';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../user.service';
@@ -73,7 +73,7 @@ export class UserEditComponent implements OnInit, OnDestroy
           }
           else
           {
-            this.user = { _id: '-1', nameFirst: '', nameLast: '', email: '', dateBirth: new Date, gender: Gender.male, userRole: UserRole.user, motorcyclesOwned: [ this.motorcycles?.at(0)! ] }
+            this.user = { _id: '-1', nameFirst: '', nameLast: '', email: '', dateBirth: new Date, gender: Gender.male, userRole: IdentityRole.user, motorcyclesOwned: [ this.motorcycles?.at(0)! ] }
             this.applyUserToForm();
           }
         })

@@ -1,10 +1,13 @@
-import { Motorcycle, User } from "@cswf-abiyikli-23/shared/api";
+import { Identity, Motorcycle, User } from "@cswf-abiyikli-23/shared/api";
 import { Injectable } from "@nestjs/common";
 import mongoose from "mongoose";
 
 @Injectable()
 export class Schemas
 {
+    schemaIdentity: mongoose.Schema<Identity> | null = null;
+    modelIdentity: mongoose.Model<Identity> | null = null;
+
     schemaUser: mongoose.Schema<User> | null = null;
     modelUser: mongoose.Model<User> | null = null;
 
@@ -13,14 +16,21 @@ export class Schemas
 
     constructor()
     {
+        this.schemaIdentity = new mongoose.Schema({
+            email: String,
+            password: String,
+            role: String,
+        })
+
+        this.modelIdentity = mongoose.model<Identity>("Identity", this.schemaIdentity);
+
         this.schemaUser = new mongoose.Schema({
             nameFirst: String,
             nameLast: String,
             email: String,
             dateBirth: Date,
             gender: String,
-            userRole: String,
-            motorcyclesOwned: [{ type: mongoose.Schema.Types.ObjectId, ref: "Motorcycle" }],
+            motorcyclesOwned: [{ type: mongoose.Schema.Types.ObjectId, ref: "Motorcycle" }]
         })
 
         this.modelUser = mongoose.model<User>("User", this.schemaUser);

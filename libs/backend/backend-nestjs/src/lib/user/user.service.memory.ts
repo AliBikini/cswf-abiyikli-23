@@ -1,5 +1,5 @@
 import { IUserService } from "./iuser.service";
-import { Gender, Motorcycle, MotorcycleBody, MotorcycleFuel, User, UserRole } from "@cswf-abiyikli-23/shared/api";
+import { Gender, Motorcycle, MotorcycleBody, MotorcycleFuel, User, IdentityRole } from "@cswf-abiyikli-23/shared/api";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 
 @Injectable()
@@ -17,7 +17,6 @@ export class UserServiceMemory implements IUserService
             email: "ali@outlook.com",
             dateBirth: new Date("1998-07-02"),
             gender: Gender.male,
-            userRole: UserRole.user,
             motorcyclesOwned: [ new Motorcycle() ]
         });
         this.users.set("1", {
@@ -27,37 +26,33 @@ export class UserServiceMemory implements IUserService
             email: "seher@outlook.com",
             dateBirth: new Date("1998-08-18"),
             gender: Gender.female,
-            userRole: UserRole.user,
             motorcyclesOwned: []
         });
         this.users.set("2", {
             _id: '2',
             nameFirst: 'Pascal',
             nameLast: 'Stool',
-            email: "ps@outlook.com",
+            email: "pascal@outlook.com",
             dateBirth: new Date("2019-01-16"),
             gender: Gender.male,
-            userRole: UserRole.user,
             motorcyclesOwned: []
         });
         this.users.set("3", {
             _id: '3',
             nameFirst: 'Pietje',
             nameLast: 'Heushout',
-            email: "ph@outlook.com",
+            email: "pietje@outlook.com",
             dateBirth: new Date("2019-01-16"),
             gender: Gender.male,
-            userRole: UserRole.user,
             motorcyclesOwned: []
         });
         this.users.set("4", {
             _id: '4',
             nameFirst: 'Wadayaohn',
             nameLast: 'Dawuld',
-            email: "wd@outlook.com",
+            email: "wadyoahn@outlook.com",
             dateBirth: new Date("2019-01-16"),
             gender: Gender.male,
-            userRole: UserRole.user,
             motorcyclesOwned: []
         });
     }
@@ -72,6 +67,15 @@ export class UserServiceMemory implements IUserService
         const user = this.users.get(id);
         if (!user) {
             throw new NotFoundException(`User could not be found!`);
+        }
+        return user;
+    }
+
+    async getByEmail(email: string): Promise<User> {
+        Logger.log(`getByEmail(${email})`, this.TAG);
+        const user = this.users.get(email);
+        if (!user) {
+            throw new NotFoundException(`User could not be found! (memory mail search doesn't work)`);
         }
         return user;
     }
@@ -101,7 +105,6 @@ export class UserServiceMemory implements IUserService
         userToUpdate.email = user.email;
         userToUpdate.gender = user.gender;
         userToUpdate.dateBirth = user.dateBirth;
-        userToUpdate.userRole = user.userRole;
 
         return userToUpdate;
     }

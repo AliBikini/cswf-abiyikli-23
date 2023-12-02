@@ -7,6 +7,7 @@ export interface IUserService
     
     getAll(): Promise<User[]>
     get(id: Id): Promise<User>
+    getByEmail(email: string): Promise<User>
     create(user: User): Promise<User>
     update(id: Id, user: User): Promise<User>
     delete(id: Id): void;

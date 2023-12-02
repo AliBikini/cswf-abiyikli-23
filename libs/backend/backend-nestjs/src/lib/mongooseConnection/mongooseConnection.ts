@@ -10,11 +10,9 @@ export class MongooseConnection
 
     connstring: string = environment.mongoConnString;
     db: mongoose.mongo.Db | null = null;
-    schemas: Schemas | null = null;
 
-    constructor(schemas: Schemas)
+    constructor(public schemas: Schemas)
     {
-        this.schemas = schemas;
         this.connectToDb();
     }
 

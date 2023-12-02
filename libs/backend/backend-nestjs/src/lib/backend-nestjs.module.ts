@@ -12,14 +12,18 @@ import { UserSchemaTemplate, UserSchema } from './user/user.schema';
 import { MotorcycleServiceMongo } from './motorcycle/motorcycle.service.mongo';
 import { MongooseConnection } from './mongooseConnection/mongooseConnection';
 import { Schemas } from './mongooseConnection/schemas';
+import { IdentityController } from './identity/identity.controller';
+import { IdentityService } from './identity/identity.service';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 
 @Module({
-  controllers: [UserController, MotorcycleController],
+  controllers: [IdentityController, UserController, MotorcycleController],
   providers: [
     { provide: IUserService, useClass: UserServiceMongo }, 
     { provide: IMotorcycleService, useClass: MotorcycleServiceMongo },
     MongooseConnection,
-    Schemas
+    Schemas,
+    IdentityService
   ],
   imports: [
     ConfigModule.forRoot(),
@@ -29,7 +33,11 @@ import { Schemas } from './mongooseConnection/schemas';
     ),
     MongooseModule.forFeature([
       { name: UserSchemaTemplate.name, schema: UserSchema }
-    ])
+    ]),
+    JwtModule.register({
+      secret: process.env['JWT_SECRET'] || 'secretstring',
+      signOptions: {expiresIn: '12 days'}
+    })
   ],
   exports: [],
 })

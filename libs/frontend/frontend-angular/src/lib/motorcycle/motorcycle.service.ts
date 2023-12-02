@@ -1,7 +1,7 @@
 import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { map, catchError, tap } from 'rxjs/operators';
-import { TApiResponse, TMotorcycle, TMotorcycleCreate, TMotorcycleUpdate, TUser, TUserCreate, TUserUpdate } from '@cswf-abiyikli-23/shared/api';
+import { TApiResponse, TMotorcycle, TMotorcycleCreate, TMotorcycleUpdate, TUser, TUserUpdate } from '@cswf-abiyikli-23/shared/api';
 import { Injectable } from '@angular/core';
 import { environment } from '@cswf-abiyikli-23/shared/util-env';
 

@@ -4,7 +4,7 @@ import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Id } from "libs/shared/api/src/lib/models/id.type";
 import isEmail from 'validator/lib/isEmail';
 import { IsMongoId } from 'class-validator';
-import { Gender, UserRole } from '@cswf-abiyikli-23/shared/api';
+import { Gender, IdentityRole } from '@cswf-abiyikli-23/shared/api';
 
 export type UserDocument = UserSchemaTemplate & Document;
 
@@ -39,7 +39,7 @@ export class UserSchemaTemplate
     required: true,
     type: String,
   })
-  userRole!: UserRole;
+  userRole!: IdentityRole;
 
   @Prop({
     required: true,

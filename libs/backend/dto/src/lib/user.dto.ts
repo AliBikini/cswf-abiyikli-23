@@ -14,7 +14,7 @@ import
     TUserCreate,
     TUserUpdate,
     TUserUpsert,
-    UserRole
+    IdentityRole
 } from '@cswf-abiyikli-23/shared/api';
 
 /**
@@ -43,7 +43,7 @@ export class UserCreateDto implements TUserCreate
     gender!: Gender;
 
     @IsNotEmpty()
-    userRole!: UserRole;
+    userRole!: IdentityRole;
 
     @IsOptional()
     motorcyclesOwned!: TMotorcycle[];
@@ -75,7 +75,7 @@ export class UserUpsertDto implements TUserUpsert
     gender!: Gender;
 
     @IsNotEmpty()
-    userRole!: UserRole;
+    userRole!: IdentityRole;
 
     @IsOptional()
     motorcyclesOwned!: TMotorcycle[];
@@ -103,5 +103,5 @@ export class UserUpdateDto implements TUserUpdate
     gender!: Gender;
 
     @IsNotEmpty()
-    userRole!: UserRole;
+    userRole!: IdentityRole;
 }
