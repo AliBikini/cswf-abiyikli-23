@@ -1,7 +1,8 @@
-import { Controller, Delete, Inject } from '@nestjs/common';
+import { Controller, Delete, Inject, UseGuards, Request, UnauthorizedException } from '@nestjs/common';
 import { Get, Param, Post, Body } from '@nestjs/common';
 import { Motorcycle } from '@cswf-abiyikli-23/shared/api';
 import { IMotorcycleService } from './imotorcycle.service';
+import { AuthGuardIsValidLogin } from '../auth/auth.guards';
 
 @Controller('motorcycle')
 export class MotorcycleController 
@@ -21,18 +22,36 @@ export class MotorcycleController
         return this.motorcycleService.get(id);
     }
 
+    @UseGuards(AuthGuardIsValidLogin)
     @Post('')
-    create(@Body() data: Motorcycle): Promise<Motorcycle> {
+    create(@Request() req: any, @Body() data: Motorcycle): Promise<Motorcycle> {
+        if (req.identity.role != "admin")
+        {
+            throw new UnauthorizedException();
+        }
+
         return this.motorcycleService.create(data);
     }
 
+    @UseGuards(AuthGuardIsValidLogin)
     @Post(':id')
-    update(@Param('id') id: string, @Body() data: Motorcycle): Promise<Motorcycle> {
+    update(@Request() req: any, @Param('id') id: string, @Body() data: Motorcycle): Promise<Motorcycle> {
+        if (req.identity.role != "admin")
+        {
+            throw new UnauthorizedException();
+        }
+
         return this.motorcycleService.update(id, data);
     }
 
+    @UseGuards(AuthGuardIsValidLogin)
     @Delete(':id')
-    delete(@Param('id') id: string) {
+    delete(@Request() req: any, @Param('id') id: string) {
+        if (req.identity.role != "admin")
+        {
+            throw new UnauthorizedException();
+        }
+
         this.motorcycleService.delete(id);
     }
 }

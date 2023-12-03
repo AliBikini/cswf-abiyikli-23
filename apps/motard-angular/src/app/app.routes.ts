@@ -1,5 +1,6 @@
 import { Route } from '@angular/router';
 import { AboutComponent } from 'libs/frontend/frontend-angular/src/lib/about/about.component';
+import { LoginComponent } from 'libs/frontend/frontend-angular/src/lib/login/login.component';
 import { MotorcycleDetailComponent } from 'libs/frontend/frontend-angular/src/lib/motorcycle/motorcycle-detail/motorcycle-detail.component';
 import { MotorcycleEditComponent } from 'libs/frontend/frontend-angular/src/lib/motorcycle/motorcycle-edit/motorcycle-edit.component';
 import { MotorcycleListComponent } from 'libs/frontend/frontend-angular/src/lib/motorcycle/motorcycle-list/motorcycle-list.component';
@@ -15,6 +16,10 @@ export const appRoutes: Route[] =
         import('@cswf-abiyikli-23/frontend/frontend-angular').then(
             (esModule) => esModule.FrontendAngularModule
         )
+    },
+    {
+        path: '',
+        component: LoginComponent
     },
     {
         path: 'about',

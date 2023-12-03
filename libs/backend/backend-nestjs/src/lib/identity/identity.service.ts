@@ -28,7 +28,7 @@ export class IdentityService
                 throw new UnauthorizedException(errMsg);
             }
     
-            const payload = { _id: identity._id };
+            const payload = { _id: identity._id, role: identity.role };
     
             Logger.debug("Payload: " + payload._id, this.TAG);
     
@@ -79,6 +79,7 @@ export class IdentityService
         //this line assumes userservice will always work... not great
         const userNew = await this.userService.create(identityRegister.user);
         Logger.debug('User created');
+
         return identityNew;
     }
 }
