@@ -15,12 +15,16 @@ import { Schemas } from './mongooseConnection/schemas';
 import { IdentityController } from './identity/identity.controller';
 import { IdentityService } from './identity/identity.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { IReviewService } from './review/ireview.service';
+import { ReviewServiceMongo } from './review/review.service.mongo';
+import { ReviewController } from './review/review.controller';
 
 @Module({
-  controllers: [IdentityController, UserController, MotorcycleController],
+  controllers: [IdentityController, UserController, MotorcycleController, ReviewController],
   providers: [
     { provide: IUserService, useClass: UserServiceMongo }, 
     { provide: IMotorcycleService, useClass: MotorcycleServiceMongo },
+    { provide: IReviewService, useClass: ReviewServiceMongo },
     MongooseConnection,
     Schemas,
     IdentityService
