@@ -82,7 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy
 
     return (control: AbstractControl): ValidationErrors | null => {
       const test = regexp.test(control.value);
-      console.log('e: ' + test);
+      //console.log('e: ' + test);
       return test ? null : { emailInvalid: { value: control.value } };
     };
   }
@@ -92,7 +92,7 @@ export class LoginComponent implements OnInit, OnDestroy
 
     return (control: AbstractControl): ValidationErrors | null => {
       const test = regexp.test(control.value);
-      console.log('p: ' + test);
+      //console.log('p: ' + test);
       return test ? null : { passwordInvalid: { value: control.value } };
     };
   }
