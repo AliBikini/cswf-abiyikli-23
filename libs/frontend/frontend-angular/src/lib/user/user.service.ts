@@ -1,9 +1,11 @@
-import { Observable, throwError } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { NotFoundError, Observable, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { map, catchError, tap } from 'rxjs/operators';
 import { TApiResponse, TUser, TUserCreate, TUserUpdate } from '@cswf-abiyikli-23/shared/api';
 import { Injectable } from '@angular/core';
 import { environment } from '@cswf-abiyikli-23/shared/util-env';
+import { AuthenticationService } from '../authentication.service';
+import { NotFoundException } from '@nestjs/common';
 
 /**
  * See https://angular.io/guide/http#requesting-data-from-a-server
@@ -16,9 +18,23 @@ export const httpOptions = {
 @Injectable()
 export class UserService 
 {
+    headers: HttpHeaders | null = null;
     endpoint = environment.dataApiUrl + "user";
+    token: string | undefined = undefined;
 
-    constructor(private readonly http: HttpClient) {}
+    constructor(private readonly http: HttpClient, private authenticationService: AuthenticationService) 
+    {
+        authenticationService.getUserFromLocalStorage().subscribe((identity) =>{
+            this.token = identity?.token;
+
+            this.headers = new HttpHeaders(
+                { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.token
+                }
+            );
+        });
+    }
 
     /**
      * Get all items.
@@ -65,15 +81,16 @@ export class UserService
         console.log(`read ${this.endpoint}`);
 
         return this.http
-            .post<TApiResponse<TUser>>(this.endpoint, {
-                ...optionsCreate,
-                ...httpOptions
-            })
-            .pipe(
-                tap(console.log),
-                map((response: any) => response.results as TUser),
-                catchError(this.handleError)
-            );
+        .post<TApiResponse<TUser>>(this.endpoint, {
+            ...optionsCreate,
+            ...httpOptions
+        })
+        .pipe(
+            tap(console.log),
+            map((response: any) => response.results as TUser),
+            catchError(this.handleError)
+        );
+
     }
 
     public update(id: string, optionsUpdate: TUserUpdate): Observable<TUser> 
@@ -85,7 +102,7 @@ export class UserService
             .post<TApiResponse<TUser>>(endpointUpdate, {
                 ...optionsUpdate,
                 ...httpOptions
-            })
+            }, { headers : this.headers! })
             .pipe(
                 tap(console.log),
                 map((response: any) => response.results as TUser),
@@ -100,6 +117,7 @@ export class UserService
 
         return this.http
             .delete<TApiResponse<TUser>>(endpointDelete, {
+                headers : this.headers!
             })
             .pipe(
                 tap(console.log),

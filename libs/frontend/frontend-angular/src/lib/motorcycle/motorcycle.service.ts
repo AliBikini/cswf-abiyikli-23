@@ -1,9 +1,10 @@
 import { Observable, throwError } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { map, catchError, tap } from 'rxjs/operators';
 import { TApiResponse, TMotorcycle, TMotorcycleCreate, TMotorcycleUpdate, TUser, TUserUpdate } from '@cswf-abiyikli-23/shared/api';
 import { Injectable } from '@angular/core';
 import { environment } from '@cswf-abiyikli-23/shared/util-env';
+import { AuthenticationService } from '../authentication.service';
 
 /**
  * See https://angular.io/guide/http#requesting-data-from-a-server
@@ -16,9 +17,22 @@ export const httpOptions = {
 @Injectable()
 export class MotorcycleService 
 {
+    headers: HttpHeaders | null = null;
     endpoint = environment.dataApiUrl + "motorcycle";
+    token: string | undefined = undefined;
 
-    constructor(private readonly http: HttpClient) {}
+    constructor(private readonly http: HttpClient, private authenticationService: AuthenticationService) {
+        authenticationService.getUserFromLocalStorage().subscribe((identity) =>{
+            this.token = identity?.token;
+
+            this.headers = new HttpHeaders(
+                { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.token
+                }
+            );
+        });
+    }
 
     /**
      * Get all items.
@@ -68,7 +82,7 @@ export class MotorcycleService
             .post<TApiResponse<TMotorcycle>>(this.endpoint, {
                 ...optionsCreate,
                 ...httpOptions
-            })
+            }, { headers : this.headers! })
             .pipe(
                 tap(console.log),
                 map((response: any) => response.results as TMotorcycle),
@@ -85,7 +99,7 @@ export class MotorcycleService
             .post<TApiResponse<TMotorcycle>>(endpointUpdate, {
                 ...optionsUpdate,
                 ...httpOptions
-            })
+            }, { headers : this.headers! })
             .pipe(
                 tap(console.log),
                 map((response: any) => response.results as TMotorcycle),
@@ -100,6 +114,7 @@ export class MotorcycleService
 
         return this.http
             .delete<TApiResponse<TMotorcycle>>(endpointDelete, {
+                headers : this.headers!
             })
             .pipe(
                 tap(console.log),

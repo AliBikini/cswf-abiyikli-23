@@ -4,32 +4,32 @@ import { RouterLink } from '@angular/router';
 import { UserService } from '../../user/user.service';
 import { AuthenticationService } from '../../authentication.service';
 import { Identity, IdentityRole } from '@cswf-abiyikli-23/shared/api';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'cswf-abiyikli-23-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
-export class NavbarComponent implements OnInit, OnDestroy
+export class NavbarComponent implements OnInit
 {
-  identity: Identity | undefined = undefined;
   Roles = IdentityRole;
+  authenticationService: AuthenticationService | null = null;
+  identityCurrent$ = new BehaviorSubject<Identity | undefined>(undefined);
+  
+  subscription: Subscription | undefined = undefined;
 
-  subscription: Subscription | null = null;
-
-  constructor(private authenticationService: AuthenticationService)
-  {}
-
-  ngOnInit(): void {
-    this.authenticationService.getUserFromLocalStorage().subscribe((result) => {
-      this.identity = result;
-    })
+  constructor(authenticationService: AuthenticationService)
+  {
+    this.authenticationService = authenticationService;
   }
 
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+  ngOnInit(): void {
+    this.identityCurrent$ = this.authenticationService?.identityCurrent$!;
+  }
+
+  logout()
+  {
+    this.authenticationService?.logout();
   }
 }

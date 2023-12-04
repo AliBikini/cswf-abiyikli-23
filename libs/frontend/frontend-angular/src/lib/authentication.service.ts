@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Identity, TApiResponse, TIdentityRegister } from "@cswf-abiyikli-23/shared/api";
 import { environment } from "@cswf-abiyikli-23/shared/util-env";
@@ -14,7 +14,7 @@ export const httpOptions = {
 };
 
 @Injectable()
-export class AuthenticationService 
+export class AuthenticationService
 {
     public identityCurrent$ = new BehaviorSubject<Identity | undefined>(undefined);
     private readonly IDENTITY_CURRENT = 'identityCurrent';
