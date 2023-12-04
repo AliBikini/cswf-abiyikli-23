@@ -26,12 +26,22 @@ export class IdentityService
             throw new UnauthorizedException(errMsg);
         }
 
-        const payload = { _id: identity._id, role: identity.role };
+        const user = await this.conn.schemas.modelUser!.findOne({ email : identity.email });
+
+        if (!user)
+        {
+            const errMsg = `Identity exists, but not user tied to identity. User with email ${identity.email} not found`;
+            Logger.error(errMsg, this.TAG);
+            throw new UnauthorizedException(errMsg);
+        }
+
+        const payload = { _id: identity._id, user_id: user?._id, role: identity.role };
 
         Logger.debug("Payload: " + payload._id, this.TAG);
 
         return {
             _id: identity._id,
+            user_id: user._id,
             email: identity.email,
             password: identity.password,
             role: identity.role,
@@ -55,7 +65,11 @@ export class IdentityService
 
         Logger.debug('User not found, creating');
 
+        //this line assumes userservice will always work... not great
+        const userNew = await this.userService.create(identityRegister.user);
+
         const identityNew = await new this.conn.schemas.modelIdentity!({
+            user_id: userNew._id,
             email: identityRegister.user.email,
             password: identityRegister.password,
             role: identityRegister.role
@@ -68,8 +82,6 @@ export class IdentityService
 
         await identityNew.save();
 
-        //this line assumes userservice will always work... not great
-        const userNew = await this.userService.create(identityRegister.user);
         Logger.debug('User created');
 
         return identityNew;

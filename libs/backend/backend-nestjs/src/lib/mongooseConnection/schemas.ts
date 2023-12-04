@@ -20,6 +20,7 @@ export class Schemas
     constructor()
     {
         this.schemaIdentity = new mongoose.Schema({
+            user_id: String,
             email: String,
             password: String,
             role: String,
@@ -27,13 +28,25 @@ export class Schemas
 
         this.modelIdentity = mongoose.model<Identity>("Identity", this.schemaIdentity);
 
+        this.schemaReview = new mongoose.Schema({
+            user_id: String,
+            motorcycle_id: String,
+            judgement: String,
+            title: String,
+            message: String,
+            date: Date
+        })
+
+        this.modelReview = mongoose.model<Review>("Review", this.schemaReview);
+
         this.schemaUser = new mongoose.Schema({
             nameFirst: String,
             nameLast: String,
             email: String,
             dateBirth: Date,
             gender: String,
-            motorcyclesOwned: [{ type: mongoose.Schema.Types.ObjectId, ref: "Motorcycle" }]
+            motorcyclesOwned: [{ type: mongoose.Schema.Types.ObjectId, ref: "Motorcycle" }],
+            reviewsPlaced: [this.schemaReview]
         })
 
         this.modelUser = mongoose.model<User>("User", this.schemaUser);
@@ -50,16 +63,5 @@ export class Schemas
         })
 
         this.modelMotorcycle = mongoose.model<Motorcycle>("Motorcycle", this.schemaMotorcycle);
-
-        this.schemaReview = new mongoose.Schema({
-            user_id: String,
-            motorcycle_id: String,
-            judgement: String,
-            title: String,
-            message: String,
-            date: Date
-        })
-
-        this.modelReview = mongoose.model<Review>("Review", this.schemaReview);
     }
 }

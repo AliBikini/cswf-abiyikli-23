@@ -10,21 +10,28 @@ export class ReviewController
     constructor(@Inject(IReviewService)private reviewService: IReviewService)
     {}
 
+    @UseGuards(AuthGuardIsValidLogin)
+    @Get(':motorcycle_id')
+    async getAllByMotorcycle(@Param('motorcycle_id') motorcycle_id: string): Promise<Review[]> 
+    {
+        return await this.reviewService.getAllByMotorcycle(motorcycle_id);
+    }
+
     @Get('')
-    getAll(): Promise<Review[]> {
-        return this.reviewService.getAll();
+    async getAll(): Promise<Review[]> {
+        return await this.reviewService.getAll();
     }
 
     @Get(':id')
-    getOne(@Param('id') id: string): Promise<Review> {
-        return this.reviewService.get(id);
+    async getOne(@Param('id') id: string): Promise<Review> {
+        return await this.reviewService.get(id);
     }
 
     @UseGuards(AuthGuardIsValidLogin)
     @Post('')
-    create(@Request() req: any, @Body() data: Review): Promise<Review> {
-        data.user_id = req.identity._id;
-        return this.reviewService.create(data);
+    async create(@Request() req: any, @Body() data: Review): Promise<Review> {
+        data.user_id = req.identity.user_id;
+        return await this.reviewService.create(data);
     }
 
     // @UseGuards(AuthGuardIsValidLogin)
@@ -40,15 +47,7 @@ export class ReviewController
 
     @UseGuards(AuthGuardIsValidLogin)
     @Delete(':id')
-    delete(@Request() req: any, @Param('id') id: string) {
-        if (req.identity.role == "user")
-        {
-            if (req.identity._id != id)
-            {
-                throw new UnauthorizedException("You're not the user who placed this review");
-            }
-        }
-
-        this.reviewService.delete(id);
+    async delete(@Request() req: any, @Param('id') id: string) {
+        await this.reviewService.delete(id, req.identity);
     }
 }

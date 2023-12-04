@@ -18,7 +18,8 @@ export class UserServiceMemory implements IUserService
             dateBirth: new Date("1998-07-02"),
             gender: Gender.male,
             motorcyclesOwned: [ new Motorcycle() ],
-            userRole: IdentityRole.user
+            userRole: IdentityRole.user,
+            reviewsPlaced: []
         });
         this.users.set("1", {
             _id: '1',
@@ -28,7 +29,8 @@ export class UserServiceMemory implements IUserService
             dateBirth: new Date("1998-08-18"),
             gender: Gender.female,
             motorcyclesOwned: [],
-            userRole: IdentityRole.user
+            userRole: IdentityRole.user,
+            reviewsPlaced: []
         });
         this.users.set("2", {
             _id: '2',
@@ -38,7 +40,8 @@ export class UserServiceMemory implements IUserService
             dateBirth: new Date("2019-01-16"),
             gender: Gender.male,
             motorcyclesOwned: [],
-            userRole: IdentityRole.user
+            userRole: IdentityRole.user,
+            reviewsPlaced: []
         });
         this.users.set("3", {
             _id: '3',
@@ -48,7 +51,8 @@ export class UserServiceMemory implements IUserService
             dateBirth: new Date("2019-01-16"),
             gender: Gender.male,
             motorcyclesOwned: [],
-            userRole: IdentityRole.user
+            userRole: IdentityRole.user,
+            reviewsPlaced: []
         });
         this.users.set("4", {
             _id: '4',
@@ -58,7 +62,8 @@ export class UserServiceMemory implements IUserService
             dateBirth: new Date("2019-01-16"),
             gender: Gender.male,
             motorcyclesOwned: [],
-            userRole: IdentityRole.user
+            userRole: IdentityRole.user,
+            reviewsPlaced: []
         });
     }
 

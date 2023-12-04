@@ -14,7 +14,8 @@ import
     TUserCreate,
     TUserUpdate,
     TUserUpsert,
-    IdentityRole
+    IdentityRole,
+    Review
 } from '@cswf-abiyikli-23/shared/api';
 
 /**
@@ -47,6 +48,9 @@ export class UserCreateDto implements TUserCreate
 
     @IsOptional()
     motorcyclesOwned!: TMotorcycle[];
+
+    @IsOptional()
+    reviewsPlaced!: Review[];
 }
 
 export class UserUpsertDto implements TUserUpsert 
@@ -79,6 +83,9 @@ export class UserUpsertDto implements TUserUpsert
 
     @IsOptional()
     motorcyclesOwned!: TMotorcycle[];
+
+    @IsOptional()
+    reviewsPlaced!: Review[];
 }
 
 export class UserUpdateDto implements TUserUpdate 

@@ -1,7 +1,8 @@
-import { Controller, Delete, Inject } from '@nestjs/common';
+import { Controller, Delete, Inject, UseGuards, Request, Logger, UnauthorizedException } from '@nestjs/common';
 import { Get, Param, Post, Body } from '@nestjs/common';
 import { User } from '@cswf-abiyikli-23/shared/api';
 import { IUserService } from './iuser.service';
+import { AuthGuardIsValidLogin } from '../auth/auth.guards';
 
 @Controller('user')
 export class UserController 
@@ -26,8 +27,19 @@ export class UserController
         return await this.userService.create(data);
     }
 
+    @UseGuards(AuthGuardIsValidLogin)
     @Post(':id')
-    async update(@Param('id') id: string, @Body() data: User): Promise<User> {
+    async update(@Request() req: any, @Param('id') id: string, @Body() data: User): Promise<User> {
+
+        if (req.identity.role == "user")
+        {
+            if (req.identity.user_id != id)
+            {
+                const errorMsg = `Not authorized`;
+                throw new UnauthorizedException(errorMsg);
+            }
+        }
+
         return await this.userService.update(id, data);
     }
 

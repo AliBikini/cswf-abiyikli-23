@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { MotorcycleEditComponent } from './motorcycle/motorcycle-edit/motorcycle-edit.component';
 import { MotorcycleDetailComponent } from './motorcycle/motorcycle-detail/motorcycle-detail.component';
 import { LoginComponent } from './login/login.component';
+import { AuthenticationService } from './authentication.service';
 
 const routes: Routes = [
   {
@@ -46,7 +47,7 @@ const routes: Routes = [
     MotorcycleEditComponent,
     MotorcycleDetailComponent
   ],
-  providers: [UserService, MotorcycleService],
+  providers: [UserService, MotorcycleService, AuthenticationService],
   exports: [NavbarComponent, AboutComponent, UserListComponent, UserDetailComponent, UserEditComponent, LoginComponent],
 })
 export class FrontendAngularModule {}

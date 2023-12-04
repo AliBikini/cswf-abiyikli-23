@@ -1,6 +1,7 @@
 import { Id } from "./id.type";
 import { IdentityRole } from "./identity";
 import { Motorcycle } from "./motorcycle";
+import { Review } from "./review";
 
 export enum Gender 
 {
@@ -18,12 +19,13 @@ export type TUser =
     dateBirth: Date;
     gender: Gender;
     motorcyclesOwned : Motorcycle[];
+    reviewsPlaced: Review[];
     userRole: IdentityRole;
 }
 
 export type TUserCreate = Pick<
     TUser,
-    'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'motorcyclesOwned' | 'userRole'
+    'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'motorcyclesOwned' | 'userRole' | 'reviewsPlaced'
     >;
 export type TUserUpdate = Partial<Omit<TUser, 'id'>>;
 export type TUserUpsert = TUser;
@@ -37,9 +39,10 @@ export class User implements TUser
     dateBirth: Date = new Date();
     gender: Gender = Gender.other;
     motorcyclesOwned: Motorcycle[] = [];
+    reviewsPlaced: Review[] = [];
     userRole: IdentityRole = IdentityRole.user;
     
-    constructor(_id = "", nameFirst = '', nameLast = '', email = '', dateBirth = new Date(), gender = Gender.other, motorcyclesOwned = [])
+    constructor(_id = "", nameFirst = '', nameLast = '', email = '', dateBirth = new Date(), gender = Gender.other, motorcyclesOwned : Motorcycle[] = [], reviewsPlaced : Review[] = [])
     {
         this._id = _id;
         this.nameFirst = nameFirst;
@@ -48,5 +51,6 @@ export class User implements TUser
         this.dateBirth = dateBirth;
         this.gender = gender;
         this.motorcyclesOwned = motorcyclesOwned;
+        this.reviewsPlaced = reviewsPlaced;
     }
 }
