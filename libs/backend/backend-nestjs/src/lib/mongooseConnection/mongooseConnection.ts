@@ -20,7 +20,6 @@ export class MongooseConnection
     {
         await mongoose.connect(this.connstring);
         Logger.log("Mongo connection status: " + mongoose.connection.readyState, this.TAG);
-        await mongoose.connect(this.connstring);
         this.db = mongoose.connection.db;
     }
 }
