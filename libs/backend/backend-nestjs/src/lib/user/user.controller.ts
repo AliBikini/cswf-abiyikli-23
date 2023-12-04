@@ -22,29 +22,20 @@ export class UserController
         return await this.userService.get(id);
     }
 
-    @Post('')
-    async create(@Body() data: User): Promise<User> {
-        return await this.userService.create(data);
-    }
+    // @Post('')
+    // async create(@Body() data: User): Promise<User> {
+    //     return await this.userService.create(data);
+    // }
 
     @UseGuards(AuthGuardIsValidLogin)
     @Post(':id')
     async update(@Request() req: any, @Param('id') id: string, @Body() data: User): Promise<User> {
-
-        if (req.identity.role == "user")
-        {
-            if (req.identity.user_id != id)
-            {
-                const errorMsg = `Not authorized`;
-                throw new UnauthorizedException(errorMsg);
-            }
-        }
-
-        return await this.userService.update(id, data);
+        return await this.userService.update(id, data, req.identity);
     }
 
+    @UseGuards(AuthGuardIsValidLogin)
     @Delete(':id')
-    async delete(@Param('id') id: string) {
-        await this.userService.delete(id);
+    async delete(@Request() req: any, @Param('id') id: string) {
+        await this.userService.delete(id, req.identity);
     }
 }

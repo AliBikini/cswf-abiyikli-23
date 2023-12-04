@@ -1,4 +1,4 @@
-import { Identity, Motorcycle, Review, User } from "@cswf-abiyikli-23/shared/api";
+import { Gang, Identity, Motorcycle, Review, User } from "@cswf-abiyikli-23/shared/api";
 import { Injectable } from "@nestjs/common";
 import mongoose from "mongoose";
 
@@ -16,6 +16,9 @@ export class Schemas
 
     schemaReview: mongoose.Schema<Review> | null = null;
     modelReview: mongoose.Model<Review> | null = null;
+
+    schemaGang: mongoose.Schema<Gang> | null = null;
+    modelGang: mongoose.Model<Gang> | null = null;
 
     constructor()
     {
@@ -63,5 +66,15 @@ export class Schemas
         })
 
         this.modelMotorcycle = mongoose.model<Motorcycle>("Motorcycle", this.schemaMotorcycle);
+
+        this.schemaGang = new mongoose.Schema({
+            userOwner_id: String,
+            name: String,
+            description: String,
+            dateCreated: Date,
+            linkEmblem: String
+        })
+
+        this.modelGang = mongoose.model<Gang>("Gang", this.schemaGang);
     }
 }

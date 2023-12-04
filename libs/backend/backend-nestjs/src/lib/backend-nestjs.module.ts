@@ -18,13 +18,17 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { IReviewService } from './review/ireview.service';
 import { ReviewServiceMongo } from './review/review.service.mongo';
 import { ReviewController } from './review/review.controller';
+import { GangController } from './gang/gang.controller';
+import { IGangService } from './gang/igang.service';
+import { GangServiceMongo } from './gang/gang.service.mongo';
 
 @Module({
-  controllers: [IdentityController, UserController, MotorcycleController, ReviewController],
+  controllers: [IdentityController, UserController, MotorcycleController, ReviewController, GangController],
   providers: [
     { provide: IUserService, useClass: UserServiceMongo }, 
     { provide: IMotorcycleService, useClass: MotorcycleServiceMongo },
     { provide: IReviewService, useClass: ReviewServiceMongo },
+    { provide: IGangService, useClass: GangServiceMongo },
     MongooseConnection,
     Schemas,
     IdentityService
