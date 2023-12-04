@@ -17,34 +17,26 @@ export class IdentityService
     async login(credentials: TIdentityCredentials): Promise<Identity> {
         Logger.log('Login ' + credentials.email, this.TAG);
 
-        try
-        {
-            const identity = await this.conn.schemas.modelIdentity!.findOne({ email : credentials.email });
+        const identity = await this.conn.schemas.modelIdentity!.findOne({ email : credentials.email });
 
-            if (identity?.password != credentials.password) 
-            {
-                const errMsg = 'Email not found or password invalid';
-                Logger.debug(errMsg, this.TAG);
-                throw new UnauthorizedException(errMsg);
-            }
-    
-            const payload = { _id: identity._id, role: identity.role };
-    
-            Logger.debug("Payload: " + payload._id, this.TAG);
-    
-            return {
-                _id: identity._id,
-                email: identity.email,
-                password: identity.password,
-                role: identity.role,
-                token: await this.jwtService.signAsync(payload)
-            };
-        }
-        catch(error: any)
+        if (identity?.password != credentials.password) 
         {
-            Logger.error(error, this.TAG);
-            return error;
+            const errMsg = 'Email not found or password invalid';
+            Logger.error(errMsg, this.TAG);
+            throw new UnauthorizedException(errMsg);
         }
+
+        const payload = { _id: identity._id, role: identity.role };
+
+        Logger.debug("Payload: " + payload._id, this.TAG);
+
+        return {
+            _id: identity._id,
+            email: identity.email,
+            password: identity.password,
+            role: identity.role,
+            token: await this.jwtService.signAsync(payload)
+        };
     }
 
     async register(identityRegister: TIdentityRegister): Promise<Identity>
