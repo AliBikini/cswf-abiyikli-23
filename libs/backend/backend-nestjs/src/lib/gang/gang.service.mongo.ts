@@ -1,7 +1,9 @@
 import { Gang, Identity, IdentityRole } from "@cswf-abiyikli-23/shared/api";
 import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
-import { Injectable, Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { Inject, Injectable, Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { IGangService } from "./igang.service";
+import { RecoService } from "../reco/reco.service";
+import { IUserService } from "../user/iuser.service";
 
 @Injectable()
 export class GangServiceMongo implements IGangService
@@ -10,7 +12,7 @@ export class GangServiceMongo implements IGangService
 
     conn: MongooseConnection | null = null;
 
-    constructor(conn: MongooseConnection)
+    constructor(conn: MongooseConnection, @Inject(IUserService)private userService: IUserService, private recoService: RecoService)
     {
         this.conn = conn;
     }
@@ -29,11 +31,19 @@ export class GangServiceMongo implements IGangService
 
     async create(gang: Gang): Promise<Gang> 
     {
+        const userOwner = await this.userService.get(gang.userOwner_id);
+
+        if (!userOwner)
+        {
+            throw new NotFoundException("User to be owner of gang doesn't exist");
+        }
+
         const gangNew = new this.conn!.schemas!.modelGang!({
             ...gang,
         })
 
         await gangNew.save();
+        await this.recoService.gangCreateOrUpdate(gangNew, userOwner);
         return gangNew;
     }
 

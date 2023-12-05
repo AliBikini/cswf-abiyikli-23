@@ -2,13 +2,14 @@ import { IUserService } from "./iuser.service";
 import { Identity, User } from "@cswf-abiyikli-23/shared/api";
 import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
 import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
+import { RecoService } from "../reco/reco.service";
 
 @Injectable()
 export class UserServiceMongo implements IUserService
 {
     TAG = 'UserServiceMongo';
 
-    constructor(private conn: MongooseConnection)
+    constructor(private conn: MongooseConnection, private recoService: RecoService)
     {
     }
 
@@ -40,6 +41,7 @@ export class UserServiceMongo implements IUserService
         })
 
         await userNew.save();
+        await this.recoService.userCreateOrUpdate(userNew)
         return userNew;
     }
 
@@ -56,6 +58,10 @@ export class UserServiceMongo implements IUserService
         }
 
         await this.conn.schemas.modelUser!.updateOne({ _id : id }, { ...user }).exec();
+
+        const userUpdated = await this.get(id);
+        await this.recoService.userCreateOrUpdate(userUpdated)
+        
         return await this.get(id);
     }
     

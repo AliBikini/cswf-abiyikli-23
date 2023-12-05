@@ -2,6 +2,7 @@ import { Motorcycle } from "@cswf-abiyikli-23/shared/api";
 import { IMotorcycleService } from "./imotorcycle.service";
 import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
 import { Injectable, Logger } from "@nestjs/common";
+import { RecoService } from "../reco/reco.service";
 
 @Injectable()
 export class MotorcycleServiceMongo implements IMotorcycleService
@@ -10,7 +11,7 @@ export class MotorcycleServiceMongo implements IMotorcycleService
 
     conn: MongooseConnection | null = null;
 
-    constructor(conn: MongooseConnection)
+    constructor(conn: MongooseConnection, private recoService: RecoService)
     {
         this.conn = conn;
     }
@@ -36,12 +37,17 @@ export class MotorcycleServiceMongo implements IMotorcycleService
         })
 
         await motorcycleNew.save();
+        await this.recoService.motorcycleCreateOrUpdate(motorcycleNew);
         return motorcycleNew;
     }
 
     async update(id: string, motorcycle: Motorcycle): Promise<Motorcycle> {
         Logger.log('update', this.TAG);
         await this.conn?.schemas?.modelMotorcycle!.updateOne({ _id : id }, { ...motorcycle }).exec();
+
+        const motorcycleUpdated = await this.get(id)
+        await this.recoService.motorcycleCreateOrUpdate(motorcycleUpdated);
+        
         return await this.get(id);
     }
 

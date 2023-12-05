@@ -7,7 +7,7 @@ import { UserServiceMongo } from './user/user.service.mongo';
 import { IMotorcycleService } from './motorcycle/imotorcycle.service';
 import { MotorcycleServiceMemory } from './motorcycle/motorcycle.service.memory';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserSchemaTemplate, UserSchema } from './user/user.schema';
 import { MotorcycleServiceMongo } from './motorcycle/motorcycle.service.mongo';
 import { MongooseConnection } from './mongooseConnection/mongooseConnection';
@@ -21,9 +21,14 @@ import { ReviewController } from './review/review.controller';
 import { GangController } from './gang/gang.controller';
 import { IGangService } from './gang/igang.service';
 import { GangServiceMongo } from './gang/gang.service.mongo';
+import { RecoService } from './reco/reco.service';
+import { RecoController } from './reco/reco.controller';
+import { Neo4jService } from 'nest-neo4j/dist';
+import { Neo4jModule } from 'nest-neo4j/dist';
+import { Neo4jConfig } from 'nest-neo4j/dist/interfaces/neo4j-config.interface';
 
 @Module({
-  controllers: [IdentityController, UserController, MotorcycleController, ReviewController, GangController],
+  controllers: [IdentityController, UserController, MotorcycleController, ReviewController, GangController, RecoController],
   providers: [
     { provide: IUserService, useClass: UserServiceMongo }, 
     { provide: IMotorcycleService, useClass: MotorcycleServiceMongo },
@@ -31,7 +36,8 @@ import { GangServiceMongo } from './gang/gang.service.mongo';
     { provide: IGangService, useClass: GangServiceMongo },
     MongooseConnection,
     Schemas,
-    IdentityService
+    IdentityService,
+    RecoService
   ],
   imports: [
     ConfigModule.forRoot(),
@@ -45,7 +51,19 @@ import { GangServiceMongo } from './gang/gang.service.mongo';
     JwtModule.register({
       secret: process.env['JWT_SECRET'] || 'secretstring',
       signOptions: {expiresIn: '12 days'}
-    })
+    }),
+    Neo4jModule.forRootAsync({
+      imports: [
+      ],
+      inject: [ ConfigService ],
+      useFactory: (configService: ConfigService): Neo4jConfig => ({
+        scheme: configService.get('NEO4J_SCHEME') || 'neo4j',
+        host: configService.get('NEO4J_HOST') || 'localhost',
+        port: configService.get('NEO4J_PORT') || 7687,
+        username: configService.get('NEO4J_USERNAME') || 'neo4j',
+        password: configService.get('NEO4J_PASSWORD') || 'CokianmafiA98.',
+        database: configService.get('NEO4J_DATABASE') || 'neo4j',
+      })}),
   ],
   exports: [],
 })
