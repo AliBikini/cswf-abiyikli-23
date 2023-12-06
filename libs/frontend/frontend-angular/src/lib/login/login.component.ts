@@ -1,16 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
 import { Subscription } from 'rxjs';
 import { Identity } from '@cswf-abiyikli-23/shared/api';
+import { FormValidators } from '../form.validators';
 
 @Component({
-  selector: 'cswf-abiyikli-23-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  providers: [AuthenticationService],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+  providers: [AuthenticationService, FormValidators],
+  selector: 'cswf-abiyikli-23-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -19,7 +20,7 @@ export class LoginComponent implements OnInit, OnDestroy
   subscription: Subscription | null = null;;
   formLogin: FormGroup | null = null;
 
-  constructor(private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService)
+  constructor(private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService, private formValidators: FormValidators)
   {}
 
   ngOnInit(): void 
@@ -27,11 +28,10 @@ export class LoginComponent implements OnInit, OnDestroy
     this.formLogin = new FormGroup({
       email: new FormControl<string>('', [
         Validators.required,
-        this.validEmail()
+        this.formValidators.validatorEmail()
       ]),
       password: new FormControl<string>('', [
-        Validators.required,
-        this.validPassword()
+        Validators.required
       ]),
     });
 
@@ -75,25 +75,11 @@ export class LoginComponent implements OnInit, OnDestroy
     }
   }
 
-  validEmail(): ValidatorFn {
-    const regexp = new RegExp(
-      '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$'
-    );
-
-    return (control: AbstractControl): ValidationErrors | null => {
-      const test = regexp.test(control.value);
-      //console.log('e: ' + test);
-      return test ? null : { emailInvalid: { value: control.value } };
-    };
+  get email() {
+    return this.formLogin?.get('email');
   }
 
-  validPassword(): ValidatorFn {
-    const regexp = new RegExp('^[a-zA-Z]([a-zA-Z0-9]){2,14}');
-
-    return (control: AbstractControl): ValidationErrors | null => {
-      const test = regexp.test(control.value);
-      //console.log('p: ' + test);
-      return test ? null : { passwordInvalid: { value: control.value } };
-    };
+  get password() {
+    return this.formLogin?.get('password');
   }
 }

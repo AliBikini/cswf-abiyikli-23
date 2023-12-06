@@ -22,32 +22,37 @@ export class Schemas
 
     constructor()
     {
+        this.createSchemas();
+    }
+
+    createSchemas()
+    {
         this.schemaIdentity = new mongoose.Schema({
-            user_id: String,
-            email: String,
-            password: String,
-            role: String,
+            user_id: {type: String, required: true},
+            email: {type: String, lowercase: true, unique: true, required: true, validate: [this.validateEmail, 'Please enter a valid email address']},
+            password: {type: String, required: true, validate: [this.validPassword, 'Please enter a valid password']},
+            role: {type: String, required: true}
         })
 
         this.modelIdentity = mongoose.model<Identity>("Identity", this.schemaIdentity);
 
         this.schemaReview = new mongoose.Schema({
-            user_id: String,
-            motorcycle_id: String,
-            judgement: String,
+            user_id: {type: String, required: true},
+            motorcycle_id: {type: String, required: true},
+            judgement: {type: String, required: true},
             title: String,
             message: String,
-            date: Date
+            date: {type: Date, required: true},
         })
 
         this.modelReview = mongoose.model<Review>("Review", this.schemaReview);
 
         this.schemaUser = new mongoose.Schema({
-            nameFirst: String,
-            nameLast: String,
-            email: String,
-            dateBirth: Date,
-            gender: String,
+            nameFirst: {type: String, required: true},
+            nameLast: {type: String, required: true},
+            email: {type: String, lowercase: true, unique: true, required: true, validate: [this.validateEmail, 'Please enter a valid email address']},
+            dateBirth: {type: Date, required: true},
+            gender: {type: String, required: true},
             motorcyclesOwned: [{ type: mongoose.Schema.Types.ObjectId, ref: "Motorcycle" }],
             reviewsPlaced: [this.schemaReview],
             gangsJoined: [{ type: mongoose.Schema.Types.ObjectId, ref: "Gang" }]
@@ -56,8 +61,8 @@ export class Schemas
         this.modelUser = mongoose.model<User>("User", this.schemaUser);
 
         this.schemaMotorcycle = new mongoose.Schema({
-            nameModel: String,
-            body: String,
+            nameModel: {type: String, required: true},
+            body: {type: String, required: true},
             year: String,
             fuel: String,
             seatHeight: String,
@@ -69,13 +74,27 @@ export class Schemas
         this.modelMotorcycle = mongoose.model<Motorcycle>("Motorcycle", this.schemaMotorcycle);
 
         this.schemaGang = new mongoose.Schema({
-            userOwner_id: String,
-            name: String,
+            userOwner_id: {type: String, required: true},
+            name: {type: String, required: true},
             description: String,
-            dateCreated: Date,
+            dateCreated: {type: Date, required: true},
             linkEmblem: String
         })
 
         this.modelGang = mongoose.model<Gang>("Gang", this.schemaGang);
     }
+
+    validateEmail(email: string)
+    {
+        const regexp = new RegExp(
+            '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$'
+          );
+
+        return regexp.test(email)
+    }
+
+    validPassword(password: string) {
+        const regexp = new RegExp('^[a-zA-Z]([a-zA-Z0-9]){2,14}');
+        return regexp.test(password);
+      }
 }

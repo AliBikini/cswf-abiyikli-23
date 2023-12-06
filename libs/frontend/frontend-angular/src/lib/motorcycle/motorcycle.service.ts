@@ -2,133 +2,39 @@ import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { map, catchError, tap } from 'rxjs/operators';
 import { TApiResponse, TMotorcycle, TMotorcycleCreate, TMotorcycleUpdate, TUser, TUserUpdate } from '@cswf-abiyikli-23/shared/api';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { environment } from '@cswf-abiyikli-23/shared/util-env';
 import { AuthenticationService } from '../authentication.service';
-
-/**
- * See https://angular.io/guide/http#requesting-data-from-a-server
- */
-export const httpOptions = {
-    observe: 'body',
-    responseType: 'json',
-};
+import { HttpService } from '../http.service';
 
 @Injectable()
-export class MotorcycleService 
+export class MotorcycleService
 {
-    headers: HttpHeaders | null = null;
-    endpoint = environment.dataApiUrl + "motorcycle";
-    token: string | undefined = undefined;
+    endpoint = 'motorcycle';
 
-    constructor(private readonly http: HttpClient, private authenticationService: AuthenticationService) {
-        authenticationService.getUserFromLocalStorage().subscribe((identity) =>{
-            this.token = identity?.token;
+    constructor(@Inject(HttpService)private httpService: HttpService) 
+    {}
 
-            this.headers = new HttpHeaders(
-                { 
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + this.token
-                }
-            );
-        });
-    }
-
-    /**
-     * Get all items.
-     *
-     * @options options - optional URL queryparam options
-     */
     public list(options?: any): Observable<TMotorcycle[] | null> {
-        console.log(`list ${this.endpoint}`);
-
-        return this.http
-            .get<TApiResponse<TMotorcycle[]>>(this.endpoint, {
-                ...options,
-                ...httpOptions,
-            })
-            .pipe(
-                map((response: any) => response.results as TMotorcycle[]),
-                tap(console.log),
-                catchError(this.handleError)
-            );
+        return this.httpService.list<TMotorcycle>(this.endpoint, options);
     }
 
-    /**
-     * Get a single item from the service.
-     *
-     */
     public read(id: string | null, options?: any): Observable<TMotorcycle> {
-        const endPointSingle = `${this.endpoint}/${id}`;
-        console.log(`read ${endPointSingle}`);
-
-        return this.http
-            .get<TApiResponse<TMotorcycle>>(endPointSingle, {
-                ...options,
-                ...httpOptions
-            })
-            .pipe(
-                tap(console.log),
-                map((response: any) => response.results as TMotorcycle),
-                catchError(this.handleError)
-            );
+        return this.httpService.read<TMotorcycle>(this.endpoint, id, options);
     }
 
-    public create(optionsCreate: TMotorcycleCreate): Observable<TUser> 
+    public create(optionsCreate: TMotorcycleCreate): Observable<TMotorcycle> 
     {
-        console.log(`read ${this.endpoint}`);
-
-        return this.http
-            .post<TApiResponse<TMotorcycle>>(this.endpoint, {
-                ...optionsCreate,
-                ...httpOptions
-            }, { headers : this.headers! })
-            .pipe(
-                tap(console.log),
-                map((response: any) => response.results as TMotorcycle),
-                catchError(this.handleError)
-            );
+        return this.httpService.create<TMotorcycle>(this.endpoint, optionsCreate);
     }
 
     public update(id: string, optionsUpdate: TMotorcycleUpdate): Observable<TMotorcycle> 
     {
-        const endpointUpdate = `${this.endpoint}/${id}`;
-        console.log(`update ${endpointUpdate}`);
-
-        return this.http
-            .post<TApiResponse<TMotorcycle>>(endpointUpdate, {
-                ...optionsUpdate,
-                ...httpOptions
-            }, { headers : this.headers! })
-            .pipe(
-                tap(console.log),
-                map((response: any) => response.results as TMotorcycle),
-                catchError(this.handleError)
-            );
+        return this.httpService.update<TMotorcycle>(this.endpoint, id, optionsUpdate);
     }
 
     public delete(id: string)
     {
-        const endpointDelete = `${this.endpoint}/${id}`;
-        console.log(`delete ${endpointDelete}`);
-
-        return this.http
-            .delete<TApiResponse<TMotorcycle>>(endpointDelete, {
-                headers : this.headers!
-            })
-            .pipe(
-                tap(console.log),
-                map((response: any) => response.results as TMotorcycle),
-                catchError(this.handleError)
-            );
-    }
-
-    /**
-     * Handle errors.
-     */
-    public handleError(error: HttpErrorResponse): Observable<any> {
-        console.log('handleError in UserService', error);
-
-        return throwError(() => new Error(error.message));
+        return this.httpService.delete<TMotorcycle>(this.endpoint, id);
     }
 }

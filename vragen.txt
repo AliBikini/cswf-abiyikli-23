@@ -1,0 +1,3 @@
+Ik krijg geen nette backend error van mongoose validation fail?
+Voorbeelden voor backend tests?
+Hoe gebruik ik validate token in front end?

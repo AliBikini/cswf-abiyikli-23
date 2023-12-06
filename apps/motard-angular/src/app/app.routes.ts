@@ -4,6 +4,7 @@ import { LoginComponent } from 'libs/frontend/frontend-angular/src/lib/login/log
 import { MotorcycleDetailComponent } from 'libs/frontend/frontend-angular/src/lib/motorcycle/motorcycle-detail/motorcycle-detail.component';
 import { MotorcycleEditComponent } from 'libs/frontend/frontend-angular/src/lib/motorcycle/motorcycle-edit/motorcycle-edit.component';
 import { MotorcycleListComponent } from 'libs/frontend/frontend-angular/src/lib/motorcycle/motorcycle-list/motorcycle-list.component';
+import { RegisterComponent } from 'libs/frontend/frontend-angular/src/lib/register/register.component';
 import { UserDetailComponent } from 'libs/frontend/frontend-angular/src/lib/user/user-detail/user-detail.component';
 import { UserEditComponent } from 'libs/frontend/frontend-angular/src/lib/user/user-edit/user-edit.component';
 import { UserListComponent } from 'libs/frontend/frontend-angular/src/lib/user/user-list/user-list.component';
@@ -20,6 +21,10 @@ export const appRoutes: Route[] =
     {
         path: '',
         component: LoginComponent
+    },
+    {
+        path: 'register',
+        component: RegisterComponent
     },
     {
         path: 'about',

@@ -36,8 +36,17 @@ export class UserServiceMongo implements IUserService
 
     async create(user: User): Promise<User> 
     {
+        Logger.debug(user, this.TAG);
+
         const userNew = new this.conn.schemas.modelUser!({
-            ...user
+            email: user.email,
+            nameFirst: user.nameFirst,
+            nameLast: user.nameLast,
+            dateBirth: user.dateBirth,
+            gender: user.gender,
+            motorcyclesOwned: user.motorcyclesOwned,
+            reviewsPlaced: user.reviewsPlaced,
+            gangsJoined: user.gangsJoined
         })
 
         await userNew.save();

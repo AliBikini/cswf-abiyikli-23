@@ -65,8 +65,8 @@ export class IdentityService
 
         Logger.debug('User not found, creating');
 
-        //this line assumes userservice will always work... not great
-        const userNew = await this.userService.create(identityRegister.user);
+        Logger.debug(identityRegister);
+        const userNew = await this.userService.create(identityRegister.user as User);
 
         const identityNew = await new this.conn.schemas.modelIdentity!({
             user_id: userNew._id,
@@ -80,10 +80,30 @@ export class IdentityService
             throw new ConflictException('Error with inserting new identity');
         }
 
-        await identityNew.save();
+        let isFailed: Boolean = false;
+        let errorMsg = "";
+
+        try
+        {
+            await identityNew.save();
+        }
+        catch(error:any)
+        {
+            isFailed = true;
+            errorMsg = error;
+            await this.userService.delete(userNew._id, identityNew);
+        }
+
+        if (isFailed == true)
+        {
+            errorMsg = errorMsg + " Deleted created user with id " + userNew._id;
+            Logger.error(errorMsg);
+            throw new ConflictException(errorMsg)
+        }
 
         Logger.debug('User created');
 
-        return identityNew;
+        const identityNewLoggedIn = await this.login({ email: identityNew.email, password: identityNew.password });
+        return identityNewLoggedIn;
     }
 }

@@ -17,7 +17,7 @@ export type TIdentityRegister =
 {
     user: User,
     password: string,
-    role: IdentityRole
+    role: IdentityRole,
 }
 
 export class Identity

@@ -22,6 +22,7 @@ export class UserController
         return await this.userService.get(id);
     }
 
+    //// Creation of user must be done by Identity controller/service
     // @Post('')
     // async create(@Body() data: User): Promise<User> {
     //     return await this.userService.create(data);

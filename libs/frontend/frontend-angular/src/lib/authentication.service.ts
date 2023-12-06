@@ -70,9 +70,9 @@ export class AuthenticationService
         }
     )
     .pipe(
-        map((identityRegister) => {
+        map((identityRegister:any) => {
             console.dir(identityRegister);
-            const identity = identityRegister as unknown as Identity;
+            const identity = identityRegister.results as Identity;
             this.saveIdentityToLocalStorage(identity);
             this.identityCurrent$.next(identity);
             console.log('Register success!');
@@ -92,29 +92,29 @@ export class AuthenticationService
    * als response komt is het token nog valid. We doen dan verder niets.
    * Als het token niet valid is loggen we de user uit.
    */
-//   validateToken(userData: User): Observable<User> {
-//     const url = `${environment.SERVER_API_URL}auth/profile`;
-//     const httpOptions = {
-//       headers: new HttpHeaders({
-//         'Content-Type': 'application/json',
-//         Authorization: 'Bearer ' + userData.token,
-//       }),
-//     };
+  validateToken(identity: Identity): Observable<Identity | undefined> {
+    const url = `${environment.dataApiUrl}auth/profile`;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + identity.token,
+      }),
+    };
 
-//     console.log(`validateToken at ${url}`);
-//     return this.http.get<any>(url, httpOptions).pipe(
-//       map((response) => {
-//         console.log('token is valid');
-//         return response;
-//       }),
-//       catchError((error: any) => {
-//         console.log('Validate token Failed');
-//         this.logout();
-//         this.identityCurrent$.next(undefined);
-//         return of(undefined);
-//       })
-//     );
-//   }
+    console.log(`validateToken at ${url}`);
+    return this.http.get<Identity>(url, httpOptions).pipe(
+      map((response) => {
+        console.log('token is valid');
+        return response;
+      }),
+      catchError((error: any) => {
+        console.log('Validate token Failed');
+        this.logout();
+        this.identityCurrent$.next(undefined);
+        return of(undefined);
+      })
+    );
+  }
 
   logout(): void {
     this.router
@@ -143,6 +143,18 @@ export class AuthenticationService
     }
 
     return of(localUser);
+  }
+
+  getUserFromLocalStorageNonObservable(): Identity | undefined {
+    const identityLocalStorage = localStorage.getItem(this.IDENTITY_CURRENT);
+    let localUser: Identity | undefined = undefined;
+
+    if (identityLocalStorage != null)
+    {
+        localUser = JSON.parse(identityLocalStorage);
+    }
+
+    return localUser;
   }
 
   private saveIdentityToLocalStorage(identity: Identity): void {
