@@ -1,3 +1,4 @@
+import { Gang } from "./gang";
 import { Id } from "./id.type";
 import { IdentityRole } from "./identity";
 import { Motorcycle } from "./motorcycle";
@@ -20,12 +21,13 @@ export type TUser =
     gender: Gender;
     motorcyclesOwned : Motorcycle[];
     reviewsPlaced: Review[];
+    gangsJoined: Gang[];
     userRole: IdentityRole;
 }
 
 export type TUserCreate = Pick<
     TUser,
-    'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'motorcyclesOwned' | 'userRole' | 'reviewsPlaced'
+    'nameFirst' | 'nameLast' | 'email' | 'dateBirth' | 'gender' | 'motorcyclesOwned' | 'userRole' | 'reviewsPlaced' | 'gangsJoined'
     >;
 export type TUserUpdate = Partial<Omit<TUser, 'id'>>;
 export type TUserUpsert = TUser;
@@ -40,9 +42,10 @@ export class User implements TUser
     gender: Gender = Gender.other;
     motorcyclesOwned: Motorcycle[] = [];
     reviewsPlaced: Review[] = [];
+    gangsJoined: Gang[] = [];
     userRole: IdentityRole = IdentityRole.user;
     
-    constructor(_id = "", nameFirst = '', nameLast = '', email = '', dateBirth = new Date(), gender = Gender.other, motorcyclesOwned : Motorcycle[] = [], reviewsPlaced : Review[] = [])
+    constructor(_id = "", nameFirst = '', nameLast = '', email = '', dateBirth = new Date(), gender = Gender.other, motorcyclesOwned : Motorcycle[] = [], reviewsPlaced : Review[] = [], gangsJoined: Gang[] = [])
     {
         this._id = _id;
         this.nameFirst = nameFirst;
@@ -52,5 +55,6 @@ export class User implements TUser
         this.gender = gender;
         this.motorcyclesOwned = motorcyclesOwned;
         this.reviewsPlaced = reviewsPlaced;
+        this.gangsJoined = gangsJoined;
     }
 }

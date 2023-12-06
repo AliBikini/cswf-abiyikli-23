@@ -1,7 +1,7 @@
 import { Motorcycle } from "@cswf-abiyikli-23/shared/api";
 import { IMotorcycleService } from "./imotorcycle.service";
 import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
-import { Injectable, Logger } from "@nestjs/common";
+import { Inject, Injectable, Logger, forwardRef } from "@nestjs/common";
 import { RecoService } from "../reco/reco.service";
 
 @Injectable()
@@ -11,7 +11,7 @@ export class MotorcycleServiceMongo implements IMotorcycleService
 
     conn: MongooseConnection | null = null;
 
-    constructor(conn: MongooseConnection, private recoService: RecoService)
+    constructor(conn: MongooseConnection, @Inject(forwardRef(() => RecoService))private recoService: RecoService)
     {
         this.conn = conn;
     }

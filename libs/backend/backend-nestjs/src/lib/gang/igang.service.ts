@@ -10,6 +10,7 @@ export interface IGangService
     create(gang: Gang): Promise<Gang>
     update(id: Id, gang: Gang, identity: Identity): Promise<Gang>
     delete(id: Id, identity: Identity): Promise<void>;
+    deleteAll(identity: Identity): Promise<void>;
 }
 
 export const IGangService = Symbol("IGangService");

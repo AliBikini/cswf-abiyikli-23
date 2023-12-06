@@ -38,4 +38,10 @@ export class GangController
     async delete(@Request() req: any, @Param('id') id: string) {
         await this.gangService.delete(id, req.identity);
     }
+
+    @UseGuards(AuthGuardIsValidLogin)
+    @Delete('')
+    async deleteAll(@Request() req: any) {
+        await this.gangService.deleteAll(req.identity);
+    }
 }

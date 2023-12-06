@@ -49,7 +49,8 @@ export class Schemas
             dateBirth: Date,
             gender: String,
             motorcyclesOwned: [{ type: mongoose.Schema.Types.ObjectId, ref: "Motorcycle" }],
-            reviewsPlaced: [this.schemaReview]
+            reviewsPlaced: [this.schemaReview],
+            gangsJoined: [{ type: mongoose.Schema.Types.ObjectId, ref: "Gang" }]
         })
 
         this.modelUser = mongoose.model<User>("User", this.schemaUser);

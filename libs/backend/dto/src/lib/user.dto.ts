@@ -15,7 +15,8 @@ import
     TUserUpdate,
     TUserUpsert,
     IdentityRole,
-    Review
+    Review,
+    Gang
 } from '@cswf-abiyikli-23/shared/api';
 
 /**
@@ -51,6 +52,9 @@ export class UserCreateDto implements TUserCreate
 
     @IsOptional()
     reviewsPlaced!: Review[];
+
+    @IsOptional()
+    gangsJoined!: Gang[];
 }
 
 export class UserUpsertDto implements TUserUpsert 
@@ -86,6 +90,9 @@ export class UserUpsertDto implements TUserUpsert
 
     @IsOptional()
     reviewsPlaced!: Review[];
+
+    @IsOptional()
+    gangsJoined!: Gang[];
 }
 
 export class UserUpdateDto implements TUserUpdate 

@@ -71,7 +71,7 @@ export class UserEditComponent implements OnInit, OnDestroy
           }
           else
           {
-            this.user = { _id: '-1', nameFirst: '', nameLast: '', email: '', dateBirth: new Date, gender: Gender.male, userRole: IdentityRole.user, motorcyclesOwned: [ this.motorcycles?.at(0)! ], reviewsPlaced: [] }
+            this.user = { _id: '-1', nameFirst: '', nameLast: '', email: '', dateBirth: new Date, gender: Gender.male, userRole: IdentityRole.user, motorcyclesOwned: [ this.motorcycles?.at(0)! ], reviewsPlaced: [], gangsJoined: [] }
             this.applyUserToForm();
           }
         })
@@ -133,7 +133,8 @@ export class UserEditComponent implements OnInit, OnDestroy
       userRole: IdentityRole.user, 
       gender: this.userForm.value.gender,
       motorcyclesOwned: this.userForm.value.motorcyclesOwned as TMotorcycle[],
-      reviewsPlaced: []
+      reviewsPlaced: [],
+      gangsJoined: []
     }).subscribe((resp) => {
       console.log("New user added!");
       this.redirectTo(`/user/${resp._id}`);
