@@ -1,8 +1,5 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { environment } from "@cswf-abiyikli-23/shared/util-env";
 import { AuthenticationService } from "./authentication.service";
-import { Observable, of } from "rxjs";
-import { Identity } from "@cswf-abiyikli-23/shared/api";
 
 export class Service
 {

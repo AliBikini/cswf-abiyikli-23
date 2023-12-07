@@ -1,3 +1,4 @@
+import { environment } from '@cswf-abiyikli-23/shared/util-env';
 import {
     CanActivate,
     ExecutionContext,
@@ -23,7 +24,7 @@ export class AuthGuardIsValidLogin implements CanActivate {
         }
         try {
             const payload = await this.jwtService.verifyAsync(token, {
-                secret: process.env['JWT_SECRET'] || 'secretstring'
+                secret: environment.jwtSecret
             });
             this.logger.log('payload', payload);
             // 💡 We're assigning the payload to the request object here

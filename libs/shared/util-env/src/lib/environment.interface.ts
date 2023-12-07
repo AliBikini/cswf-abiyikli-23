@@ -10,4 +10,5 @@ export interface IEnvironment
     neo4jUser: string;
     neo4jPassword: string;
     neo4jDb: string;
+    jwtSecret: string;
 }

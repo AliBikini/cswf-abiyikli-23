@@ -1,12 +1,6 @@
-import { NotFoundError, Observable, throwError } from 'rxjs';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { map, catchError, tap } from 'rxjs/operators';
-import { TApiResponse, TUser, TUserCreate, TUserUpdate } from '@cswf-abiyikli-23/shared/api';
+import { Observable } from 'rxjs';
+import { TUser, TUserCreate, TUserUpdate } from '@cswf-abiyikli-23/shared/api';
 import { Inject, Injectable } from '@angular/core';
-import { environment } from '@cswf-abiyikli-23/shared/util-env';
-import { AuthenticationService } from '../authentication.service';
-import { NotFoundException } from '@nestjs/common';
-import { Service } from '../service';
 import { HttpService } from '../http.service';
 
 @Injectable()

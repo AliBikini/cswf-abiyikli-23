@@ -23,7 +23,7 @@ async function bootstrap() {
 
   console.log(JSON.stringify(environment));
 
-  const port = process.env.PORT || 3000;
+  const port = 3000;
   await app.listen(port);
   Logger.log(
     `🚀 Application(motard-data-api) is running on: http://localhost:${port}/${globalPrefix}`
