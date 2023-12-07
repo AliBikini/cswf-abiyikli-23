@@ -19,16 +19,8 @@
         "webpackConfig": "apps/motard-data-api/webpack.config.js",
         "generatePackageJson": true,
         "preserveSymlinks": true
-    },
+      },
       "configurations": {
-        "development": {
-          "fileReplacements": [
-            {
-              "replace": "libs/shared/util-env/src/lib/environment.ts",
-              "with": "libs/shared/util-env/src/lib/environment.development.ts"
-            }
-          ]
-        },
         "production": {
           "fileReplacements": [
             {
@@ -56,10 +48,7 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/motard-data-api/**/*.ts"]
-      }
+      "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",

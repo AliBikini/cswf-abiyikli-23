@@ -26,6 +26,7 @@ import { RecoController } from './reco/reco.controller';
 import { Neo4jService } from 'nest-neo4j/dist';
 import { Neo4jModule } from 'nest-neo4j/dist';
 import { Neo4jConfig } from 'nest-neo4j/dist/interfaces/neo4j-config.interface';
+import { environment } from '@cswf-abiyikli-23/shared/util-env';
 
 @Module({
   controllers: [IdentityController, UserController, MotorcycleController, ReviewController, GangController, RecoController],
@@ -56,13 +57,13 @@ import { Neo4jConfig } from 'nest-neo4j/dist/interfaces/neo4j-config.interface';
       imports: [
       ],
       inject: [ ConfigService ],
-      useFactory: (configService: ConfigService): Neo4jConfig => ({
-        scheme: configService.get('NEO4J_SCHEME') || 'neo4j',
-        host: configService.get('NEO4J_HOST') || 'localhost',
-        port: configService.get('NEO4J_PORT') || 7687,
-        username: configService.get('NEO4J_USERNAME') || 'neo4j',
-        password: configService.get('NEO4J_PASSWORD') || 'CokianmafiA98.',
-        database: configService.get('NEO4J_DATABASE') || 'neo4j',
+      useFactory: (): Neo4jConfig => ({
+        scheme: environment.neo4jScheme || 'neo4j',
+        host: environment.neo4jUri || 'localhost',
+        port: environment.neo4jPort || 7687,
+        username: environment.neo4jUser || 'neo4j',
+        password: environment.neo4jPassword || 'CokianmafiA98.',
+        database: environment.neo4jDb || 'neo4j',
       })}),
   ],
   exports: [],

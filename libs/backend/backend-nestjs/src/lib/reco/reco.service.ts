@@ -255,16 +255,6 @@ export class RecoService
     {
         Logger.log(`Create or update motorcycle: ${motorcycle}`, this.TAG);
 
-        // const userExisting = await this.userService.get(user._id);
-
-        // if (userExisting)
-        // {
-        //     if (identity?.user_id != user._id)
-        //     {
-        //         throw new UnauthorizedException();
-        //     }
-        // }
-
         const params = 
         {
             mongo_id : motorcycle._id.toString(),
