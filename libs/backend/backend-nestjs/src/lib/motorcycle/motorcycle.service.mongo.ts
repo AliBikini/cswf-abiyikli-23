@@ -59,20 +59,11 @@ export class MotorcycleServiceMongo implements IMotorcycleService
             throw new NotFoundException("Could not find motorcycle to update with id " + id);
         }
 
-        motorcycleToUpdate!.nameModel = motorcycle.nameModel;
-        motorcycleToUpdate!.body = motorcycle.body;
-        motorcycleToUpdate!.year = motorcycle.year;
-        motorcycleToUpdate!.fuel = motorcycle.fuel;
-        motorcycleToUpdate!.horsePower = motorcycle.horsePower;
-        motorcycleToUpdate!.seatHeight = motorcycle.seatHeight;
-        motorcycleToUpdate!.topSpeed = motorcycle.topSpeed;
-        motorcycleToUpdate!.linkImage = motorcycle.linkImage;
-
         try
         {
-            await motorcycleToUpdate.save();
+            await await this.conn?.schemas?.modelMotorcycle!.updateOne({ _id : id }, motorcycle, { runValidators: true }).exec();
         }
-        catch(error:any)
+        catch(error: any)
         {
             throw new ConflictException(error._message, error.message);
         }
@@ -84,5 +75,8 @@ export class MotorcycleServiceMongo implements IMotorcycleService
 
     async delete(id: string): Promise<void> {
         await this.conn?.schemas?.modelMotorcycle!.deleteOne({ _id : id }).exec();
+
+        const motorcycle = await this.get(id);
+        await this.recoService.deleteNodeWithMongoId(id, "Motorcycle");
     }
 }

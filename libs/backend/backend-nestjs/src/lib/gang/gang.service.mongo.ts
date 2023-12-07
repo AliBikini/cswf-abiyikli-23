@@ -29,7 +29,7 @@ export class GangServiceMongo implements IGangService
         return gang as Gang;
     }
 
-    async create(gang: Gang): Promise<Gang> 
+    async create(gang: Gang, identity: Identity): Promise<Gang> 
     {
         const userOwner = await this.userService.get(gang.userOwner_id);
 
@@ -45,6 +45,8 @@ export class GangServiceMongo implements IGangService
         try
         {
             await gangNew.save();
+            userOwner.gangsJoined.push(gangNew);
+            await this.userService.update(gang.userOwner_id, userOwner, identity);
         }
         catch(error: any)
         {
@@ -68,22 +70,15 @@ export class GangServiceMongo implements IGangService
 
         if (identity.role != IdentityRole.admin)
         {
-
             if (identity.user_id != gangToUpdate.userOwner_id)
             {
                 throw new UnauthorizedException("You are not the owner of this gang");
             }
         }
 
-        gangToUpdate.dateCreated = gang.dateCreated;
-        gangToUpdate.description = gang.description;
-        gangToUpdate.linkEmblem = gang.linkEmblem;
-        gangToUpdate.name = gang.name;
-        gangToUpdate.userOwner_id = gang.userOwner_id;
-
         try
         {
-            await gangToUpdate.save();
+            await this.conn?.schemas.modelGang?.updateOne({_id: gang._id}, gang, { runValidators: true }).exec();
         }
         catch(error: any)
         {
@@ -113,6 +108,8 @@ export class GangServiceMongo implements IGangService
         }
 
         await this.conn?.schemas?.modelGang!.deleteOne({ _id : id }).exec();
+        const gang = await this.get(id);
+        await this.recoService.deleteNodeWithMongoId(id, "Gang");
     }
 
     async deleteAll(identity: Identity): Promise<void> {
@@ -124,5 +121,6 @@ export class GangServiceMongo implements IGangService
         }
 
         await this.conn?.schemas?.modelGang!.deleteMany({}).exec();
+        await this.recoService.deleteNodesWithLabel("Gang");
     }
 }

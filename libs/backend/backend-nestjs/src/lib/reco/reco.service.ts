@@ -1,16 +1,20 @@
-import { Gang, Identity, Motorcycle, User } from "@cswf-abiyikli-23/shared/api";
+import { Gang, Identity, Motorcycle, Review, ReviewJudgement, User } from "@cswf-abiyikli-23/shared/api";
 import { Inject, Injectable, Logger, UnauthorizedException, forwardRef } from "@nestjs/common";
 import { Neo4jService } from "nest-neo4j/dist";
 import { IMotorcycleService } from "../motorcycle/imotorcycle.service";
 import { IUserService } from "../user/iuser.service";
 import { IGangService } from "../gang/igang.service";
+import { IReviewService } from "../review/ireview.service";
 
 @Injectable()
 export class RecoService
 {
     TAG: string = "RecoService";
 
-    constructor(private neo4jService: Neo4jService, @Inject(forwardRef(() => IMotorcycleService))private motorcycleService: IMotorcycleService, @Inject(forwardRef(() => IGangService))private gangService: IGangService)
+    constructor(private neo4jService: Neo4jService, 
+        @Inject(forwardRef(() => IMotorcycleService))private motorcycleService: IMotorcycleService, 
+        @Inject(forwardRef(() => IGangService))private gangService: IGangService, 
+        @Inject(forwardRef(() => IReviewService))private reviewService: IReviewService)
     {}
 
     async getOtherMotorcyclesLikedByUsersWhoLikedThisMotorcycle(user_id: string, motorcycle_id: string) : Promise<Motorcycle[]>
@@ -154,16 +158,6 @@ export class RecoService
     {
         Logger.log(`Create or update user: ${user}`, this.TAG);
 
-        // const userExisting = await this.userService.get(user._id);
-
-        // if (userExisting)
-        // {
-        //     if (identity?.user_id != user._id)
-        //     {
-        //         throw new UnauthorizedException();
-        //     }
-        // }
-
         let params = 
         {
             mongo_id : user._id.toString(),
@@ -177,6 +171,8 @@ export class RecoService
 
         await this.removeAllRidesRelations(user);
         await this.mergeRidingRelationsOwnedMotorcycles(user);
+        await this.removeAllJoinedGangsRelations(user);
+        await this.mergeRelationsJoinedGangs(user);
 
         const result =  await this.neo4jService.write(cypher, params);
     }
@@ -218,6 +214,43 @@ export class RecoService
         await this.neo4jService.write(cypher, params);
     }
 
+    private async mergeRelationsJoinedGangs(user: User)
+    {
+        const gangsJoined = user.gangsJoined;
+
+        for (let i = 0; i < gangsJoined.length; i++)
+        {
+            const params = 
+            {
+                user_mongo_id : user._id.toString(),
+                gang_mongo_id : gangsJoined.at(i)!._id.toString(),
+            }
+
+            const cypher =
+            "MERGE (u:User { mongo_id: $user_mongo_id }) \n" +
+            "MERGE (g:Gang { mongo_id: $gang_mongo_id }) \n" +
+            "MERGE (u)-[r:MEMBER]->(g)"
+            ;
+
+            console.log(cypher);
+
+            await this.neo4jService.write(cypher, params);
+        }
+    }
+
+    private async removeAllJoinedGangsRelations(user: User)
+    {
+        const params = 
+        {
+            user_mongo_id : user._id.toString(),
+        }
+
+        const cypher =  "MATCH (u:User { mongo_id: $user_mongo_id } )-[r:MEMBER]->(g:Gang) \n" +
+                        "DELETE r";
+
+        await this.neo4jService.write(cypher, params);
+    }
+
     async motorcycleCreateOrUpdate(motorcycle: Motorcycle, identity?: Identity)
     {
         Logger.log(`Create or update motorcycle: ${motorcycle}`, this.TAG);
@@ -250,16 +283,6 @@ export class RecoService
     {
         Logger.log(`Create or update gang: ${gang}`, this.TAG);
 
-        // const userExisting = await this.userService.get(user._id);
-
-        // if (userExisting)
-        // {
-        //     if (identity?.user_id != user._id)
-        //     {
-        //         throw new UnauthorizedException();
-        //     }
-        // }
-
         const params = 
         {
             gang_mongo_id : gang._id.toString(),
@@ -274,9 +297,76 @@ export class RecoService
         "MERGE (u:User { mongo_id: $user_mongo_id }) \n" +
         "SET u.name = $user_name \n" +
         "MERGE (u)-[o:OWNS]->(g) \n" +
-        "RETURN g,u,o"
+        "MERGE (u)-[m:MEMBER]->(g) \n" +
+        "RETURN g,u,o,m"
         ;
 
+        const result =  await this.neo4jService.write(cypher, params);
+    }
+
+    async reviewCreateOrUpdate(review: Review)
+    {
+        Logger.log(`Create or update review: ${review}`, this.TAG);
+
+        let relation = '';
+
+        if (review.judgement.toLocaleLowerCase() == ReviewJudgement.positive.toLocaleLowerCase())
+        {
+            relation = 'LIKES'
+        }
+        else
+        {
+            relation = 'DISLIKES'
+        }
+
+        const params = 
+        {
+            review_mongo_id : review._id.toString(),
+            review_user_mongo_id : review.user_id.toString(),
+            review_motorcycle_mongo_id : review.motorcycle_id.toString(),
+            review_date : review.date.toString(),
+            review_title : review.title.toString(),
+            review_judgement : relation,
+        }
+
+        const cypher =
+        "MERGE (u:User { mongo_id: $review_user_mongo_id }) \n" +
+        "MERGE (m:Motorcycle { mongo_id: $review_motorcycle_mongo_id }) \n" +
+        `MERGE (u)-[r:${relation}]->(m) \n` +
+        "SET r.mongo_id = $review_mongo_id \n" +
+        "SET r.date = $review_date \n" +
+        "SET r.title = $review_title \n" +
+        "return u,m,r"
+        ;
+
+        const result =  await this.neo4jService.write(cypher, params);
+    }
+
+    async deleteNodeWithMongoId(id: string, labelName: string)
+    {
+        const params = 
+        {
+            mongo_id : id.toString(),
+        }
+
+        const cypher = `MATCH (n:${labelName} { mongo_id: $mongo_id }) DETACH DELETE n`;
+        const result =  await this.neo4jService.write(cypher, params);
+    }
+
+    async deleteNodesWithLabel(labelName: string)
+    {
+        const cypher = `MATCH (n:${labelName}) DETACH DELETE n`;
+        const result =  await this.neo4jService.write(cypher);
+    }
+
+    async deleteRelationWithMongoId(id: string)
+    {
+        const params = 
+        {
+            mongo_id : id.toString(),
+        }
+
+        const cypher = `MATCH ()-[r]-() WHERE r.mongo_id = $mongo_id DETACH DELETE r`;
         const result =  await this.neo4jService.write(cypher, params);
     }
 }

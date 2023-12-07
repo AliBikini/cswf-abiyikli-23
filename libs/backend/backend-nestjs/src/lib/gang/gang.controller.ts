@@ -24,7 +24,7 @@ export class GangController
     @Post('')
     async create(@Request() req: any, @Body() data: Gang): Promise<Gang> {
         data.userOwner_id = req.identity.user_id;
-        return await this.gangService.create(data);
+        return await this.gangService.create(data, req.identity);
     }
 
     @UseGuards(AuthGuardIsValidLogin)

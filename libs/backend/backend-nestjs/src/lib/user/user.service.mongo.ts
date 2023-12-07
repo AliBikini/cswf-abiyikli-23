@@ -81,20 +81,11 @@ export class UserServiceMongo implements IUserService
             throw new ConflictException("User to update not found with id " + id);
         }
 
-        userToUpdate!.nameFirst = user.nameFirst;
-        userToUpdate!.nameLast = user.nameLast;
-        userToUpdate!.email = user.email;
-        userToUpdate!.dateBirth = user.dateBirth;
-        userToUpdate!.gender = user.gender;
-        userToUpdate!.motorcyclesOwned = user.motorcyclesOwned;
-        userToUpdate!.reviewsPlaced = user.reviewsPlaced;
-        userToUpdate!.gangsJoined = user.gangsJoined;
-
         try
         {
-            await userToUpdate!.save();
+            await this.conn.schemas.modelUser!.updateOne({ _id: id }, user, { runValidators: true }).exec();
         }
-        catch(error:any)
+        catch(error: any)
         {
             throw new ConflictException(error._message, error.message);
         }
@@ -117,5 +108,6 @@ export class UserServiceMongo implements IUserService
             }
         }
         await this.conn.schemas.modelUser!.deleteOne({ _id : id }).exec();
+        await this.recoService.deleteNodeWithMongoId(id, "User");
     }
 }

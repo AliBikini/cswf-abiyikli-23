@@ -7,7 +7,7 @@ export interface IGangService
 
     getAll(): Promise<Gang[]>
     get(id: Id): Promise<Gang>
-    create(gang: Gang): Promise<Gang>
+    create(gang: Gang, identity: Identity): Promise<Gang>
     update(id: Id, gang: Gang, identity: Identity): Promise<Gang>
     delete(id: Id, identity: Identity): Promise<void>;
     deleteAll(identity: Identity): Promise<void>;

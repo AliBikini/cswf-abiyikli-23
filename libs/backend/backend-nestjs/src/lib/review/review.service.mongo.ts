@@ -1,7 +1,8 @@
 import { Identity, Review, User } from "@cswf-abiyikli-23/shared/api";
 import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
-import { ConflictException, Injectable, Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { ConflictException, Injectable, Inject, Logger, NotFoundException, UnauthorizedException, forwardRef } from "@nestjs/common";
 import { IReviewService } from "./ireview.service";
+import { RecoService } from "../reco/reco.service";
 
 @Injectable()
 export class ReviewServiceMongo implements IReviewService
@@ -10,7 +11,7 @@ export class ReviewServiceMongo implements IReviewService
 
     conn: MongooseConnection | null = null;
 
-    constructor(conn: MongooseConnection)
+    constructor(conn: MongooseConnection, @Inject(forwardRef(() => RecoService))private recoService: RecoService)
     {
         this.conn = conn;
     }
@@ -99,7 +100,7 @@ export class ReviewServiceMongo implements IReviewService
             throw new NotFoundException(errorMsg);
         }
 
-        const reviewNew = user.reviewsPlaced.push({
+        const reviewNewIndex = user.reviewsPlaced.push({
             ...review,
         })
 
@@ -112,7 +113,8 @@ export class ReviewServiceMongo implements IReviewService
             throw new ConflictException(error._message, error.message);
         }
 
-        return user.reviewsPlaced[reviewNew - 1];
+        await this.recoService.reviewCreateOrUpdate(user.reviewsPlaced[reviewNewIndex - 1]);
+        return user.reviewsPlaced[reviewNewIndex - 1];
     }
 
     // async update(id: string, review: Review): Promise<Review> {
@@ -157,6 +159,7 @@ export class ReviewServiceMongo implements IReviewService
                         throw new ConflictException(error._message, error.message);
                     }
 
+                    await this.recoService.deleteRelationWithMongoId(id);
                     Logger.log('Deleted review', this.TAG);
                     return;
                 }
