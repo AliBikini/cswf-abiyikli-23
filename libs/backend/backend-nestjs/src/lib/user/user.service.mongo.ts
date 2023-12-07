@@ -1,6 +1,6 @@
 import { IUserService } from "./iuser.service";
 import { Identity, User } from "@cswf-abiyikli-23/shared/api";
-import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
+import { ConflictException, Injectable, Logger, UnauthorizedException } from "@nestjs/common";
 import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
 import { RecoService } from "../reco/reco.service";
 
@@ -49,7 +49,15 @@ export class UserServiceMongo implements IUserService
             gangsJoined: user.gangsJoined
         })
 
-        await userNew.save();
+        try
+        {
+            await userNew.save();
+        }
+        catch(error:any)
+        {
+            throw new ConflictException(error._message, error.message);
+        }
+
         await this.recoService.userCreateOrUpdate(userNew)
         return userNew;
     }
@@ -66,7 +74,30 @@ export class UserServiceMongo implements IUserService
             }
         }
 
-        await this.conn.schemas.modelUser!.updateOne({ _id : id }, { ...user }).exec();
+        const userToUpdate = await this.conn.schemas.modelUser!.findOne({ _id : id }).exec();
+
+        if (!userToUpdate)
+        {
+            throw new ConflictException("User to update not found with id " + id);
+        }
+
+        userToUpdate!.nameFirst = user.nameFirst;
+        userToUpdate!.nameLast = user.nameLast;
+        userToUpdate!.email = user.email;
+        userToUpdate!.dateBirth = user.dateBirth;
+        userToUpdate!.gender = user.gender;
+        userToUpdate!.motorcyclesOwned = user.motorcyclesOwned;
+        userToUpdate!.reviewsPlaced = user.reviewsPlaced;
+        userToUpdate!.gangsJoined = user.gangsJoined;
+
+        try
+        {
+            await userToUpdate!.save();
+        }
+        catch(error:any)
+        {
+            throw new ConflictException(error._message, error.message);
+        }
 
         const userUpdated = await this.get(id);
         await this.recoService.userCreateOrUpdate(userUpdated)

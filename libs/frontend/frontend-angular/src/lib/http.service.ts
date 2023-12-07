@@ -1,11 +1,12 @@
 import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { map, catchError, tap } from 'rxjs/operators';
-import { TApiResponse } from '@cswf-abiyikli-23/shared/api';
+import { map, catchError, tap, flatMap, mergeMap, switchMap } from 'rxjs/operators';
+import { Identity, TApiResponse } from '@cswf-abiyikli-23/shared/api';
 import { Injectable, Type } from '@angular/core';
 import { environment } from '@cswf-abiyikli-23/shared/util-env';
 import { AuthenticationService } from './authentication.service';
 import { Service } from './service';
+import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class HttpService extends Service
@@ -23,34 +24,43 @@ export class HttpService extends Service
      *
      * @options options - optional URL queryparam options
      */
-    public list<Type>(endPointName: string, options?: any): Observable<Type[] | null> {
+    public list<Type>(endPointName: string, isValidateToken: boolean, options?: any): Observable<Type[] | null> {
         const endPoint = this.endPoint + endPointName;
         console.log(`list ${endPoint}`);
 
-        return this.http
-            .get<TApiResponse<Type[]>>(endPoint, {
-                ...options,
-                ...this.httpOptions,
-            })
-            .pipe(
-                map((response: any) => response.results as Type[]),
-                tap(console.log),
-                catchError(this.handleError)
-            );
+        const observable = this.http
+                            .get<TApiResponse<Type[]>>(endPoint, {
+                                ...options,
+                                headers: this.getHeaders(isValidateToken),
+                                ...this.httpOptions,
+                            })
+                            .pipe(
+                                map((response: any) => response.results as Type[]),
+                                tap(console.log),
+                                catchError(this.handleError)
+                            );
+
+        if (isValidateToken)
+        {
+            return this.validateCurrentTokenObservableIncludingRequestObservable(observable);
+        }
+
+        return observable;
     }
 
     /**
      * Get a single item from the service.
      *
      */
-    public read<Type>(endPointName: string, id: string | null, options?: any): Observable<Type> {
+    public read<Type>(endPointName: string, isValidateToken: boolean, id: string | null, options?: any): Observable<Type> {
         const endPoint = this.endPoint + endPointName;
         const endPointSingle = `${endPoint}/${id}`;
         console.log(`read ${endPointSingle}`);
 
-        return this.http
+        const observable = this.http
             .get<TApiResponse<Type>>(endPointSingle, {
                 ...options,
+                headers: this.getHeaders(isValidateToken),
                 ...this.httpOptions
             })
             .pipe(
@@ -58,17 +68,25 @@ export class HttpService extends Service
                 map((response: any) => response.results as Type),
                 catchError(this.handleError)
             );
+
+        if (isValidateToken)
+        {
+            return this.validateCurrentTokenObservableIncludingRequestObservable(observable);
+        }
+
+        return observable;
     }
 
-    public create<Type>(endPointName: string, optionsCreate: any): Observable<Type> 
+    public create<Type>(endPointName: string, isValidateToken: boolean, optionsCreate: any): Observable<Type> 
     {
         const endPoint = this.endPoint + endPointName;
         console.log(`read ${endPoint}`);
 
-        return this.http
+        const observable = this.http
         .post<TApiResponse<Type>>(endPoint, {
             ...optionsCreate,
-            ...this.httpOptions
+        }, {
+            headers: this.getHeaders(isValidateToken)!,
         })
         .pipe(
             tap(console.log),
@@ -76,41 +94,86 @@ export class HttpService extends Service
             catchError(this.handleError)
         );
 
+        if (isValidateToken)
+        {
+            return this.validateCurrentTokenObservableIncludingRequestObservable(observable);
+        }
+
+        return observable;
     }
 
-    public update<Type>(endPointName: string, id: string, optionsUpdate: any): Observable<Type> 
+    public update<Type>(endPointName: string, isValidateToken: boolean, id: string, optionsUpdate: any): Observable<Type> 
     {
         const endPoint = this.endPoint + endPointName;
         const endPointUpdate = `${endPoint}/${id}`;
         console.log(`update ${endPointUpdate}`);
 
-        return this.http
+        const observable = this.http
             .post<TApiResponse<Type>>(endPointUpdate, {
-                ...optionsUpdate,
-                ...this.httpOptions
-            }, { headers : this.getHeaders()! })
-            .pipe(
-                tap(console.log),
-                map((response: any) => response.results as Type),
-                catchError(this.handleError)
-            );
-    }
-
-    public delete<Type>(endPointName: string, id: string)
-    {
-        const endPoint = this.endPoint + endPointName;
-        const endPointDelete = `${endPoint}/${id}`;
-        console.log(`delete ${endPointDelete}`);
-
-        return this.http
-            .delete<TApiResponse<Type>>(endPointDelete, {
-                headers : this.getHeaders()!
+                ...this.httpOptions,
+                ...optionsUpdate
+            }, {
+                headers: this.getHeaders(isValidateToken)!
             })
             .pipe(
                 tap(console.log),
                 map((response: any) => response.results as Type),
                 catchError(this.handleError)
             );
+
+        if (isValidateToken)
+        {
+            return this.validateCurrentTokenObservableIncludingRequestObservable(observable);
+        }
+
+        return observable;
+    }
+
+    public delete<Type>(endPointName: string, isValidateToken: boolean, id: string)
+    {
+        const endPoint = this.endPoint + endPointName;
+        const endPointDelete = `${endPoint}/${id}`;
+        console.log(`delete ${endPointDelete}`);
+
+        const observable = this.http
+            .delete<TApiResponse<Type>>(endPointDelete, {
+                headers: this.getHeaders(isValidateToken)!
+            })
+            .pipe(
+                tap(console.log),
+                map((response: any) => response.results as Type),
+                catchError(this.handleError)
+            );
+
+        if (isValidateToken)
+        {
+            return this.validateCurrentTokenObservableIncludingRequestObservable(observable);
+        }
+
+        return observable;
+    }
+
+    private validateCurrentToken() : Observable<Identity | undefined>
+    {
+        const token = this.getToken();
+
+        if (!token)
+        {
+            Logger.debug("Token isn't found");
+            this.authenticationService.logout();
+        }
+
+        return this.authenticationService.validateToken(token!);
+    }
+
+    private validateCurrentTokenObservableIncludingRequestObservable<Type>(requestObservable: Observable<Type>) : Observable<Type>
+    {
+        return this.validateCurrentToken().pipe(
+            switchMap((identity: Identity | undefined) => {
+                return requestObservable;
+            }),
+            catchError(this.handleError)
+        )
     }
 
     /**

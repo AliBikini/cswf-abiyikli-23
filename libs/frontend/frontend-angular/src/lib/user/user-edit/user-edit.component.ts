@@ -67,12 +67,14 @@ export class UserEditComponent implements OnInit, OnDestroy
             {
               this.user = resp;
               this.applyUserToForm();
+              this.userForm.updateValueAndValidity();
             }); 
           }
           else
           {
             this.user = { _id: '-1', nameFirst: '', nameLast: '', email: '', dateBirth: new Date, gender: Gender.male, userRole: IdentityRole.user, motorcyclesOwned: [ this.motorcycles?.at(0)! ], reviewsPlaced: [], gangsJoined: [] }
             this.applyUserToForm();
+            this.userForm.updateValueAndValidity();
           }
         })
       }

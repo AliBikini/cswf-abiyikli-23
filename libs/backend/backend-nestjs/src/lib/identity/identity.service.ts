@@ -54,12 +54,12 @@ export class IdentityService
         Logger.log('Register ' + identityRegister.user.email, this.TAG);
 
         if (await this.conn.schemas.modelIdentity!.findOne({ email: identityRegister.user.email })) {
-            Logger.debug('identity with email already exists');
+            Logger.debug('identity with email already exists', this.TAG);
             throw new ConflictException('Identity already exists');
         }
 
         if (await this.conn.schemas.modelUser!.findOne({ email: identityRegister.user.email })) {
-            Logger.debug('user with email already exists');
+            Logger.debug('user with email already exists', this.TAG);
             throw new ConflictException('User already exists');
         }
 
@@ -67,6 +67,7 @@ export class IdentityService
 
         Logger.debug(identityRegister);
         const userNew = await this.userService.create(identityRegister.user as User);
+        Logger.debug("test", this.TAG);
 
         const identityNew = await new this.conn.schemas.modelIdentity!({
             user_id: userNew._id,
@@ -81,7 +82,7 @@ export class IdentityService
         }
 
         let isFailed: Boolean = false;
-        let errorMsg = "";
+        let errorObj: any;
 
         try
         {
@@ -90,18 +91,18 @@ export class IdentityService
         catch(error:any)
         {
             isFailed = true;
-            errorMsg = error;
+            errorObj = error;
             await this.userService.delete(userNew._id, identityNew);
         }
 
         if (isFailed == true)
         {
-            errorMsg = errorMsg + " Deleted created user with id " + userNew._id;
-            Logger.error(errorMsg);
-            throw new ConflictException(errorMsg)
+            errorObj = errorObj + " Deleted created user with id " + userNew._id;
+            Logger.error(errorObj);
+            throw new ConflictException(errorObj._message, errorObj.message);
         }
 
-        Logger.debug('User created');
+        Logger.debug('User created', this.TAG);
 
         const identityNewLoggedIn = await this.login({ email: identityNew.email, password: identityNew.password });
         return identityNewLoggedIn;

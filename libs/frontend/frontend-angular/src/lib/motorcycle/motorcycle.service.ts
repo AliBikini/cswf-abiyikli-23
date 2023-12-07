@@ -16,25 +16,25 @@ export class MotorcycleService
     {}
 
     public list(options?: any): Observable<TMotorcycle[] | null> {
-        return this.httpService.list<TMotorcycle>(this.endpoint, options);
+        return this.httpService.list<TMotorcycle>(this.endpoint, true, options);
     }
 
     public read(id: string | null, options?: any): Observable<TMotorcycle> {
-        return this.httpService.read<TMotorcycle>(this.endpoint, id, options);
+        return this.httpService.read<TMotorcycle>(this.endpoint, true, id, options);
     }
 
     public create(optionsCreate: TMotorcycleCreate): Observable<TMotorcycle> 
     {
-        return this.httpService.create<TMotorcycle>(this.endpoint, optionsCreate);
+        return this.httpService.create<TMotorcycle>(this.endpoint, true, optionsCreate);
     }
 
     public update(id: string, optionsUpdate: TMotorcycleUpdate): Observable<TMotorcycle> 
     {
-        return this.httpService.update<TMotorcycle>(this.endpoint, id, optionsUpdate);
+        return this.httpService.update<TMotorcycle>(this.endpoint, true, id, optionsUpdate);
     }
 
     public delete(id: string)
     {
-        return this.httpService.delete<TMotorcycle>(this.endpoint, id);
+        return this.httpService.delete<TMotorcycle>(this.endpoint, true, id);
     }
 }

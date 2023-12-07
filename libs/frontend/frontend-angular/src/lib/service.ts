@@ -23,14 +23,18 @@ export class Service
         return this.authenticationService!.getUserFromLocalStorageNonObservable()?.token;
     }
 
-    protected getHeaders(): HttpHeaders
+    protected getHeaders(isSendBearerWithToken: boolean): HttpHeaders
     {
-        const headers = new HttpHeaders(
+        let headers = new HttpHeaders(
             { 
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + this.getToken()
+            'Content-Type': 'application/json'
             }
         );
+
+        if (isSendBearerWithToken)
+        {
+            headers = headers.append('Authorization', 'Bearer ' + this.getToken());
+        }
 
         return headers;
     }

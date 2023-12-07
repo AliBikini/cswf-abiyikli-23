@@ -1,7 +1,7 @@
 import { Motorcycle } from "@cswf-abiyikli-23/shared/api";
 import { IMotorcycleService } from "./imotorcycle.service";
 import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
-import { Inject, Injectable, Logger, forwardRef } from "@nestjs/common";
+import { ConflictException, Inject, Injectable, Logger, NotFoundException, forwardRef } from "@nestjs/common";
 import { RecoService } from "../reco/reco.service";
 
 @Injectable()
@@ -36,17 +36,48 @@ export class MotorcycleServiceMongo implements IMotorcycleService
             ...motorcycle,
         })
 
-        await motorcycleNew.save();
+        try
+        {
+            await motorcycleNew.save();
+        }
+        catch(error:any)
+        {
+            throw new ConflictException(error._message, error.message);
+        }
+
         await this.recoService.motorcycleCreateOrUpdate(motorcycleNew);
         return motorcycleNew;
     }
 
     async update(id: string, motorcycle: Motorcycle): Promise<Motorcycle> {
         Logger.log('update', this.TAG);
-        await this.conn?.schemas?.modelMotorcycle!.updateOne({ _id : id }, { ...motorcycle }).exec();
 
-        const motorcycleUpdated = await this.get(id)
-        await this.recoService.motorcycleCreateOrUpdate(motorcycleUpdated);
+        const motorcycleToUpdate = await this.conn?.schemas?.modelMotorcycle!.findOne({ _id : id }).exec();
+
+        if (!motorcycleToUpdate)
+        {
+            throw new NotFoundException("Could not find motorcycle to update with id " + id);
+        }
+
+        motorcycleToUpdate!.nameModel = motorcycle.nameModel;
+        motorcycleToUpdate!.body = motorcycle.body;
+        motorcycleToUpdate!.year = motorcycle.year;
+        motorcycleToUpdate!.fuel = motorcycle.fuel;
+        motorcycleToUpdate!.horsePower = motorcycle.horsePower;
+        motorcycleToUpdate!.seatHeight = motorcycle.seatHeight;
+        motorcycleToUpdate!.topSpeed = motorcycle.topSpeed;
+        motorcycleToUpdate!.linkImage = motorcycle.linkImage;
+
+        try
+        {
+            await motorcycleToUpdate.save();
+        }
+        catch(error:any)
+        {
+            throw new ConflictException(error._message, error.message);
+        }
+
+        await this.recoService.motorcycleCreateOrUpdate(motorcycleToUpdate);
         
         return await this.get(id);
     }

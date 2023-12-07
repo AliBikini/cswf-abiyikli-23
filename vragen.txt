@@ -1,3 +1,9 @@
-Ik krijg geen nette backend error van mongoose validation fail?
-Voorbeelden voor backend tests?
-Hoe gebruik ik validate token in front end?
+Ik krijg geen nette backend error van mongoose validation fail?: try-catch proberen binnen user service, dan throw error.
+                                                                Ik denk dat het fout gaat omdat ik nu in een Promise een exception throw,
+                                                                in plaats van een Observable. Ik verwacht misschien Observable gedrag.
+                                                                Achja het werkt.
+Voorbeelden voor backend tests?: Wachten op robin.
+Hoe gebruik ik validate token in front end?: telkens als frontend backend endpoints aanroept die validation nodig heeft,
+                                            dan moet je in de frontend de huidige token valideren (voor bijv. expiration).
+                                            Als de token invalid is, log the user out. (dit gebeurt op brightspace ook)
+                                            Anders gebruikt de user een invalid token om de frontend mee te gebruiken.

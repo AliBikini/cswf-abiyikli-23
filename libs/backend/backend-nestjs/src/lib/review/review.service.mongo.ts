@@ -1,6 +1,6 @@
 import { Identity, Review, User } from "@cswf-abiyikli-23/shared/api";
 import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
-import { Injectable, Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { ConflictException, Injectable, Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { IReviewService } from "./ireview.service";
 
 @Injectable()
@@ -103,7 +103,15 @@ export class ReviewServiceMongo implements IReviewService
             ...review,
         })
 
-        await user.save();
+        try
+        {
+            await user.save();
+        }
+        catch(error: any)
+        {
+            throw new ConflictException(error._message, error.message);
+        }
+
         return user.reviewsPlaced[reviewNew - 1];
     }
 
@@ -139,7 +147,16 @@ export class ReviewServiceMongo implements IReviewService
                 if (review._id.toString() == reviewToDelete._id.toString())
                 {
                     user.reviewsPlaced.splice(i2, 1);
-                    await user.save();
+                    
+                    try
+                    {
+                        await user.save();
+                    }
+                    catch(error: any)
+                    {
+                        throw new ConflictException(error._message, error.message);
+                    }
+
                     Logger.log('Deleted review', this.TAG);
                     return;
                 }

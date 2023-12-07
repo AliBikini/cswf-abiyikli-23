@@ -1,6 +1,6 @@
 import { Gang, Identity, IdentityRole } from "@cswf-abiyikli-23/shared/api";
 import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
-import { Inject, Injectable, Logger, NotFoundException, UnauthorizedException, forwardRef } from "@nestjs/common";
+import { ConflictException, Inject, Injectable, Logger, NotFoundException, UnauthorizedException, forwardRef } from "@nestjs/common";
 import { IGangService } from "./igang.service";
 import { RecoService } from "../reco/reco.service";
 import { IUserService } from "../user/iuser.service";
@@ -42,7 +42,15 @@ export class GangServiceMongo implements IGangService
             ...gang,
         })
 
-        await gangNew.save();
+        try
+        {
+            await gangNew.save();
+        }
+        catch(error: any)
+        {
+            throw new ConflictException(error._message, error.message);
+        }
+
         await this.recoService.gangCreateOrUpdate(gangNew, userOwner);
         return gangNew;
     }
@@ -51,7 +59,7 @@ export class GangServiceMongo implements IGangService
 
         Logger.log('update', this.TAG);
 
-        const gangToUpdate = await this.get(id);
+        const gangToUpdate = await this.conn?.schemas.modelGang?.findOne({_id: gang._id}).exec();
 
         if (!gangToUpdate)
         {
@@ -65,6 +73,21 @@ export class GangServiceMongo implements IGangService
             {
                 throw new UnauthorizedException("You are not the owner of this gang");
             }
+        }
+
+        gangToUpdate.dateCreated = gang.dateCreated;
+        gangToUpdate.description = gang.description;
+        gangToUpdate.linkEmblem = gang.linkEmblem;
+        gangToUpdate.name = gang.name;
+        gangToUpdate.userOwner_id = gang.userOwner_id;
+
+        try
+        {
+            await gangToUpdate.save();
+        }
+        catch(error: any)
+        {
+            throw new ConflictException(error._message, error.message);
         }
 
         await this.conn?.schemas?.modelGang!.updateOne({ _id : id }, { ...gang }).exec();
