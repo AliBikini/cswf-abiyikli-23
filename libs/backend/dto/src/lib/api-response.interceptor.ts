@@ -1,16 +1,17 @@
+import { HttpClient } from '@angular/common/http';
 import { TApiResponse } from '@cswf-abiyikli-23/shared/api';
 import {
     Injectable,
     NestInterceptor,
     ExecutionContext,
     CallHandler,
+    BadGatewayException,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable()
 export class ApiResponseInterceptor implements NestInterceptor {
-    
     intercept(
         context: ExecutionContext,
         next: CallHandler

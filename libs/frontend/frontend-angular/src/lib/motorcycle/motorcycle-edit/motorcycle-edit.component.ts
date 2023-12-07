@@ -24,7 +24,7 @@ export class MotorcycleEditComponent implements OnInit, OnDestroy
   ({
     nameModel: new FormControl,
     body: new FormControl,
-    fuelType: new FormControl,
+    fuel: new FormControl,
     horsePower: new FormControl,
     seatHeight: new FormControl,
     topSpeed: new FormControl,
@@ -52,12 +52,14 @@ export class MotorcycleEditComponent implements OnInit, OnDestroy
           {
             this.motorcycle = resp;
             this.applyMotorcycleToForm();
+            this.motorcycleForm.updateValueAndValidity();
           }); 
         }
         else
         {
-          this.motorcycle = { id: '-1', nameModel: '', body: MotorcycleBody.other, fuelType: MotorcycleFuel.gasoline, horsePower: '0', seatHeight: '0', topSpeed: '0', year: '', linkImage: '' }
+          this.motorcycle = { _id: '-1', nameModel: '', body: MotorcycleBody.other, fuel: MotorcycleFuel.gasoline, horsePower: '0', seatHeight: '0', topSpeed: '0', year: '', linkImage: '' }
           this.applyMotorcycleToForm();
+          this.motorcycleForm.updateValueAndValidity();
         }
       }
     );
@@ -69,7 +71,7 @@ export class MotorcycleEditComponent implements OnInit, OnDestroy
     ({
       nameModel: this.motorcycle!.nameModel,
       body: this.motorcycle!.body,
-      fuelType: this.motorcycle!.fuelType,
+      fuel: this.motorcycle!.fuel,
       horsePower: this.motorcycle!.horsePower,
       seatHeight: this.motorcycle!.seatHeight,
       topSpeed: this.motorcycle!.topSpeed,
@@ -104,7 +106,7 @@ export class MotorcycleEditComponent implements OnInit, OnDestroy
     ({
       nameModel: this.motorcycleForm.value.nameModel,
       body: this.motorcycleForm.value.body,
-      fuelType: this.motorcycleForm.value.fuelType,
+      fuel: this.motorcycleForm.value.fuel,
       horsePower: this.motorcycleForm.value.horsePower,
       seatHeight: this.motorcycleForm.value.seatHeight,
       topSpeed: this.motorcycleForm.value.topSpeed,
@@ -112,7 +114,7 @@ export class MotorcycleEditComponent implements OnInit, OnDestroy
       linkImage: this.motorcycleForm.value.linkImage
     }).subscribe((resp) => {
       console.log("New motorcycle added!");
-      this.redirectTo(`motorcycle/${resp.id}`);
+      this.redirectTo(`motorcycle/${resp._id}`);
     })
   }
 

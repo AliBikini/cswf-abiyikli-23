@@ -1,0 +1,35 @@
+<h1>Login to Motard</h1>
+
+<form [formGroup]="formLogin!" (ngSubmit)="onSubmitForm()">
+    <div class="form-group">
+      <label for="email">Email address</label>
+      <input type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" formControlName="email">
+      <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="alert alert-danger">
+        <div *ngIf="email?.errors?.['required']">Email is required.</div>
+        <div *ngIf="email?.errors?.['email']">Email is invalid.</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" class="form-control" id="password" placeholder="Password" formControlName="password">
+      <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="alert alert-danger">
+        <div *ngIf="password?.errors?.['required']">Password is required.</div>
+        <div *ngIf="password?.errors?.['length']">Password must be between 6 and 20 characters.</div>
+        <div *ngIf="password?.errors?.['atleastOneNumber']">Password must have atleast 1 number.</div>
+        <div *ngIf="password?.errors?.['atleastOneUppercase']">Password must have atleast 1 uppercase character.</div>
+        <div *ngIf="password?.errors?.['atleastOneSpecial']">Password must have atleast 1 special character (&#64;#$%^&+=).</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-1 d-grid gap-2">
+        <button type="submit" class="btn btn-primary btn-block" [disabled]="!(formLogin?.valid && formLogin?.dirty)">Login</button>
+      </div>
+      <div class="col text-start">
+        <a class="link-underline-primary" routerLink="register">or register a new account</a>
+      </div>
+      <div class="col-8">
+      </div>
+    </div>
+  </form>
+
+  

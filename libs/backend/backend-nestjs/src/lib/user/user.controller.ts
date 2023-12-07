@@ -1,39 +1,42 @@
-import { Controller, Delete } from '@nestjs/common';
-import { UserService } from './user.service';
+import { Controller, Delete, Inject, UseGuards, Request, Logger, UnauthorizedException } from '@nestjs/common';
 import { Get, Param, Post, Body } from '@nestjs/common';
-import { TUser } from '@cswf-abiyikli-23/shared/api';
-import { UserCreateDto, UserUpdateDto } from '@cswf-abiyikli-23/backend/dto';
+import { User } from '@cswf-abiyikli-23/shared/api';
+import { IUserService } from './iuser.service';
+import { AuthGuardIsValidLogin } from '../auth/auth.guards';
 
 @Controller('user')
 export class UserController 
 {
-    constructor(private userService: UserService)
+    constructor(@Inject(IUserService)private userService: IUserService)
     {
 
     }
 
     @Get('')
-    getAll(): TUser[] {
-        return this.userService.getAll();
+    async getAll(): Promise<User[]> {
+        return await this.userService.getAll();
     }
 
     @Get(':id')
-    getOne(@Param('id') id: string): TUser {
-        return this.userService.get(id);
+    async get(@Param('id') id: string): Promise<User> {
+        return await this.userService.get(id);
     }
 
-    @Post('')
-    create(@Body() data: UserCreateDto): TUser {
-        return this.userService.create(data);
-    }
+    //// Creation of user must be done by Identity controller/service
+    // @Post('')
+    // async create(@Body() data: User): Promise<User> {
+    //     return await this.userService.create(data);
+    // }
 
+    @UseGuards(AuthGuardIsValidLogin)
     @Post(':id')
-    update(@Param('id') id: string, @Body() data: UserUpdateDto): TUser {
-        return this.userService.update(id, data);
+    async update(@Request() req: any, @Param('id') id: string, @Body() data: User): Promise<User> {
+        return await this.userService.update(id, data, req.identity);
     }
 
+    @UseGuards(AuthGuardIsValidLogin)
     @Delete(':id')
-    delete(@Param('id') id: string) {
-        this.userService.delete(id);
+    async delete(@Request() req: any, @Param('id') id: string) {
+        await this.userService.delete(id, req.identity);
     }
 }

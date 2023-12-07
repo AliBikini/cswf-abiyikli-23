@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Gender, TMotorcycle, TUser, UserRole } from '@cswf-abiyikli-23/shared/api';
+import { Gender, TMotorcycle, TUser, IdentityRole } from '@cswf-abiyikli-23/shared/api';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../user.service';
@@ -28,7 +28,6 @@ export class UserEditComponent implements OnInit, OnDestroy
     email: new FormControl,
     dateBirth: new FormControl,
     gender: new FormControl,
-    userRole: new FormControl,
     motorcyclesOwned: this.fb.array<TMotorcycle>([])
   })
   
@@ -57,7 +56,6 @@ export class UserEditComponent implements OnInit, OnDestroy
             email: new FormControl,
             dateBirth: new FormControl,
             gender: new FormControl,
-            userRole: new FormControl,
             motorcyclesOwned: this.fb.array([this.motorcycles?.at(0)!])
           })
 
@@ -69,12 +67,14 @@ export class UserEditComponent implements OnInit, OnDestroy
             {
               this.user = resp;
               this.applyUserToForm();
+              this.userForm.updateValueAndValidity();
             }); 
           }
           else
           {
-            this.user = { id: '-1', nameFirst: '', nameLast: '', email: '', dateBirth: new Date, gender: Gender.male, userRole: UserRole.user, motorcyclesOwned: [ this.motorcycles?.at(0)! ] }
+            this.user = { _id: '-1', nameFirst: '', nameLast: '', email: '', dateBirth: new Date, gender: Gender.male, userRole: IdentityRole.user, motorcyclesOwned: [ this.motorcycles?.at(0)! ], reviewsPlaced: [], gangsJoined: [] }
             this.applyUserToForm();
+            this.userForm.updateValueAndValidity();
           }
         })
       }
@@ -90,7 +90,6 @@ export class UserEditComponent implements OnInit, OnDestroy
       email: this.user?.email,
       dateBirth: this.user?.dateBirth,
       gender: this.user?.gender,
-      userRole: this.user?.userRole,
       motorcyclesOwned: this.user!.motorcyclesOwned as TMotorcycle[]
     })
   }
@@ -133,12 +132,14 @@ export class UserEditComponent implements OnInit, OnDestroy
       nameLast: this.userForm.value.nameLast,  
       email: this.userForm.value.email,  
       dateBirth: this.userForm.value.dateBirth,  
-      userRole: this.userForm.value.userRole,  
+      userRole: IdentityRole.user, 
       gender: this.userForm.value.gender,
-      motorcyclesOwned: this.userForm.value.motorcyclesOwned as TMotorcycle[]
+      motorcyclesOwned: this.userForm.value.motorcyclesOwned as TMotorcycle[],
+      reviewsPlaced: [],
+      gangsJoined: []
     }).subscribe((resp) => {
       console.log("New user added!");
-      this.redirectTo(`/user/${resp.id}`);
+      this.redirectTo(`/user/${resp._id}`);
     })
   }
 
@@ -149,7 +150,7 @@ export class UserEditComponent implements OnInit, OnDestroy
       nameLast: this.userForm.value.nameLast,  
       email: this.userForm.value.email,  
       dateBirth: this.userForm.value.dateBirth,  
-      userRole: this.userForm.value.userRole,  
+      userRole: IdentityRole.user, 
       gender: this.userForm.value.gender,
       motorcyclesOwned: this.userForm.value.motorcyclesOwned as TMotorcycle[]
     }).subscribe((resp) => {
