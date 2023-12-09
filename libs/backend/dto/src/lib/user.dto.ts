@@ -9,15 +9,14 @@ import
 
 import 
 {
-    Gender,
     TMotorcycle,
     TUserCreate,
     TUserUpdate,
     TUserUpsert,
-    IdentityRole,
     Review,
     Gang
 } from '@cswf-abiyikli-23/shared/api';
+import { Gender, IdentityRole } from 'libs/shared/api/src/lib/models/enums';
 
 /**
  * Use the `Pick` utility type to extract only the properties we want for
@@ -45,7 +44,7 @@ export class UserCreateDto implements TUserCreate
     gender!: Gender;
 
     @IsNotEmpty()
-    userRole!: IdentityRole;
+    role!: IdentityRole;
 
     @IsOptional()
     motorcyclesOwned!: TMotorcycle[];
@@ -83,7 +82,7 @@ export class UserUpsertDto implements TUserUpsert
     gender!: Gender;
 
     @IsNotEmpty()
-    userRole!: IdentityRole;
+    role!: IdentityRole;
 
     @IsOptional()
     motorcyclesOwned!: TMotorcycle[];
@@ -117,5 +116,5 @@ export class UserUpdateDto implements TUserUpdate
     gender!: Gender;
 
     @IsNotEmpty()
-    userRole!: IdentityRole;
+    role!: IdentityRole;
 }

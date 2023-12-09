@@ -1,0 +1,11 @@
+<h2>{{ gang?.name }}</h2>
+<img src="{{ gang?.linkEmblem }}" class="img-thumbnail" alt="...">
+<p>Owner: {{ gang?.userOwner?.nameFirst }} {{ gang?.userOwner?.nameLast }}</p>
+<p>Founded in: {{ gang?.dateCreated }}</p>
+<p>{{ gang?.description }}</p>
+<a routerLink="edit" class="btn btn-primary">Edit</a>
+
+<div *ngIf="userLoggedIn && gang">
+    <a *ngIf="!isMember" class="btn btn-primary" (click)="joinGang()">Join</a>
+    <a *ngIf="isMember" class="btn btn-primary" (click)="leaveGang()">Leave</a>
+</div>

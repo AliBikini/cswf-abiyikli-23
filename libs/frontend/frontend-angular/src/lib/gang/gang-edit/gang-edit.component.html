@@ -1,0 +1,43 @@
+<div *ngIf="gangId">
+    <h2>Edit: {{ gang?.name }}</h2>
+</div>
+
+<div *ngIf="!gangId">
+    <h2>Start a new gang</h2>
+</div>
+
+<form [formGroup]="gangForm" (ngSubmit)="onSubmitForm()">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name gang</label>
+        <input type="text" class="form-control" id="name" formControlName="name">
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <input type="text" class="form-control" id="description" formControlName="description">
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="mb-3">
+                <label for="linkEmblem" class="form-label">Emblem</label>
+                <input type="text" class="form-control" id="linkEmblem" formControlName="linkEmblem" [(ngModel)]="linkImageDynamic">
+            </div>
+        </div>
+        <div class="col">
+            <img src="{{ linkImageDynamic }}" class="img-thumbnail" alt="...">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-1" *ngIf="!gangId">
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+        <div class="col-1" *ngIf="gangId">
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+        <div class="col-1" *ngIf="gangId">
+            <button type="button" class="btn btn-danger" (click)="deleteGang()">Delete</button>
+        </div>
+    </div>
+</form>

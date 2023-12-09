@@ -1,1 +1,5 @@
-<p>review-detail works!</p>
+<div *ngIf="review" class="border">
+    <h2>{{review.title}}</h2>
+    <p><small>by <a routerLink="/user/{{user?._id}}">{{user?.nameFirst}}</a> at {{review.date | date}}</small></p>
+    <p>{{review.message}}</p>
+</div>

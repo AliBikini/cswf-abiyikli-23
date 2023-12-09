@@ -1,4 +1,4 @@
-import { Identity, User, IdentityRole, TIdentityCredentials, TIdentityRegister } from "@cswf-abiyikli-23/shared/api";
+import { User, TIdentityCredentials, TIdentityRegister, IdentityRole } from "@cswf-abiyikli-23/shared/api";
 import { ConflictException, Inject, Injectable, Logger, UnauthorizedException } from "@nestjs/common";
 import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
 import { JwtService } from '@nestjs/jwt';
@@ -14,72 +14,55 @@ export class IdentityService
         this.conn = conn;
     }
 
-    async login(credentials: TIdentityCredentials): Promise<Identity> {
+    async login(credentials: TIdentityCredentials): Promise<string> {
         Logger.log('Login ' + credentials.email, this.TAG);
 
-        const identity = await this.conn.schemas.modelIdentity!.findOne({ email : credentials.email });
+        const identityResult = await this.conn.schemas.modelIdentity!.findOne({ email: credentials.email });
 
-        if (identity?.password != credentials.password) 
+        if (!identityResult || identityResult.password != credentials.password) 
         {
             const errMsg = 'Email not found or password invalid';
-            Logger.error(errMsg, this.TAG);
+            Logger.error(errMsg + " Identity: " + identityResult, this.TAG);
             throw new UnauthorizedException(errMsg);
         }
 
-        const user = await this.conn.schemas.modelUser!.findOne({ email : identity.email });
+        const user: User = await this.userService.get(identityResult!.user!._id);
+        user.role = identityResult.role;
 
-        if (!user)
-        {
-            const errMsg = `Identity exists, but not user tied to identity. User with email ${identity.email} not found`;
-            Logger.error(errMsg, this.TAG);
-            throw new UnauthorizedException(errMsg);
-        }
+        const payload = { identity_id: identityResult.id, user_id: user._id, role: identityResult.role };
 
-        const payload = { _id: identity._id, user_id: user?._id, role: identity.role };
-
-        Logger.debug("Payload: " + payload._id, this.TAG);
-
-        return {
-            _id: identity._id,
-            user_id: user._id,
-            email: identity.email,
-            password: identity.password,
-            role: identity.role,
-            token: await this.jwtService.signAsync(payload)
-        };
+        Logger.debug(payload, this.TAG);
+        return await this.jwtService.signAsync(payload);
     }
 
-    async register(identityRegister: TIdentityRegister): Promise<Identity>
+    async register(identityRegister: TIdentityRegister): Promise<string>
     {
-        Logger.log('Register ' + identityRegister.user.email, this.TAG);
+        Logger.log('Register ' + identityRegister.email, this.TAG);
 
-        if (await this.conn.schemas.modelIdentity!.findOne({ email: identityRegister.user.email })) {
+        if (await this.conn.schemas.modelIdentity!.findOne({ email: identityRegister.email })) {
             Logger.debug('identity with email already exists', this.TAG);
             throw new ConflictException('Identity already exists');
         }
 
-        if (await this.conn.schemas.modelUser!.findOne({ email: identityRegister.user.email })) {
-            Logger.debug('user with email already exists', this.TAG);
-            throw new ConflictException('User already exists');
-        }
+        // if (await this.conn.schemas.modelIdentity!.findOne({ email: identityRegister.user.email })) {
+        //     Logger.debug('identity with email already exists', this.TAG);
+        //     throw new ConflictException('Identity already exists');
+        // }
 
-        Logger.debug('User not found, creating');
-
-        Logger.debug(identityRegister);
+        Logger.debug('Identity not found, creating');
         const userNew = await this.userService.create(identityRegister.user as User);
-        Logger.debug("test", this.TAG);
+
+        if (userNew == undefined)
+        {
+            throw new ConflictException('Error with inserting new user');
+        }
 
         const identityNew = await new this.conn.schemas.modelIdentity!({
-            user_id: userNew._id,
-            email: identityRegister.user.email,
+            email: identityRegister.email,
             password: identityRegister.password,
-            role: identityRegister.role
+            role: identityRegister.role,
+            user: userNew
         })
-
-        if (identityNew == undefined)
-        {
-            throw new ConflictException('Error with inserting new identity');
-        }
 
         let isFailed: Boolean = false;
         let errorObj: any;
@@ -92,7 +75,7 @@ export class IdentityService
         {
             isFailed = true;
             errorObj = error;
-            await this.userService.delete(userNew._id, identityNew);
+            await this.userService.delete(userNew._id, userNew._id, IdentityRole.admin);
         }
 
         if (isFailed == true)

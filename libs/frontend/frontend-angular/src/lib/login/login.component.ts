@@ -4,7 +4,7 @@ import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModu
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
 import { Subscription } from 'rxjs';
-import { Identity } from '@cswf-abiyikli-23/shared/api';
+import { User } from '@cswf-abiyikli-23/shared/api';
 import { FormValidators } from '../form.validators';
 
 @Component({
@@ -36,8 +36,8 @@ export class LoginComponent implements OnInit, OnDestroy
     });
 
     this.subscription = this.authenticationService
-    .getUserFromLocalStorage()
-    .subscribe((identity: Identity | undefined) => 
+    .getUserLoggedIn()
+    .subscribe((identity: User | undefined) => 
     {
       if (identity) 
       {
@@ -67,7 +67,7 @@ export class LoginComponent implements OnInit, OnDestroy
         .subscribe((user) => {
           if (user) {
             console.log('Logged in');
-            this.router.navigate(['about']);
+            this.router.navigate(['user']);
           }
         });
     } else {

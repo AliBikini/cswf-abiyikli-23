@@ -1,6 +1,7 @@
 import { IUserService } from "./iuser.service";
-import { Gender, Motorcycle, MotorcycleBody, MotorcycleFuel, User, IdentityRole } from "@cswf-abiyikli-23/shared/api";
+import { Motorcycle, MotorcycleBody, MotorcycleFuel, User } from "@cswf-abiyikli-23/shared/api";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Gender, IdentityRole } from "libs/shared/api/src/lib/models/enums";
 
 @Injectable()
 export class UserServiceMemory implements IUserService
@@ -14,11 +15,10 @@ export class UserServiceMemory implements IUserService
             _id: '0',
             nameFirst: 'Ali',
             nameLast: 'Biyikli',
-            email: "ali@outlook.com",
             dateBirth: new Date("1998-07-02"),
             gender: Gender.male,
             motorcyclesOwned: [ new Motorcycle() ],
-            userRole: IdentityRole.user,
+            role: IdentityRole.admin,
             reviewsPlaced: [],
             gangsJoined: []
         });
@@ -26,11 +26,10 @@ export class UserServiceMemory implements IUserService
             _id: '1',
             nameFirst: 'Seher',
             nameLast: 'Akdag',
-            email: "seher@outlook.com",
             dateBirth: new Date("1998-08-18"),
             gender: Gender.female,
             motorcyclesOwned: [],
-            userRole: IdentityRole.user,
+            role: IdentityRole.user,
             reviewsPlaced: [],
             gangsJoined: []
         });
@@ -38,11 +37,10 @@ export class UserServiceMemory implements IUserService
             _id: '2',
             nameFirst: 'Pascal',
             nameLast: 'Stool',
-            email: "pascal@outlook.com",
             dateBirth: new Date("2019-01-16"),
             gender: Gender.male,
             motorcyclesOwned: [],
-            userRole: IdentityRole.user,
+            role: IdentityRole.user,
             reviewsPlaced: [],
             gangsJoined: []
         });
@@ -50,11 +48,10 @@ export class UserServiceMemory implements IUserService
             _id: '3',
             nameFirst: 'Pietje',
             nameLast: 'Heushout',
-            email: "pietje@outlook.com",
             dateBirth: new Date("2019-01-16"),
             gender: Gender.male,
             motorcyclesOwned: [],
-            userRole: IdentityRole.user,
+            role: IdentityRole.user,
             reviewsPlaced: [],
             gangsJoined: []
         });
@@ -62,11 +59,10 @@ export class UserServiceMemory implements IUserService
             _id: '4',
             nameFirst: 'Wadayaohn',
             nameLast: 'Dawuld',
-            email: "wadyoahn@outlook.com",
             dateBirth: new Date("2019-01-16"),
             gender: Gender.male,
             motorcyclesOwned: [],
-            userRole: IdentityRole.user,
+            role: IdentityRole.user,
             reviewsPlaced: [],
             gangsJoined: []
         });
@@ -117,7 +113,6 @@ export class UserServiceMemory implements IUserService
 
         userToUpdate.nameFirst = user.nameFirst;
         userToUpdate.nameLast = user.nameLast;
-        userToUpdate.email = user.email;
         userToUpdate.gender = user.gender;
         userToUpdate.dateBirth = user.dateBirth;
 

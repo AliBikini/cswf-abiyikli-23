@@ -3,6 +3,7 @@ import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
 import { ConflictException, Injectable, Inject, Logger, NotFoundException, UnauthorizedException, forwardRef } from "@nestjs/common";
 import { IReviewService } from "./ireview.service";
 import { RecoService } from "../reco/reco.service";
+import { IdentityRole } from "libs/shared/api/src/lib/models/enums";
 
 @Injectable()
 export class ReviewServiceMongo implements IReviewService
@@ -33,7 +34,7 @@ export class ReviewServiceMongo implements IReviewService
 
         for (let i = 0; i < reviewsAll.length; i++)
         {
-            if (reviewsAll.at(i)?.motorcycle_id.toString() == motorcycle_id.toString())
+            if (reviewsAll.at(i)?.motorcycle?._id.toString() == motorcycle_id.toString())
             {
                 reviewsMotorcycle.push(reviewsAll.at(i));
             }
@@ -44,7 +45,7 @@ export class ReviewServiceMongo implements IReviewService
 
     async getAll(): Promise<Review[]> {
         Logger.log('getAll', this.TAG);
-        const users = await this.conn?.schemas?.modelUser!.find().exec();
+        const users = await this.conn?.schemas?.modelUser!.find().populate('reviewsPlaced.motorcycle').exec();
 
         const reviewsAll = [];
 
@@ -80,29 +81,34 @@ export class ReviewServiceMongo implements IReviewService
         throw new NotFoundException(errorMsg);
     }
 
-    async create(review: Review): Promise<Review> 
+    async create(motorcycle_id: string, review: Review, user_id: string): Promise<Review> 
     {
-        const motorcycle = await this.conn?.schemas.modelMotorcycle?.findOne({ _id : review.motorcycle_id }).exec();
+        const motorcycle = await this.conn?.schemas.modelMotorcycle?.findOne({ _id : motorcycle_id }).exec();
 
         if (!motorcycle)
         {
-            const errorMsg = `Motorcycle not found with id ${review.motorcycle_id}`;
+            const errorMsg = `Motorcycle not found with id ${motorcycle_id}`;
             Logger.error(errorMsg, this.TAG);
             throw new NotFoundException(errorMsg);
         }
 
-        const user = await this.conn?.schemas.modelUser?.findOne({ _id : review.user_id }).exec();
+        const user = await this.conn?.schemas.modelUser?.findOne({ _id : user_id }).exec();
 
         if (!user)
         {
-            const errorMsg = `User not found with id ${review.user_id}`;
+            const errorMsg = `User not found with id ${user_id}`;
             Logger.error(errorMsg, this.TAG);
             throw new NotFoundException(errorMsg);
         }
 
+        review.user_id = user._id;
+        review.motorcycle = motorcycle;
+
         const reviewNewIndex = user.reviewsPlaced.push({
-            ...review,
+            ...review
         })
+
+        const reviewAdded = user.reviewsPlaced[reviewNewIndex - 1];
 
         try
         {
@@ -113,8 +119,8 @@ export class ReviewServiceMongo implements IReviewService
             throw new ConflictException(error._message, error.message);
         }
 
-        await this.recoService.reviewCreateOrUpdate(user.reviewsPlaced[reviewNewIndex - 1]);
-        return user.reviewsPlaced[reviewNewIndex - 1];
+        await this.recoService.reviewCreateOrUpdate(reviewAdded);
+        return reviewAdded;
     }
 
     // async update(id: string, review: Review): Promise<Review> {
@@ -123,13 +129,13 @@ export class ReviewServiceMongo implements IReviewService
     //     return await this.get(id);
     // }
 
-    async delete(id: string, identity: Identity): Promise<void> {
+    async delete(id: string, user: User): Promise<void> {
         Logger.log('delete', this.TAG);
         const reviewToDelete = await this.get(id);
 
-        if (identity.role == "user")
+        if (user.role != IdentityRole.admin)
         {
-            if (identity.user_id != reviewToDelete.user_id)
+            if (user._id != reviewToDelete.user_id)
             {
                 throw new UnauthorizedException("You're not the user who placed this review");
             }

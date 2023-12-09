@@ -1,9 +1,62 @@
 <h2>{{ motorcycle?.nameModel }}</h2>
-<img src="{{ motorcycle?.linkImage }}" class="img-thumbnail" alt="...">
-<p>Year: {{ motorcycle?.year }}</p>
-<p>Body: {{ motorcycle?.body }}</p>
-<p>Fuel: {{ motorcycle?.fuel }}</p>
-<p>Horsepower: {{ motorcycle?.horsePower }}</p>
-<p>Top speed: {{ motorcycle?.topSpeed }}</p>
-<p>Seat height: {{ motorcycle?.seatHeight }}</p>
-<a routerLink="edit" class="btn btn-primary">Edit</a>
+
+<div>
+    <div class="row vh-100">
+        <div class="col border">
+            <img src="{{ motorcycle?.linkImage }}" class="img-thumbnail" alt="...">
+            <p>Year: {{ motorcycle?.year }}</p>
+            <p>Body: {{ motorcycle?.body }}</p>
+            <p>Fuel: {{ motorcycle?.fuel }}</p>
+            <p>Horsepower: {{ motorcycle?.horsePower }}</p>
+            <p>Top speed: {{ motorcycle?.topSpeed }}</p>
+            <p>Seat height: {{ motorcycle?.seatHeight }}</p>
+            <a routerLink="edit" class="btn btn-primary">Edit</a>
+        </div>
+        <div class="col border">
+            <div *ngIf="motorcycle && userLoggedIn && isOwnsThisMotorcycle != null"> <!-- OWNAGE ACCORDIONS -->
+                <div *ngIf="motorcycle && !isOwnsThisMotorcycle" class="row border">
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                You currently don't own a {{ motorcycle.nameModel }}
+                            </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse hide" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <button class="btn btn-primary" (click)="ownMotorcycle()">I own a {{ motorcycle?.nameModel }}!</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="motorcycle && isOwnsThisMotorcycle" class="row border">
+                    <div class="accordion" id="accordionExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                You're currently the owner of a {{ motorcycle.nameModel }}
+                            </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse hide" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <button class="btn btn-danger" (click)="disownMotorcycle()">I don't own this motorcycle anymore...</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>  <!-- REVIEWS -->
+                <div *ngIf="reviews" class="overflow-scroll vh-100">
+                    <div *ngFor="let review of reviews">
+                        <cswf-abiyikli-23-review-detail [reviewId]="review._id"></cswf-abiyikli-23-review-detail>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

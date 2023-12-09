@@ -23,25 +23,24 @@ export class GangController
     @UseGuards(AuthGuardIsValidLogin)
     @Post('')
     async create(@Request() req: any, @Body() data: Gang): Promise<Gang> {
-        data.userOwner_id = req.identity.user_id;
-        return await this.gangService.create(data, req.identity);
+        return await this.gangService.create(data, req.user_id);
     }
 
     @UseGuards(AuthGuardIsValidLogin)
     @Post(':id')
     update(@Request() req: any, @Param('id') id: string, @Body() data: Gang): Promise<Gang> {
-        return this.gangService.update(id, data, req.identity);
+        return this.gangService.update(id, data, req.user_id, req.role);
     }
 
     @UseGuards(AuthGuardIsValidLogin)
     @Delete(':id')
     async delete(@Request() req: any, @Param('id') id: string) {
-        await this.gangService.delete(id, req.identity);
+        await this.gangService.delete(id, req.user_id, req.role);
     }
 
     @UseGuards(AuthGuardIsValidLogin)
     @Delete('')
     async deleteAll(@Request() req: any) {
-        await this.gangService.deleteAll(req.identity);
+        await this.gangService.deleteAll(req.role);
     }
 }

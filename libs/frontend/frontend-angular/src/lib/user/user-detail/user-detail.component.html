@@ -1,6 +1,49 @@
 <h2>{{ user?.nameFirst }} {{ user?.nameLast }}</h2>
-<p>Email: {{ user?.email }}</p>
 <p>Date of birth: {{ user?.dateBirth | date: 'longDate' }}</p>
 <p>Gender: {{ user?.gender }}</p>
-<p>Role: {{ user?.userRole }}</p>
 <a routerLink="edit" class="btn btn-primary">Edit</a>
+
+<div style="padding-bottom: 24px;">
+
+</div>
+
+<div class="row">
+    <div class="col">
+        <h3>Motorcycles owned</h3>
+        <div class="list-group">
+            <a *ngFor="let motorcycleOwned of user?.motorcyclesOwned" 
+                routerLink="/motorcycle/{{motorcycleOwned._id}}" class="list-group-item list-group-item-action" aria-current="true">
+                <div class="row">
+                    <div class="col-7">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h4 class="mb-1">{{motorcycleOwned.nameModel}}</h4>
+                        </div>
+
+                        <p>{{motorcycleOwned.year}}</p>
+                    </div>
+                    <div class="col">
+                        <img class="img-fluid" src="{{motorcycleOwned.linkImage}}">
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col">
+        <h3>Gangs joined</h3>
+        <div class="list-group">
+            <a *ngFor="let gangJoined of user?.gangsJoined" 
+                routerLink="/gang/{{gangJoined._id}}" class="list-group-item list-group-item-action" aria-current="true">
+                <div class="row">
+                    <div class="col-7">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h4 class="mb-1">{{gangJoined.name}}</h4>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <img class="img-fluid" src="{{gangJoined.linkEmblem}}">
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

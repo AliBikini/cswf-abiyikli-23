@@ -18,6 +18,12 @@ import { LoginComponent } from './login/login.component';
 import { AuthenticationService } from './authentication.service';
 import { HttpService } from './http.service';
 import { RegisterComponent } from './register/register.component';
+import { GangListComponent } from './gang/gang-list/gang-list.component';
+import { GangEditComponent } from './gang/gang-edit/gang-edit.component';
+import { GangDetailComponent } from './gang/gang-detail/gang-detail.component';
+import { GangService } from './gang/gang.service';
+import { ReviewService } from './review/review.service';
+import { ReviewDetailComponent } from './review/review-detail/review-detail.component';
 
 const routes: Routes = [
   {
@@ -38,7 +44,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, RouterLink, RouterModule.forChild(routes), LoginComponent, RegisterComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, RouterLink, RouterModule.forChild(routes), LoginComponent, RegisterComponent, ReviewDetailComponent],
   declarations: [
     NavbarComponent,
     AboutComponent,
@@ -47,9 +53,12 @@ const routes: Routes = [
     UserEditComponent,
     MotorcycleListComponent,
     MotorcycleEditComponent,
-    MotorcycleDetailComponent
+    MotorcycleDetailComponent,
+    GangListComponent,
+    GangEditComponent,
+    GangDetailComponent,
   ],
-  providers: [UserService, MotorcycleService, AuthenticationService, HttpService],
-  exports: [NavbarComponent, AboutComponent, UserListComponent, UserDetailComponent, UserEditComponent, LoginComponent, RegisterComponent],
+  providers: [UserService, MotorcycleService, AuthenticationService, HttpService, GangService, ReviewService],
+  exports: [NavbarComponent, AboutComponent, UserListComponent, UserDetailComponent, UserEditComponent, LoginComponent, RegisterComponent, GangListComponent, GangEditComponent, GangDetailComponent, ReviewDetailComponent],
 })
 export class FrontendAngularModule {}

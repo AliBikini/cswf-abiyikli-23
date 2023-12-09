@@ -15,7 +15,6 @@ export class Schemas
     modelMotorcycle: mongoose.Model<Motorcycle> | null = null;
 
     schemaReview: mongoose.Schema<Review> | null = null;
-    modelReview: mongoose.Model<Review> | null = null;
 
     schemaGang: mongoose.Schema<Gang> | null = null;
     modelGang: mongoose.Model<Gang> | null = null;
@@ -28,29 +27,26 @@ export class Schemas
     createSchemas()
     {
         this.schemaIdentity = new mongoose.Schema({
-            user_id: {type: String, required: true},
             email: {type: String, lowercase: true, unique: true, required: true, validate: [this.validateEmail, 'Please enter a valid email address']},
             password: {type: String, required: true, validate: [this.validPassword, 'Please enter a valid password']},
-            role: {type: String, required: true}
+            role: {type: String, required: true},
+            user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
         })
 
         this.modelIdentity = mongoose.model<Identity>("Identity", this.schemaIdentity);
 
         this.schemaReview = new mongoose.Schema({
             user_id: {type: String, required: true},
-            motorcycle_id: {type: String, required: true},
+            motorcycle: { type: mongoose.Schema.Types.ObjectId, ref: "Motorcycle", required: true },
             judgement: {type: String, required: true},
             title: String,
             message: String,
             date: {type: Date, required: true},
         })
 
-        this.modelReview = mongoose.model<Review>("Review", this.schemaReview);
-
         this.schemaUser = new mongoose.Schema({
             nameFirst: {type: String, required: true},
             nameLast: {type: String, required: true},
-            email: {type: String, lowercase: true, unique: true, required: true, validate: [this.validateEmail, 'Please enter a valid email address']},
             dateBirth: {type: Date, required: true},
             gender: {type: String, required: true},
             motorcyclesOwned: [{ type: mongoose.Schema.Types.ObjectId, ref: "Motorcycle" }],
@@ -74,7 +70,7 @@ export class Schemas
         this.modelMotorcycle = mongoose.model<Motorcycle>("Motorcycle", this.schemaMotorcycle);
 
         this.schemaGang = new mongoose.Schema({
-            userOwner_id: {type: String, required: true},
+            userOwner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
             name: {type: String, required: true},
             description: String,
             dateCreated: {type: Date, required: true},

@@ -4,8 +4,9 @@ import { Subscription } from 'rxjs';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
-import { Gang, Identity, IdentityRole, Motorcycle, Review, User } from '@cswf-abiyikli-23/shared/api';
+import { Gang, Identity, Motorcycle, Review, User } from '@cswf-abiyikli-23/shared/api';
 import { FormValidators } from '../form.validators';
+import { IdentityRole } from 'libs/shared/api/src/lib/models/enums';
 
 @Component({
   standalone: true,
@@ -54,10 +55,10 @@ export class RegisterComponent implements OnInit, OnDestroy
     });
 
     this.subscription = this.authenticationService
-    .getUserFromLocalStorage()
-    .subscribe((identity: Identity | undefined) => 
+    .getUserLoggedIn()
+    .subscribe((user: User | undefined) => 
     {
-      if (identity) 
+      if (user) 
       {
         console.log('User already logged in > to dashboard');
         this.router.navigate(['about']);
@@ -88,12 +89,13 @@ export class RegisterComponent implements OnInit, OnDestroy
       const reviewsPlaced: Review[] = [];
       const motorcyclesOwned: Motorcycle[] = [];
 
-      const user = new User(undefined, nameFirst, nameLast, email, dateBirth, gender, motorcyclesOwned, reviewsPlaced, gangsJoined);
+      const user = new User(undefined, nameFirst, nameLast, dateBirth, gender, motorcyclesOwned, reviewsPlaced, gangsJoined);
 
       this.authenticationService
         .register(
           {
             user: user,
+            email: email,
             password: password,
             role: IdentityRole.user
           }

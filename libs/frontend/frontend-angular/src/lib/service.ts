@@ -15,9 +15,9 @@ export class Service
         this.http = http;
     }
 
-    protected getToken(): string | undefined
+    protected getToken(): string | null
     {
-        return this.authenticationService!.getUserFromLocalStorageNonObservable()?.token;
+        return this.authenticationService!.getTokenFromLocalStorage();
     }
 
     protected getHeaders(isSendBearerWithToken: boolean): HttpHeaders

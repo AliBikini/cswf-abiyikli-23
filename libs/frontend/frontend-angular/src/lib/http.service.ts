@@ -1,7 +1,7 @@
 import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { map, catchError, tap, flatMap, mergeMap, switchMap } from 'rxjs/operators';
-import { Identity, TApiResponse } from '@cswf-abiyikli-23/shared/api';
+import { TApiResponse, User } from '@cswf-abiyikli-23/shared/api';
 import { Injectable, Type } from '@angular/core';
 import { environment } from '@cswf-abiyikli-23/shared/util-env';
 import { AuthenticationService } from './authentication.service';
@@ -153,7 +153,7 @@ export class HttpService extends Service
         return observable;
     }
 
-    private validateCurrentToken() : Observable<Identity | undefined>
+    private validateCurrentToken() : Observable<User | undefined>
     {
         const token = this.getToken();
 
@@ -163,13 +163,13 @@ export class HttpService extends Service
             this.authenticationService.logout();
         }
 
-        return this.authenticationService.validateToken(token!);
+        return this.authenticationService.retrieveUser(token!);
     }
 
     private validateCurrentTokenObservableIncludingRequestObservable<Type>(requestObservable: Observable<Type>) : Observable<Type>
     {
         return this.validateCurrentToken().pipe(
-            switchMap((identity: Identity | undefined) => {
+            switchMap((user: User | undefined) => {
                 return requestObservable;
             }),
             catchError(this.handleError)

@@ -30,13 +30,13 @@ export class UserController
 
     @UseGuards(AuthGuardIsValidLogin)
     @Post(':id')
-    async update(@Request() req: any, @Param('id') id: string, @Body() data: User): Promise<User> {
-        return await this.userService.update(id, data, req.identity);
+    async update(@Request() req: any, @Param('id') id: string, @Body() data: any): Promise<User> {
+        return await this.userService.update(id, data, req.user_id, req.role);
     }
 
     @UseGuards(AuthGuardIsValidLogin)
     @Delete(':id')
     async delete(@Request() req: any, @Param('id') id: string) {
-        await this.userService.delete(id, req.identity);
+        await this.userService.delete(id, req.user_id, req.role);
     }
 }

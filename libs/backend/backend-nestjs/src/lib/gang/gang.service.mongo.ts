@@ -1,9 +1,10 @@
-import { Gang, Identity, IdentityRole } from "@cswf-abiyikli-23/shared/api";
+import { Gang, Identity, User } from "@cswf-abiyikli-23/shared/api";
 import { MongooseConnection } from "../mongooseConnection/mongooseConnection";
 import { ConflictException, Inject, Injectable, Logger, NotFoundException, UnauthorizedException, forwardRef } from "@nestjs/common";
 import { IGangService } from "./igang.service";
 import { RecoService } from "../reco/reco.service";
 import { IUserService } from "../user/iuser.service";
+import { IdentityRole } from "libs/shared/api/src/lib/models/enums";
 
 @Injectable()
 export class GangServiceMongo implements IGangService
@@ -19,19 +20,19 @@ export class GangServiceMongo implements IGangService
 
     async getAll(): Promise<Gang[]> {
         Logger.log('getAll', this.TAG);
-        const gangs = await this.conn?.schemas?.modelGang!.find().exec();
+        const gangs = await this.conn?.schemas?.modelGang!.find().populate("userOwner").exec();
         return gangs as unknown as Gang[];
     }
 
     async get(id: string): Promise<Gang> {
         Logger.log('get', this.TAG);
-        const gang = await this.conn?.schemas?.modelGang!.findOne({ _id : id }).exec();
+        const gang = await this.conn?.schemas?.modelGang!.findOne({ _id : id }).populate("userOwner").exec();
         return gang as Gang;
     }
 
-    async create(gang: Gang, identity: Identity): Promise<Gang> 
+    async create(gang: Gang, userRequestor_id: string): Promise<Gang> 
     {
-        const userOwner = await this.userService.get(gang.userOwner_id);
+        const userOwner = await this.userService.get(userRequestor_id);
 
         if (!userOwner)
         {
@@ -46,7 +47,7 @@ export class GangServiceMongo implements IGangService
         {
             await gangNew.save();
             userOwner.gangsJoined.push(gangNew);
-            await this.userService.update(gang.userOwner_id, userOwner, identity);
+            await this.userService.update(userOwner._id, userOwner, userRequestor_id, null);
         }
         catch(error: any)
         {
@@ -54,23 +55,23 @@ export class GangServiceMongo implements IGangService
         }
 
         await this.recoService.gangCreateOrUpdate(gangNew, userOwner);
-        return gangNew;
+        return await gangNew.populate("userOwner");
     }
 
-    async update(id: string, gang: Gang, identity: Identity): Promise<Gang> {
+    async update(id: string, gang: Gang, userRequestor_id: string, role: IdentityRole | null): Promise<Gang> {
 
         Logger.log('update', this.TAG);
 
-        const gangToUpdate = await this.conn?.schemas.modelGang?.findOne({_id: gang._id}).exec();
+        const gangToUpdate = await this.conn?.schemas.modelGang?.findOne({ _id: id }).populate("userOwner").exec();
 
         if (!gangToUpdate)
         {
             throw new NotFoundException(`Gang with id ${id} not found`);
         }
 
-        if (identity.role != IdentityRole.admin)
+        if (role != IdentityRole.admin)
         {
-            if (identity.user_id != gangToUpdate.userOwner_id)
+            if (userRequestor_id != gangToUpdate.userOwner?._id)
             {
                 throw new UnauthorizedException("You are not the owner of this gang");
             }
@@ -89,7 +90,7 @@ export class GangServiceMongo implements IGangService
         return await this.get(id);
     }
 
-    async delete(id: string, identity: Identity): Promise<void> {
+    async delete(id: string, userRequestor_id: string, role: IdentityRole | null): Promise<void> {
         Logger.log('delete', this.TAG);
 
         const gangToDelete = await this.get(id);
@@ -99,9 +100,9 @@ export class GangServiceMongo implements IGangService
             throw new NotFoundException(`Gang with id ${id} not found`);
         }
 
-        if (identity.role != IdentityRole.admin)
+        if (role != IdentityRole.admin)
         {
-            if (identity.user_id != gangToDelete.userOwner_id)
+            if (userRequestor_id != gangToDelete.userOwner?._id)
             {
                 throw new UnauthorizedException("You are not the owner of this gang");
             }
@@ -112,10 +113,10 @@ export class GangServiceMongo implements IGangService
         await this.recoService.deleteNodeWithMongoId(id, "Gang");
     }
 
-    async deleteAll(identity: Identity): Promise<void> {
+    async deleteAll(role: IdentityRole | null): Promise<void> {
         Logger.log('deleteAll', this.TAG);
 
-        if (identity.role != IdentityRole.admin)
+        if (role != IdentityRole.admin)
         {
             throw new UnauthorizedException();
         }

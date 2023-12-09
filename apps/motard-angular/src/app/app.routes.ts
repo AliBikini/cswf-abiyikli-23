@@ -1,5 +1,8 @@
 import { Route } from '@angular/router';
 import { AboutComponent } from 'libs/frontend/frontend-angular/src/lib/about/about.component';
+import { GangDetailComponent } from 'libs/frontend/frontend-angular/src/lib/gang/gang-detail/gang-detail.component';
+import { GangEditComponent } from 'libs/frontend/frontend-angular/src/lib/gang/gang-edit/gang-edit.component';
+import { GangListComponent } from 'libs/frontend/frontend-angular/src/lib/gang/gang-list/gang-list.component';
 import { LoginComponent } from 'libs/frontend/frontend-angular/src/lib/login/login.component';
 import { MotorcycleDetailComponent } from 'libs/frontend/frontend-angular/src/lib/motorcycle/motorcycle-detail/motorcycle-detail.component';
 import { MotorcycleEditComponent } from 'libs/frontend/frontend-angular/src/lib/motorcycle/motorcycle-edit/motorcycle-edit.component';
@@ -61,5 +64,21 @@ export const appRoutes: Route[] =
     {
         path: 'motorcycle/:id/edit',
         component: MotorcycleEditComponent
+    },
+    {
+        path: 'gang',
+        component: GangListComponent
+    },
+    {
+        path: 'gang/new',
+        component: GangEditComponent
+    },
+    {
+        path: 'gang/:id',
+        component: GangDetailComponent
+    },
+    {
+        path: 'gang/:id/edit',
+        component: GangEditComponent
     }
 ];

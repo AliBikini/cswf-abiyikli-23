@@ -312,8 +312,8 @@ export class RecoService
         const params = 
         {
             review_mongo_id : review._id.toString(),
-            review_user_mongo_id : review.user_id.toString(),
-            review_motorcycle_mongo_id : review.motorcycle_id.toString(),
+            review_user_mongo_id : review.user_id?.toString(),
+            review_motorcycle_mongo_id : review.motorcycle?._id.toString(),
             review_date : review.date.toString(),
             review_title : review.title.toString(),
             review_judgement : relation,

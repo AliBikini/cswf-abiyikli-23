@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TUser } from '@cswf-abiyikli-23/shared/api';
+import { User } from '@cswf-abiyikli-23/shared/api';
 import { UserService } from '../user.service';
 import { Subscription, tap } from 'rxjs';
 
@@ -12,7 +12,7 @@ import { Subscription, tap } from 'rxjs';
 export class UserDetailComponent  implements OnInit, OnDestroy
 {
   userId: string | null = null;
-  user: TUser | null = null;
+  user: User | null = null;
   subscription: Subscription | null = null;
   dateString: string | null = null;
 

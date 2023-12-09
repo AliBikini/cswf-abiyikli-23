@@ -29,7 +29,9 @@ export class AuthGuardIsValidLogin implements CanActivate {
             this.logger.log('payload', payload);
             // 💡 We're assigning the payload to the request object here
             // so that we can access it in our route handlers
-            request['identity'] = payload;
+            request['identity_id'] = payload.identity_id;
+            request['user_id'] = payload.user_id;
+            request['role'] = payload.role;
         } catch {
             throw new UnauthorizedException();
         }
