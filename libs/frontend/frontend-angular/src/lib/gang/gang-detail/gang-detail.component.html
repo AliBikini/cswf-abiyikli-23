@@ -1,29 +1,94 @@
 <h2>{{ gang?.name }}</h2>
-<img src="{{ gang?.linkEmblem }}" class="img-thumbnail" alt="...">
-<p>Owner: {{ gang?.userOwner?.nameFirst }} {{ gang?.userOwner?.nameLast }}</p>
-<p>Founded in: {{ gang?.dateCreated | date: 'longDate' }}</p>
-<p>{{ gang?.description }}</p>
-
 <div class="row">
-    <div class="col-1">
-        <div *ngIf="userLoggedIn && gang && userLoggedIn._id != gang.userOwner?._id">
-            <a *ngIf="!isMember" class="btn btn-primary" (click)="joinGang()">Join</a>
-            <a *ngIf="isMember" class="btn btn-primary" (click)="leaveGang()">Leave</a>
+    <div class="col">
+        <img src="{{ gang?.linkEmblem }}" class="img-thumbnail" alt="...">
+    </div>
+    <div class="col">
+        <div class="container border border-1 rounded-2" *ngIf="gang && userLoggedIn && userLoggedIn._id != gang.userOwner?._id">
+            <div class="row"  style="margin-top: 8px">
+                <div class="col">
+                    <div *ngIf="!isMember">
+                        <h5>You currently not a member of this gang</h5>
+                    </div>
+                    <div *ngIf="isMember">
+                        <h5><i-bs name="check-circle-fill" style="color:dodgerblue"></i-bs> You're currently a member of {{ gang.name }}!</h5>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="" style="margin-bottom: 8px">
+                <div *ngIf="!isMember">
+                    <button class="btn btn-primary" (click)="joinGang()">Join gang</button>
+                </div>
+                <div *ngIf="isMember">
+                    <button class="btn btn-secondary" (click)="leaveGang()">Leave gang</button>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
+<ul class="list-group">
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-3">
+                Owner
+            </div>
+            <div class="col">
+                <div class="vr"></div>
+            </div>
+            <div class="col-6">
+            </div>
+            <div class="col text-end">
+                <a routerLink="/user/{{gang?.userOwner?._id}}">{{gang?.userOwner?.nameFirst}} {{gang?.userOwner?.nameLast}}</a>
+            </div>
+        </div>
+    </li>
+
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-3">
+                Founded in
+            </div>
+            <div class="col">
+                <div class="vr"></div>
+            </div>
+            <div class="col-6">
+            </div>
+            <div class="col text-end">
+                {{gang?.dateCreated | date }}
+            </div>
+        </div>
+    </li>
+
+    <li class="list-group-item">
+        <div class="row">
+            <div class="col-3">
+                Description
+            </div>
+            <div class="col">
+                <div class="vr"></div>
+            </div>
+            <div class="col-6">
+            </div>
+            <div class="col text-end">
+                {{gang?.description}}
+            </div>
+        </div>
+    </li>
+</ul>
+
+<div class="row" style="padding-top: 24px;">
     <div class="col">
         <a *ngIf="gang?.userOwner?._id == userLoggedIn?._id" routerLink="edit" class="btn btn-primary">Edit</a>
         <a *ngIf="userLoggedIn?.role == Roles.admin && gang?.userOwner?.role != Roles.admin && gang?.userOwner?._id != userLoggedIn?._id" routerLink="edit" class="btn btn-primary">Edit (as admin)</a>
     </div>
-
-    <div class="col">
-    </div>
 </div>
+
 
 <div class="row" style="padding-top: 24px;"> <!-- RECO -->
     <div *ngIf="motorcyclesReco.length > 0">
-        <h3><i-bs name="hand-thumbs-up-fill" style="color:dodgerblue" width="25" height="25"></i-bs> Members in this gang like these motorcycles: </h3>
+        <h3><i-bs name="hand-thumbs-up-fill" style="color:dodgerblue" width="25" height="25"></i-bs> Members in this gang ride these motorcycles: </h3>
         <div class="row">
             <a *ngFor="let motorcycleReco of motorcyclesReco" class="col-4 link-underline link-underline-opacity-0" style="padding-top: 16px;" routerLink="/motorcycle/{{motorcycleReco._id}}">
                 <div class="border border-2 rounded-1">

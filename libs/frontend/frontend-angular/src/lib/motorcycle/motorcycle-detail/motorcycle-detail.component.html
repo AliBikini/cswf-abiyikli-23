@@ -269,7 +269,7 @@
         <div style="padding-top: 24px;"></div>
         
         <div *ngIf="gangsRecoRidingThisMotorcycle && gangsRecoRidingThisMotorcycle.length > 0">
-            <h3><i-bs name="hand-thumbs-up-fill" style="color:dodgerblue" width="25" height="25"></i-bs>Users in these gangs like this motorcycle: </h3>
+            <h3><i-bs name="hand-thumbs-up-fill" style="color:dodgerblue" width="25" height="25"></i-bs> Users in these gangs ride this motorcycle: </h3>
             <div class="row">
                 <a *ngFor="let gang of gangsRecoRidingThisMotorcycle" class="col-4 link-underline link-underline-opacity-0" style="padding-top: 16px;" routerLink="/gang/{{gang._id}}">
                     <div class="border border-2 rounded-1">
