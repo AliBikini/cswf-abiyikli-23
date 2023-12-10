@@ -4,6 +4,7 @@ import { ConflictException, Injectable, Inject, Logger, NotFoundException, Unaut
 import { IReviewService } from "./ireview.service";
 import { RecoService } from "../reco/reco.service";
 import { IdentityRole } from "libs/shared/api/src/lib/models/enums";
+import { Id } from "libs/shared/api/src/lib/models/id.type";
 
 @Injectable()
 export class ReviewServiceMongo implements IReviewService
@@ -129,13 +130,13 @@ export class ReviewServiceMongo implements IReviewService
     //     return await this.get(id);
     // }
 
-    async delete(id: string, user: User): Promise<void> {
+    async delete(id: string, user_id: Id, role: IdentityRole | null): Promise<Review> {
         Logger.log('delete', this.TAG);
         const reviewToDelete = await this.get(id);
 
-        if (user.role != IdentityRole.admin)
+        if (role != IdentityRole.admin)
         {
-            if (user._id != reviewToDelete.user_id)
+            if (user_id != reviewToDelete.user_id)
             {
                 throw new UnauthorizedException("You're not the user who placed this review");
             }
@@ -154,7 +155,7 @@ export class ReviewServiceMongo implements IReviewService
 
                 if (review._id.toString() == reviewToDelete._id.toString())
                 {
-                    user.reviewsPlaced.splice(i2, 1);
+                    const reviewsDeleted: Review[] = user.reviewsPlaced.splice(i2, 1);
                     
                     try
                     {
@@ -167,7 +168,7 @@ export class ReviewServiceMongo implements IReviewService
 
                     await this.recoService.deleteRelationWithMongoId(id);
                     Logger.log('Deleted review', this.TAG);
-                    return;
+                    return reviewsDeleted[0];
                 }
             }
         } 

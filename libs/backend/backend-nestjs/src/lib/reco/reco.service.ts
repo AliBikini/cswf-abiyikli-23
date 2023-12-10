@@ -28,7 +28,7 @@ export class RecoService
         "MATCH (uMe:User { mongo_id: $user_mongo_id }) \n"+
         "MATCH (uOther:User)-[:LIKES]->(mSubject:Motorcycle { mongo_id: $motorcycle_mongo_id }) \n" +
         "MATCH (uOther)-[:LIKES]->(mOther:Motorcycle) \n" +
-        "WHERE NOT (uMe)-[:LIKES]-(mOther) \n" +
+        "WHERE NOT (uMe)-[:LIKES]-(mOther) AND NOT mOther.mongo_id = $motorcycle_mongo_id \n" +
         "return mOther"
         ;
 

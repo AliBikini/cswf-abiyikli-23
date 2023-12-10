@@ -1,18 +1,11 @@
 <h1>Users</h1>
 
-<div style="padding-bottom: 12px;">
-    <a routerLink="new" class="btn btn-primary">New</a>
-</div>
-
 <ul class="list-group">
     <div *ngFor="let user of users">
         <li class="list-group-item">
             <div class="row">
                 <div class="col-4">
                     {{ user.nameFirst }} {{ user.nameLast }}
-                </div>
-                <div class="col-4">
-                    {{ user.email }}
                 </div>
                 <div class="col">
                     <div class="row">

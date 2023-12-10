@@ -4,8 +4,10 @@ import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 @Injectable()
 export class FormValidators
 {
+  specialCharacters = '@#$%^&+=.'
+
     validatorLength(numberOfCharsMin: number, numberOfCharsMax: number): ValidatorFn {
-        const regexp = new RegExp(`^[A-Za-z0-9@#$%^&+=]{${numberOfCharsMin},${numberOfCharsMax}}$`);
+        const regexp = new RegExp(`^.{${numberOfCharsMin},${numberOfCharsMax}}$`);
     
         return (control: AbstractControl): ValidationErrors | null => {
           const test = regexp.test(control.value);
@@ -43,11 +45,29 @@ export class FormValidators
     }
 
     validatorAtleastOneSpecial(): ValidatorFn {
-        const regexp = new RegExp('.*[@#$%^&+=].*');
+        const regexp = new RegExp(`.*[${this.specialCharacters}].*`);
     
         return (control: AbstractControl): ValidationErrors | null => {
           const test = regexp.test(control.value);
           return test ? null : { atleastOneSpecial: { value: control.value } };
         };
+    }
+
+    validatorOnlyNumbers(): ValidatorFn {
+      const regexp = new RegExp(`^[0-9]*$`);
+  
+      return (control: AbstractControl): ValidationErrors | null => {
+        const test = regexp.test(control.value);
+        return test ? null : { onlyNumbers: { value: control.value } };
+      };
+    }
+
+    validatorNoSpecialCharacters(): ValidatorFn {
+      const regexp = new RegExp(`.*[${this.specialCharacters}].*`);
+  
+      return (control: AbstractControl): ValidationErrors | null => {
+        const test = regexp.test(control.value);
+        return test ? { noSpecials: { value: control.value } } : null;
+      };
     }
 }

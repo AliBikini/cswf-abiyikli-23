@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Gang } from '@cswf-abiyikli-23/shared/api';
+import { Gang, User } from '@cswf-abiyikli-23/shared/api';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GangService } from '../gang.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { AuthenticationService } from '../../authentication.service';
 
 @Component({
   selector: 'cswf-abiyikli-23-gang-edit',
@@ -16,6 +17,7 @@ export class GangEditComponent implements OnInit, OnDestroy
   gangId: string | null = null;
   gang: Gang | null = null;
   subscription: Subscription | null = null;
+  userLoggedIn: User | undefined = undefined;
 
   linkImageDynamic: string = "";
 
@@ -29,7 +31,9 @@ export class GangEditComponent implements OnInit, OnDestroy
   constructor (    
     private route: ActivatedRoute,
     private gangService: GangService,
-    private router: Router){}
+    private router: Router,
+    private authService: AuthenticationService
+    ){}
 
   ngOnInit(): void 
   {
@@ -55,6 +59,10 @@ export class GangEditComponent implements OnInit, OnDestroy
           this.applyGangToForm();
           this.gangForm.updateValueAndValidity();
         }
+
+        this.authService.getUserLoggedIn(true).subscribe((user) => {
+          this.userLoggedIn = user;
+        })
       }
     );
   }
@@ -91,16 +99,20 @@ export class GangEditComponent implements OnInit, OnDestroy
 
   createNewGang()
   {
-    this.gangService.create
-    ({
-      name: this.gangForm.value.name,
-      description: this.gangForm.value.description,
-      linkEmblem: this.gangForm.value.linkEmblem,
-      dateCreated: new Date()
-    }).subscribe((resp) => {
-      console.log("New gang added!");
-      this.redirectTo(`gang/${resp._id}`);
-    })
+    if (this.userLoggedIn)
+    {
+      this.gangService.create
+      ({
+        name: this.gangForm.value.name,
+        description: this.gangForm.value.description,
+        linkEmblem: this.gangForm.value.linkEmblem,
+        userOwner: this.userLoggedIn,
+        dateCreated: new Date()
+      }).subscribe((resp) => {
+        console.log("New gang added!");
+        this.redirectTo(`gang/${resp._id}`);
+      })
+    }
   }
 
   updateExistingGang(id: string)

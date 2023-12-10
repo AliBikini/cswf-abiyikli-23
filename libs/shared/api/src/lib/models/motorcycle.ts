@@ -42,16 +42,16 @@ export type TMotorcycleUpsert = TMotorcycle;
 export class Motorcycle implements TMotorcycle
 {
     _id: Id = "0";
-    nameModel: string = '';
-    body: MotorcycleBody = MotorcycleBody.other;
-    year: string = '';
-    fuel: MotorcycleFuel = MotorcycleFuel.gasoline;
-    seatHeight: string = '';
-    horsePower: string = '';
-    topSpeed: string = '';
-    linkImage: string = '';
+    nameModel: string;
+    body: MotorcycleBody;
+    year: string;
+    fuel: MotorcycleFuel;
+    seatHeight: string;
+    horsePower: string;
+    topSpeed: string;
+    linkImage: string;
     
-    constructor(_id = "", nameModel = '', body = MotorcycleBody.other, year = '', fuel = MotorcycleFuel.gasoline, seatHeight = '', horsePower = '', topSpeed = '', linkImage = '')
+    constructor(_id = "", nameModel: string, body: MotorcycleBody, year: string, fuel: MotorcycleFuel, seatHeight: string, horsePower: string, topSpeed: string, linkImage: string)
     {
         this._id = _id;
         this.nameModel = nameModel;

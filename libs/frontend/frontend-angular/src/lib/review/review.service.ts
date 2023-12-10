@@ -1,4 +1,4 @@
-import { Observable, throwError } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { map, catchError, tap } from 'rxjs/operators';
 import { Motorcycle, Review, TApiResponse, TMotorcycle, TMotorcycleCreate, TMotorcycleUpdate, TReviewCreate, TUser, TUserUpdate } from '@cswf-abiyikli-23/shared/api';
@@ -11,6 +11,8 @@ import { HttpService } from '../http.service';
 export class ReviewService
 {
     endpoint = 'review';
+    private reviewDeletedSource = new Subject<Review>();
+    public reviewDeleted$ = this.reviewDeletedSource.asObservable();
 
     constructor(@Inject(HttpService)private httpService: HttpService) 
     {}
@@ -27,9 +29,9 @@ export class ReviewService
         return this.httpService.read<Review>(this.endpoint, true, id, options);
     }
 
-    public create(optionsCreate: TReviewCreate): Observable<Review> 
+    public create(optionsCreate: TReviewCreate, motorcycle_id: string): Observable<Review> 
     {
-        return this.httpService.create<Review>(this.endpoint, true, optionsCreate);
+        return this.httpService.create<Review>(this.endpoint + "/" + motorcycle_id, true, optionsCreate);
     }
 
     // public update(id: string, optionsUpdate: TMotorcycleUpdate): Observable<Review> 
@@ -39,6 +41,6 @@ export class ReviewService
 
     public delete(id: string)
     {
-        return this.httpService.delete<Review>(this.endpoint, true, id);
+        return this.httpService.delete<Review>(this.endpoint, true, id).pipe(map((review: Review) => { console.log("help"); console.log(review);this.reviewDeletedSource.next(review); }));
     }
 }

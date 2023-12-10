@@ -17,7 +17,7 @@ export class UserServiceMemory implements IUserService
             nameLast: 'Biyikli',
             dateBirth: new Date("1998-07-02"),
             gender: Gender.male,
-            motorcyclesOwned: [ new Motorcycle() ],
+            motorcyclesOwned: [],
             role: IdentityRole.admin,
             reviewsPlaced: [],
             gangsJoined: []

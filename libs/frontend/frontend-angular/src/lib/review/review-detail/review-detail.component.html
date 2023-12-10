@@ -1,5 +1,38 @@
-<div *ngIf="review" class="border">
-    <h2>{{review.title}}</h2>
-    <p><small>by <a routerLink="/user/{{user?._id}}">{{user?.nameFirst}}</a> at {{review.date | date}}</small></p>
-    <p>{{review.message}}</p>
+<div *ngIf="review" class="border border-2 rounded-2 {{borderJudgment}}">
+    <div style="margin: 8px">
+        <div>
+            <div class="row">
+                <div class="col">
+                    <div *ngIf="review.title">
+                        <h2>{{review.title}}</h2>
+                    </div>
+                    <div *ngIf="!review.title">
+                        <p><small>by <a routerLink="/user/{{userReviewer?._id}}">{{userReviewer?.nameFirst}} {{userReviewer?.nameLast}}</a> on {{review.date | date}}</small></p>
+                    </div>
+                </div>
+                <div class="col-2 text-end" style="margin-right: 18px;">
+                    <div *ngIf="review.judgement == Judgements.positive">
+                        <i-bs name="hand-thumbs-up-fill" width="25" height="25" style="color:dodgerblue"></i-bs>
+                    </div>
+                    <div *ngIf="review.judgement == Judgements.negative">
+                        <i-bs name="hand-thumbs-down-fill" width="25" height="25" style="color:crimson"></i-bs>
+                    </div>
+                </div>
+            </div>
+        
+            <div *ngIf="review.title">
+                <p><small>by <a routerLink="/user/{{userReviewer?._id}}">{{userReviewer?.nameFirst}} {{userReviewer?.nameLast}}</a> on {{review.date | date}}</small></p>
+            </div>
+        </div>
+    
+        <p>{{review.message}}</p>
+
+        <div *ngIf="isUserLoggedInReviewer == true">
+            <button class="btn btn-danger" (click)="deleteReview()">Delete</button>
+        </div>
+
+        <div *ngIf="isUserLoggedInReviewer == false && userLoggedIn?.role == Roles.admin">
+            <button class="btn btn-danger" (click)="deleteReview()">Delete (as admin)</button>
+        </div>
+    </div>
 </div>

@@ -1,11 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Motorcycle, Review, TMotorcycle, TUser, User } from '@cswf-abiyikli-23/shared/api';
+import { Gang, IdentityRole, Motorcycle, Review, ReviewJudgement, TMotorcycle, TUser, User } from '@cswf-abiyikli-23/shared/api';
 import { MotorcycleService } from '../motorcycle.service';
 import { Subscription, tap } from 'rxjs';
 import { AuthenticationService } from '../../authentication.service';
 import { ReviewService } from '../../review/review.service';
 import { UserService } from '../../user/user.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormValidators } from '../../form.validators';
+import { RecoService } from '../../reco.service';
 
 @Component({
   selector: 'avans-nx-workshop-motorcycle-detail',
@@ -21,17 +24,64 @@ export class MotorcycleDetailComponent  implements OnInit, OnDestroy
   dateString: string | null = null;
   isOwnsThisMotorcycle: boolean = false;
   reviews: Review[] | null = null;
+  reviewMine: Review | null = null;
+  reviewScore: number = 0;
+  motorcyclesRecoAlsoLiked: Motorcycle[] | null = null;
+  motorcyclesRecoLikedInstead: Motorcycle[] | null = null;
+  gangsRecoRidingThisMotorcycle: Gang[] | null = null;
+
+  Roles = IdentityRole;
+
+  formReview: FormGroup | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private motorcycleService: MotorcycleService,
     private authenticationService: AuthenticationService,
     private userService: UserService,
-    private router: Router
+    private reviewService: ReviewService,
+    private router: Router,
+    private formValidators: FormValidators,
+    private recoService: RecoService
   ){}
 
   ngOnInit(): void 
   {
+    this.reviewService.reviewDeleted$.subscribe((review) => {
+      if (this.reviewMine?._id == review._id)
+      {
+        this.reviewMine = null;
+      }
+
+      if (this.reviews)
+      {
+        for (let i = 0; i < this.reviews.length; i++)
+        {
+          if (this.reviews[i]._id == review._id)
+          {
+            this.reviews.splice(i, 1);
+            break;
+          }
+        }
+      }
+
+      this.setScoreOfBike();
+    })
+
+    this.formReview = new FormGroup({
+      judgement: new FormControl<string>('', [
+        Validators.required
+      ]),
+      title: new FormControl<string>('', [
+        this.formValidators.validatorLength(0, 35)
+      ]),
+      message: new FormControl<string>('', [
+        this.formValidators.validatorLength(0, 1000)
+      ]),
+    });
+
+    this.formReview.updateValueAndValidity();
+
     const subMotorcycle = this.route.paramMap.pipe
     (
     ).subscribe
@@ -42,37 +92,103 @@ export class MotorcycleDetailComponent  implements OnInit, OnDestroy
         {
           this.motorcycle = resp;
 
-          const subReviews = this.motorcycleService.listReviews(this.motorcycle._id).subscribe((reviews) => 
+          if (this.motorcycle)
           {
-            if (reviews)
+            const subReviews = this.motorcycleService.listReviews(this.motorcycle._id).subscribe((reviews) => 
             {
-              this.reviews = reviews;
-            }
-          })
+              if (reviews)
+              {
+                this.reviews = reviews;
+                this.getAndSetOwnReview();
+                this.setScoreOfBike();
+              }
+            })
 
-          this.subscriptions?.push(subReviews);
+            this.subscriptions?.push(subReviews);
 
-          const subUser = this.authenticationService.getUserLoggedIn().subscribe((user) => {
-            this.userLoggedIn = user;
+            const subUser = this.authenticationService.getUserLoggedIn(true).subscribe((user) => {
+              this.userLoggedIn = user;
+  
+              if (this.userLoggedIn)
+              {
+                this.checkIfUserOwnsMotorcycle();
 
-            if (this.userLoggedIn)
-            {
-              this.checkIfUserOwnsMotorcycle();
-            }
-          })
+                const subRecoAlsoLiked = this.recoService.getMotorcyclesAlsoLiked(this.userLoggedIn._id, this.motorcycle!._id, false).subscribe((motorcyclesReco: Motorcycle[] | null) => {
+                  console.log('recos:');
+                  console.log(motorcyclesReco);
+                  this.motorcyclesRecoAlsoLiked = motorcyclesReco;
+                })
 
-          this.subscriptions?.push(subUser);
+                this.subscriptions?.push(subRecoAlsoLiked);
+
+                const subRecoLikedInstead = this.recoService.getMotorcyclesLikedInstead(this.userLoggedIn._id, this.motorcycle!._id, false).subscribe((motorcyclesReco: Motorcycle[] | null) => {
+                  console.log('recosLikedInstead:');
+                  console.log(motorcyclesReco);
+                  this.motorcyclesRecoLikedInstead = motorcyclesReco;
+                })
+
+                this.subscriptions?.push(subRecoLikedInstead);
+
+                const subRecoGangsRidingThisMotorcycle = this.recoService.getGangsRidingThisMotorcycle(this.userLoggedIn._id, this.motorcycle!._id, false).subscribe((gangsReco: Gang[] | null) => {
+                  console.log('recosGangsRiding:');
+                  console.log(gangsReco);
+                  this.gangsRecoRidingThisMotorcycle = gangsReco;
+                })
+
+                this.subscriptions?.push(subRecoGangsRidingThisMotorcycle);
+              }
+            })
+
+            this.subscriptions?.push(subUser);
+          }
         }); 
       }
     );
 
     this.subscriptions?.push(subMotorcycle);
+
   }
 
   ngOnDestroy(): void {
     this.subscriptions?.forEach((sub) => {
       sub.unsubscribe();
     })
+  }
+
+  getAndSetOwnReview()
+  {
+    if (!this.reviews || !this.userLoggedIn)
+    {
+      return;
+    }
+
+    for(let i = 0; i < this.reviews.length; i++)
+    {
+      if (this.reviews[i].user_id == this.userLoggedIn._id)
+      {
+        this.reviewMine = this.reviews[i];
+        break;
+      }
+    }
+  }
+
+  setScoreOfBike()
+  {
+    if (!this.reviews)
+    {
+      return;
+    }
+
+    let scoreTotal = 0;
+
+    this.reviews.forEach((review) => {
+      if (review.judgement == ReviewJudgement.positive)
+      {
+        scoreTotal += 1;
+      }
+    })
+
+    this.reviewScore = Math.round((scoreTotal / this.reviews.length) * 100);
   }
 
   checkIfUserOwnsMotorcycle()
@@ -139,5 +255,59 @@ export class MotorcycleDetailComponent  implements OnInit, OnDestroy
 
       return;
     }
+  }
+
+  onSubmitForm() 
+  {
+    if (!this.userLoggedIn || !this.motorcycle)
+    {
+      return;
+    }
+
+    this.formReview?.updateValueAndValidity();
+    console.log(this.formReview?.value);
+
+    if (this.formReview!.valid) {
+      const judgement : ReviewJudgement = this.formReview!.value.judgement;
+      const title = this.formReview!.value.title;
+      const message = this.formReview!.value.message;
+
+      const review = new Review(this.userLoggedIn._id, this.userLoggedIn._id, this.motorcycle, judgement, title, message, new Date());
+
+      this.reviewService
+        .create(
+          {
+            user_id: review.user_id,
+            motorcycle: review.motorcycle,
+            date: review.date,
+            judgement: review.judgement,
+            title: review.title,
+            message: review.message
+          },
+          review.motorcycle._id
+        )
+        .subscribe((reviewCreated) => {
+          if (reviewCreated) {
+            this.reviewMine = reviewCreated;
+            this.reviews?.push(reviewCreated);
+            this.setScoreOfBike();
+            console.log('Created new review');
+          }
+        });
+    } else {
+      console.error('formReview invalid');
+    }
+  }
+
+  get reviewJudgment() {
+    return this.formReview?.get('judgement');
+  }
+
+  get reviewTitle() {
+    return this.formReview?.get('title');
+  }
+
+  get reviewMessage() {
+    return this.formReview?.get('message');
   }
 }

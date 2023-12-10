@@ -6,12 +6,17 @@
     <h2>Add new motorcycle</h2>
 </div>
 
-<form [formGroup]="motorcycleForm" (ngSubmit)="onSubmitForm()">
+<form [formGroup]="motorcycleForm!" (ngSubmit)="onSubmitForm()">
     <div class="row">
         <div class="col-6">
             <div class="mb-3">
                 <label for="nameModel" class="form-label">Name model</label>
                 <input type="text" class="form-control" id="nameModel" formControlName="nameModel">
+                <div *ngIf="nameModel?.invalid && (nameModel?.dirty || nameModel?.touched)" class="alert alert-danger">
+                    <div *ngIf="nameModel?.errors?.['required']">Name is required.</div>
+                    <div *ngIf="nameModel?.errors?.['length']">Name must be between 3 and 50 characters long.</div>
+                    <div *ngIf="nameModel?.errors?.['noSpecials']">No special characters allowed.</div>
+                </div>
             </div>
         </div>
 
@@ -19,6 +24,11 @@
             <div class="mb-3">
                 <label for="year" class="form-label">Year</label>
                 <input type="text" class="form-control" id="year" formControlName="year">
+                <div *ngIf="year?.invalid && (year?.dirty || year?.touched)" class="alert alert-danger">
+                    <div *ngIf="year?.errors?.['required']">Year is required.</div>
+                    <div *ngIf="year?.errors?.['length']">Between 4 and 35 characters</div>
+                    <div *ngIf="year?.errors?.['onlyNumbers']">Only numbers.</div>
+                </div>
             </div>
         </div>
 
@@ -30,6 +40,9 @@
                         {{ body.value }} 
                     </option>
                 </select>
+                <div *ngIf="body?.invalid && (body?.dirty || body?.touched)" class="alert alert-danger">
+                    <div *ngIf="body?.errors?.['required']">Year is required.</div>
+                </div>
             </div>
         </div>
     </div>
@@ -55,8 +68,12 @@
 
         <div class="col">
             <div class="mb-3">
-                <label for="seatHeight" class="form-label">Seat height</label>
+                <label for="seatHeight" class="form-label">Seat height (cm)</label>
                 <input type="text" class="form-control" id="seatHeight" formControlName="seatHeight">
+                <div *ngIf="seatHeight?.invalid && (seatHeight?.dirty || seatHeight?.touched)" class="alert alert-danger">
+                    <div *ngIf="seatHeight?.errors?.['required']">Seat height is required.</div>
+                    <div *ngIf="seatHeight?.errors?.['onlyNumbers']">Only numbers allowed.</div>
+                </div>
             </div>
         </div>
 
@@ -64,13 +81,21 @@
             <div class="mb-3">
                 <label for="horsePower" class="form-label">Horsepower</label>
                 <input type="text" class="form-control" id="horsePower" formControlName="horsePower">
+                <div *ngIf="horsePower?.invalid && (horsePower?.dirty || horsePower?.touched)" class="alert alert-danger">
+                    <div *ngIf="horsePower?.errors?.['required']">Horsepower is required.</div>
+                    <div *ngIf="horsePower?.errors?.['onlyNumbers']">Only numbers allowed.</div>
+                </div>
             </div>
         </div>
 
         <div class="col">
             <div class="mb-3">
-                <label for="topSpeed" class="form-label">Top speed</label>
+                <label for="topSpeed" class="form-label">Top speed (km/h)</label>
                 <input type="text" class="form-control" id="topSpeed" formControlName="topSpeed">
+                <div *ngIf="topSpeed?.invalid && (topSpeed?.dirty || topSpeed?.touched)" class="alert alert-danger">
+                    <div *ngIf="topSpeed?.errors?.['required']">Top speed is required.</div>
+                    <div *ngIf="topSpeed?.errors?.['onlyNumbers']">Only numbers allowed.</div>
+                </div>
             </div>
         </div>
     </div>
@@ -80,6 +105,9 @@
             <div class="mb-3">
                 <label for="linkImage" class="form-label">Link image</label>
                 <input type="text" class="form-control" id="linkImage" formControlName="linkImage" [(ngModel)]="linkImageDynamic">
+                <div *ngIf="linkImage?.invalid && (linkImage?.dirty || linkImage?.touched)" class="alert alert-danger">
+                    <div *ngIf="linkImage?.errors?.['required']">Link to an image of this motorcycle is required.</div>
+                </div>
             </div>
         </div>
         <div class="col">
@@ -89,10 +117,10 @@
 
     <div class="row">
         <div class="col-1" *ngIf="!motorcycleId">
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!(motorcycleForm?.valid && motorcycleForm?.dirty)">Create</button>
         </div>
         <div class="col-1" *ngIf="motorcycleId">
-            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!(motorcycleForm?.valid && motorcycleForm?.dirty)">Update</button>
         </div>
         <div class="col-1" *ngIf="motorcycleId">
             <button type="button" class="btn btn-danger" (click)="deleteMotorcycle()">Delete</button>

@@ -40,7 +40,7 @@ export class ReviewController
 
     @UseGuards(AuthGuardIsValidLogin)
     @Delete(':id')
-    async delete(@Request() req: any, @Param('id') id: string) {
-        await this.reviewService.delete(id, req.user);
+    async delete(@Request() req: any, @Param('id') id: string): Promise<Review> {
+        return await this.reviewService.delete(id, req.user_id, req.role);
     }
 }

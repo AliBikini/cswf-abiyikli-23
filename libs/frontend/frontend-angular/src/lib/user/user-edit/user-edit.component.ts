@@ -45,37 +45,34 @@ export class UserEditComponent implements OnInit, OnDestroy
     ).subscribe
     ((params) => 
       {
-        this.motorcycleService.list().subscribe((resp) => 
+        this.userForm = this.fb.group
+        ({
+          nameFirst: new FormControl,
+          nameLast: new FormControl,
+          dateBirth: new FormControl,
+          gender: new FormControl,
+          //motorcyclesOwned: this.fb.array([this.motorcycles?.at(0)!])
+        })
+
+        this.userId = params.get('id');
+
+        if (this.userId)
         {
-          this.motorcycles = resp;
-
-          this.userForm = this.fb.group
-          ({
-            nameFirst: new FormControl,
-            nameLast: new FormControl,
-            dateBirth: new FormControl,
-            gender: new FormControl,
-            //motorcyclesOwned: this.fb.array([this.motorcycles?.at(0)!])
-          })
-
-          this.userId = params.get('id');
-
-          if (this.userId)
+          this.userService.read(this.userId).subscribe((resp) => 
           {
-            this.userService.read(this.userId).subscribe((resp) => 
-            {
-              this.user = resp;
-              this.applyUserToForm();
-              this.userForm.updateValueAndValidity();
-            }); 
-          }
-          else
-          {
-            this.user = { _id: '-1', nameFirst: '', nameLast: '', dateBirth: new Date, gender: Gender.other, role: IdentityRole.user, motorcyclesOwned: [ this.motorcycles?.at(0)! ], reviewsPlaced: [], gangsJoined: [] }
+            this.user = resp;
             this.applyUserToForm();
             this.userForm.updateValueAndValidity();
-          }
-        })
+          }); 
+        }
+        else
+        {
+          // this.user = { _id: '-1', nameFirst: '', nameLast: '', dateBirth: new Date, gender: Gender.other, role: IdentityRole.user, motorcyclesOwned: [ this.motorcycles?.at(0)! ], reviewsPlaced: [], gangsJoined: [] }
+          // this.applyUserToForm();
+          // this.userForm.updateValueAndValidity();
+
+          this.router.navigate(['/user']);
+        }
       }
     );
   }

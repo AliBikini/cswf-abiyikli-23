@@ -2,6 +2,7 @@ import { Neo4jScheme } from "nest-neo4j/dist";
 
 export interface IEnvironment
 {
+    dataApiPort: string,
     dataApiUrl: string;
     mongoConnString: string;
     neo4jScheme: Neo4jScheme;

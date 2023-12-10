@@ -1,4 +1,4 @@
-import { Review, User } from "@cswf-abiyikli-23/shared/api";
+import { IdentityRole, Review, User } from "@cswf-abiyikli-23/shared/api";
 import { Id } from "libs/shared/api/src/lib/models/id.type";
 
 export interface IReviewService
@@ -11,7 +11,7 @@ export interface IReviewService
     create(motorcycle_id: string, review: Review, user_id: string): Promise<Review>
     //// Reviews should not be able to be changed after placing them I think
     //update(id: Id, review: Review): Promise<Review>
-    delete(id: Id, user: User): Promise<void>;
+    delete(id: Id, user_id: string, role: IdentityRole | null): Promise<Review>;
 }
 
 export const IReviewService = Symbol("IReviewService");

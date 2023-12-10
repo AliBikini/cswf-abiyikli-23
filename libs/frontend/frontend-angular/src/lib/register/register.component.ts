@@ -55,7 +55,7 @@ export class RegisterComponent implements OnInit, OnDestroy
     });
 
     this.subscription = this.authenticationService
-    .getUserLoggedIn()
+    .getUserLoggedIn(false)
     .subscribe((user: User | undefined) => 
     {
       if (user) 
@@ -109,37 +109,6 @@ export class RegisterComponent implements OnInit, OnDestroy
     } else {
       console.error('registerForm invalid');
     }
-  }
-
-  validEmail(): ValidatorFn {
-    const regexp = new RegExp(
-      '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$'
-    );
-
-    return (control: AbstractControl): ValidationErrors | null => {
-      const test = regexp.test(control.value);
-      //console.log('e: ' + test);
-      return test ? null : { emailInvalid: { value: control.value } };
-    };
-  }
-
-  validPassword(): ValidatorFn {
-    const regexp = new RegExp('^[a-zA-Z]([a-zA-Z0-9]){2,14}');
-
-    return (control: AbstractControl): ValidationErrors | null => {
-      const test = regexp.test(control.value);
-      //console.log('p: ' + test);
-      return test ? null : { passwordInvalid: { value: control.value } };
-    };
-  }
-
-  validatorLength(numberOfCharsMin: number, numberOfCharsMax: number): ValidatorFn {
-    const regexp = new RegExp(`{${numberOfCharsMin},${numberOfCharsMax}}`);
-
-    return (control: AbstractControl): ValidationErrors | null => {
-      const test = regexp.test(control.value);
-      return test ? null : { length: { value: control.value } };
-    };
   }
 
   get email() {

@@ -24,6 +24,11 @@ import { GangDetailComponent } from './gang/gang-detail/gang-detail.component';
 import { GangService } from './gang/gang.service';
 import { ReviewService } from './review/review.service';
 import { ReviewDetailComponent } from './review/review-detail/review-detail.component';
+import { NgxBootstrapIconsModule, allIcons } from 'ngx-bootstrap-icons';
+import { FormValidators } from './form.validators';
+import { RecoService } from './reco.service';
+import { StatusModalComponent } from './shared/status-modal/status-modal.component';
+import { StatusModalService } from './shared/status-modal/status-modal.service';
 
 const routes: Routes = [
   {
@@ -44,7 +49,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, RouterLink, RouterModule.forChild(routes), LoginComponent, RegisterComponent, ReviewDetailComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, RouterLink, RouterModule.forChild(routes), LoginComponent, RegisterComponent, ReviewDetailComponent, NgxBootstrapIconsModule.pick(allIcons)],
   declarations: [
     NavbarComponent,
     AboutComponent,
@@ -57,8 +62,9 @@ const routes: Routes = [
     GangListComponent,
     GangEditComponent,
     GangDetailComponent,
+    StatusModalComponent
   ],
-  providers: [UserService, MotorcycleService, AuthenticationService, HttpService, GangService, ReviewService],
+  providers: [UserService, MotorcycleService, AuthenticationService, HttpService, GangService, ReviewService, FormValidators, RecoService, StatusModalService],
   exports: [NavbarComponent, AboutComponent, UserListComponent, UserDetailComponent, UserEditComponent, LoginComponent, RegisterComponent, GangListComponent, GangEditComponent, GangDetailComponent, ReviewDetailComponent],
 })
 export class FrontendAngularModule {}

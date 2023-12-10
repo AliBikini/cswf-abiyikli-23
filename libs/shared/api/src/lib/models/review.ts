@@ -20,15 +20,15 @@ export enum ReviewJudgement
 
 export class Review
 {
-    _id: Id = "0";
-    user_id: Id = '0';
-    motorcycle: Motorcycle | null = null;
-    judgement: ReviewJudgement = ReviewJudgement.positive;
+    _id: Id = "-1";
+    user_id: Id;
+    motorcycle: Motorcycle;
+    judgement: ReviewJudgement;
     title: string = '';
     message: string = '';
     date: Date = new Date();
     
-    constructor(_id = "", user_id = '', motorcycle = null, judgement = ReviewJudgement.positive, title = '', message = '', date = new Date())
+    constructor(_id = "", user_id: string, motorcycle : Motorcycle, judgement: ReviewJudgement, title = '', message = '', date = new Date())
     {
         this._id = _id;
         this.user_id = user_id;

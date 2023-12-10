@@ -50,7 +50,7 @@ export class GangDetailComponent  implements OnInit, OnDestroy
         {
           this.gang = resp;
 
-          const subLoggedIn = this.authenticationService.getUserLoggedIn().subscribe((user) => {
+          const subLoggedIn = this.authenticationService.getUserLoggedIn(true).subscribe((user) => {
             this.userLoggedIn = user;
       
             if (this.userLoggedIn)

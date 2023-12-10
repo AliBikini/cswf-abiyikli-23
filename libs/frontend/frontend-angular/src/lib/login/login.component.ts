@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription, catchError, map, of } from 'rxjs';
 import { User } from '@cswf-abiyikli-23/shared/api';
 import { FormValidators } from '../form.validators';
+import { StatusModalComponent } from '../shared/status-modal/status-modal.component';
+import { StatusModalService } from '../shared/status-modal/status-modal.service';
 
 @Component({
   standalone: true,
@@ -20,7 +22,9 @@ export class LoginComponent implements OnInit, OnDestroy
   subscription: Subscription | null = null;;
   formLogin: FormGroup | null = null;
 
-  constructor(private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService, private formValidators: FormValidators)
+  isLoading: boolean = false;
+
+  constructor(private route: ActivatedRoute, private router: Router, private authenticationService: AuthenticationService, private formValidators: FormValidators, private statusModal: StatusModalService)
   {}
 
   ngOnInit(): void 
@@ -62,6 +66,7 @@ export class LoginComponent implements OnInit, OnDestroy
     if (this.formLogin!.valid) {
       const email = this.formLogin!.value.email;
       const password = this.formLogin!.value.password;
+
       this.authenticationService
         .login(email!, password!)
         .subscribe((user) => {
@@ -71,6 +76,7 @@ export class LoginComponent implements OnInit, OnDestroy
           }
         });
     } else {
+      this.statusModal.giveJob({isShow: false})
       console.error('loginForm invalid');
     }
   }

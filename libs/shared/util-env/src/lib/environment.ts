@@ -1,6 +1,7 @@
 import { IEnvironment } from "./environment.interface";
 
 export const environment: IEnvironment = {
+    dataApiPort: '3000',
     dataApiUrl: 'http://localhost:3000/api/',
     mongoConnString: 'mongodb://localhost:27017/motard',
     neo4jScheme: "neo4j",

@@ -1,47 +1,87 @@
 import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { map, catchError, tap, flatMap, mergeMap, switchMap } from 'rxjs/operators';
-import { TApiResponse, User } from '@cswf-abiyikli-23/shared/api';
+import { Gang, Motorcycle, TApiResponse, User } from '@cswf-abiyikli-23/shared/api';
 import { Injectable, Type } from '@angular/core';
 import { environment } from '@cswf-abiyikli-23/shared/util-env';
 import { AuthenticationService } from './authentication.service';
 import { Service } from './service';
 import { Logger } from '@nestjs/common';
-import { StatusModalService } from './shared/status-modal/status-modal.service';
 
 @Injectable()
-export class HttpService extends Service
+export class RecoService extends Service
 {
     token: string | undefined = undefined;
-    protected endPoint: string = environment.dataApiUrl;
+    protected endPoint: string = environment.dataApiUrl + "reco";
 
-    constructor(authenticationService: AuthenticationService, http: HttpClient, private statusModalService: StatusModalService) 
+    constructor(authenticationService: AuthenticationService, http: HttpClient) 
     {
         super(authenticationService, http);
     }
 
-    /**
-     * Get all items.
-     *
-     * @options options - optional URL queryparam options
-     */
-    public list<Type>(endPointName: string, isValidateToken: boolean, options?: any): Observable<Type[] | null> {
-        const endPoint = this.endPoint + endPointName;
+    public getMotorcyclesAlsoLiked(user_id: string, motorcycle_id: string, isValidateToken: boolean, options?: any): Observable<Motorcycle[] | null> {
+        const endPoint = this.endPoint + "/motorcycle/alsoLiked";
         console.log(`list ${endPoint}`);
 
-        this.statusModalService.giveJob({isShow: true, isShowSpinner: true, isClosable: false, title: "Loading..."})
-
         const observable = this.http
-                            .get<TApiResponse<Type[]>>(endPoint, {
+                            .get<TApiResponse<Motorcycle[]>>(endPoint, {
                                 ...options,
                                 headers: this.getHeaders(isValidateToken),
+                                params: { user_id: user_id, motorcycle_id: motorcycle_id },
                                 ...this.httpOptions,
                             })
                             .pipe(
-                                map((response: any) => {
-                                    this.statusModalService.giveJob({isShow: false})
-                                    return response.results as Type[];
-                                }),
+                                map((response: any) => response.results as Motorcycle[]),
+                                tap(console.log),
+                                catchError(this.handleError)
+                            );
+
+        if (isValidateToken)
+        {
+            return this.validateCurrentTokenObservableIncludingRequestObservable(observable);
+        }
+
+        return observable;
+    }
+
+    public getMotorcyclesLikedInstead(user_id: string, motorcycle_id: string, isValidateToken: boolean, options?: any): Observable<Motorcycle[] | null> {
+        const endPoint = this.endPoint + "/motorcycle/likedInstead";
+        console.log(`list ${endPoint}`);
+
+        const observable = this.http
+                            .get<TApiResponse<Motorcycle[]>>(endPoint, {
+                                ...options,
+                                headers: this.getHeaders(isValidateToken),
+                                params: { user_id: user_id, motorcycle_id: motorcycle_id },
+                                ...this.httpOptions,
+                            })
+                            .pipe(
+                                map((response: any) => response.results as Motorcycle[]),
+                                tap(console.log),
+                                catchError(this.handleError)
+                            );
+
+        if (isValidateToken)
+        {
+            return this.validateCurrentTokenObservableIncludingRequestObservable(observable);
+        }
+
+        return observable;
+    }
+
+    public getGangsRidingThisMotorcycle(user_id: string, motorcycle_id: string, isValidateToken: boolean, options?: any): Observable<Gang[] | null> {
+        const endPoint = this.endPoint + "/gang/ridingMotorcycle";
+        console.log(`list ${endPoint}`);
+
+        const observable = this.http
+                            .get<TApiResponse<Gang[]>>(endPoint, {
+                                ...options,
+                                headers: this.getHeaders(isValidateToken),
+                                params: { user_id: user_id, motorcycle_id: motorcycle_id },
+                                ...this.httpOptions,
+                            })
+                            .pipe(
+                                map((response: any) => response.results as Gang[]),
                                 tap(console.log),
                                 catchError(this.handleError)
                             );
@@ -62,8 +102,6 @@ export class HttpService extends Service
         const endPoint = this.endPoint + endPointName;
         const endPointSingle = `${endPoint}/${id}`;
         console.log(`read ${endPointSingle}`);
-        
-        this.statusModalService.giveJob({isShow: true, isShowSpinner: true, isClosable: false, title: "Loading..."})
 
         const observable = this.http
             .get<TApiResponse<Type>>(endPointSingle, {
@@ -73,10 +111,7 @@ export class HttpService extends Service
             })
             .pipe(
                 tap(console.log),
-                map((response: any) => {
-                    this.statusModalService.giveJob({isShow: false})
-                    return response.results as Type[];
-                }),
+                map((response: any) => response.results as Type),
                 catchError(this.handleError)
             );
 
@@ -93,8 +128,6 @@ export class HttpService extends Service
         const endPoint = this.endPoint + endPointName;
         console.log(`create ${endPoint}`);
 
-        this.statusModalService.giveJob({isShow: true, isShowSpinner: true, isClosable: false, title: "Loading..."})
-
         const observable = this.http
         .post<TApiResponse<Type>>(endPoint, {
             ...optionsCreate,
@@ -103,10 +136,7 @@ export class HttpService extends Service
         })
         .pipe(
             tap(console.log),
-            map((response: any) => {
-                this.statusModalService.giveJob({isShow: false})
-                return response.results as Type[];
-            }),
+            map((response: any) => response.results as Type),
             catchError(this.handleError)
         );
 
@@ -124,8 +154,6 @@ export class HttpService extends Service
         const endPointUpdate = `${endPoint}/${id}`;
         console.log(`update ${endPointUpdate}`);
 
-        this.statusModalService.giveJob({isShow: true, isShowSpinner: true, isClosable: false, title: "Loading..."})
-
         const observable = this.http
             .post<TApiResponse<Type>>(endPointUpdate, {
                 ...this.httpOptions,
@@ -135,10 +163,7 @@ export class HttpService extends Service
             })
             .pipe(
                 tap(console.log),
-                map((response: any) => {
-                    this.statusModalService.giveJob({isShow: false})
-                    return response.results as Type[];
-                }),
+                map((response: any) => response.results as Type),
                 catchError(this.handleError)
             );
 
@@ -156,18 +181,13 @@ export class HttpService extends Service
         const endPointDelete = `${endPoint}/${id}`;
         console.log(`delete ${endPointDelete}`);
 
-        this.statusModalService.giveJob({isShow: true, isShowSpinner: true, isClosable: false, title: "Loading..."})
-
         const observable = this.http
             .delete<TApiResponse<Type>>(endPointDelete, {
                 headers: this.getHeaders(isValidateToken)!
             })
             .pipe(
                 tap(console.log),
-                map((response: any) => {
-                    this.statusModalService.giveJob({isShow: false})
-                    return response.results as Type[];
-                }),
+                map((response: any) => response.results as Type[]),
                 catchError(this.handleError)
             );
 
@@ -198,8 +218,7 @@ export class HttpService extends Service
      * Handle errors.
      */
     public handleError(error: HttpErrorResponse): Observable<any> {
-        console.log('handleError in http.service', error);
-        this.statusModalService.giveJob({isShow: true, isShowSpinner: false, isClosable: true, title: error.message})
+        console.log('handleError in UserService', error);
 
         return throwError(() => new Error(error.message));
     }

@@ -61,9 +61,9 @@ export class Schemas
             body: {type: String, required: true},
             year: String,
             fuel: String,
-            seatHeight: String,
-            horsePower: String,
-            topSpeed: String,
+            seatHeight: Number,
+            horsePower: Number,
+            topSpeed: Number,
             linkImage: String
         })
 

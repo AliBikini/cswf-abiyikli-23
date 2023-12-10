@@ -7,6 +7,7 @@ export type TGangCreate =
     description: string;
     dateCreated: Date;
     linkEmblem: string;
+    userOwner: User;
 }
 
 export type TGangUpdate = 
