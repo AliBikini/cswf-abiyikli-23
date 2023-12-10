@@ -7,21 +7,32 @@
 </div>
 
 <form [formGroup]="gangForm" (ngSubmit)="onSubmitForm()">
-    <div class="mb-3">
-        <label for="name" class="form-label">Name gang</label>
-        <input type="text" class="form-control" id="name" formControlName="name">
+    <div class="form-group">
+        <label for="name">Name of gang</label>
+        <input type="text" class="form-control" id="name" placeholder="John" formControlName="name">
+        <div *ngIf="name?.invalid && (name?.dirty || name?.touched)" class="alert alert-danger">
+          <div *ngIf="name?.errors?.['required']">Gang name is required.</div>
+          <div *ngIf="name?.errors?.['length']">Gang name must be between 3 and 30 characters long.</div>
+        </div>
     </div>
 
-    <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <input type="text" class="form-control" id="description" formControlName="description">
+    <div class="form-group">
+        <label for="description">Description of gang</label>
+        <input type="text" class="form-control" id="description" placeholder="John" formControlName="description">
+        <div *ngIf="description?.invalid && (description?.dirty || description?.touched)" class="alert alert-danger">
+          <div *ngIf="description?.errors?.['required']">Gang description is required.</div>
+          <div *ngIf="description?.errors?.['length']">Gang description must be between 100 and 1000 characters long.</div>
+        </div>
     </div>
 
     <div class="row">
         <div class="col">
-            <div class="mb-3">
-                <label for="linkEmblem" class="form-label">Emblem</label>
-                <input type="text" class="form-control" id="linkEmblem" formControlName="linkEmblem" [(ngModel)]="linkImageDynamic">
+            <div class="form-group">
+                <label for="linkEmblem">Link to emblem image</label>
+                <input type="text" class="form-control" id="linkEmblem" placeholder="..." formControlName="linkEmblem" [(ngModel)]="linkImageDynamic">
+                <div *ngIf="linkEmblem?.invalid && (linkEmblem?.dirty || linkEmblem?.touched)" class="alert alert-danger">
+                  <div *ngIf="linkEmblem?.errors?.['required']">Link to an emblem for this gang is required.</div>
+                </div>
             </div>
         </div>
         <div class="col">
@@ -31,10 +42,10 @@
 
     <div class="row">
         <div class="col-1" *ngIf="!gangId">
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!(gangForm.valid && gangForm.dirty)">Create</button>
         </div>
         <div class="col-1" *ngIf="gangId">
-            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!(gangForm.valid && gangForm.dirty)">Update</button>
         </div>
         <div class="col-1" *ngIf="gangId">
             <button type="button" class="btn btn-danger" (click)="deleteGang()">Delete</button>

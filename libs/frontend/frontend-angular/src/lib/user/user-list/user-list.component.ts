@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TUser } from '@cswf-abiyikli-23/shared/api';
+import { IdentityRole, TUser, User } from '@cswf-abiyikli-23/shared/api';
 import { Subscription } from 'rxjs';
 import { UserService } from '../user.service';
+import { AuthenticationService } from '../../authentication.service';
 
 @Component({
   selector: 'cswf-abiyikli-23-user-list',
@@ -10,19 +11,31 @@ import { UserService } from '../user.service';
 })
 export class UserListComponent implements OnInit, OnDestroy
 {
-  users: TUser[] | null = null;
-  subscription: Subscription | undefined = undefined;
+  users: User[] | null = null;
+  userLoggedIn: User | undefined = undefined;
+  subs: Subscription[] = [];
+  Roles = IdentityRole;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private authService: AuthenticationService) {}
 
   ngOnInit(): void {
-      this.subscription = this.userService.list().subscribe((results) => {
+      const subUsers = this.userService.list().subscribe((results) => {
           console.log(`results: ${results}`);
           this.users = results;
       });
+
+      this.subs.push(subUsers);
+
+      const subUserLoggedIn = this.authService.userCurrent$.subscribe((user) => {
+        this.userLoggedIn = user;
+      })
+
+      this.subs.push(subUserLoggedIn);
   }
 
   ngOnDestroy(): void {
-      if (this.subscription) this.subscription.unsubscribe();
+      this.subs.forEach((sub) => {
+        sub.unsubscribe();
+      })
   }
 }

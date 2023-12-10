@@ -24,7 +24,7 @@ export class MotorcycleDetailComponent  implements OnInit, OnDestroy
   dateString: string | null = null;
   isOwnsThisMotorcycle: boolean = false;
   reviews: Review[] | null = null;
-  reviewMine: Review | null = null;
+  reviewsMine: Review[] = [];
   reviewScore: number = 0;
   motorcyclesRecoAlsoLiked: Motorcycle[] | null = null;
   motorcyclesRecoLikedInstead: Motorcycle[] | null = null;
@@ -47,10 +47,18 @@ export class MotorcycleDetailComponent  implements OnInit, OnDestroy
 
   ngOnInit(): void 
   {
+    this.subscribe();
+  }
+
+  subscribe()
+  {
     this.reviewService.reviewDeleted$.subscribe((review) => {
-      if (this.reviewMine?._id == review._id)
+      for (let i = 0; i < this.reviewsMine.length; i++)
       {
-        this.reviewMine = null;
+        if (this.reviewsMine[i]._id == review._id)
+        {
+          this.reviewsMine.splice(i, 1);
+        }
       }
 
       if (this.reviews)
@@ -99,7 +107,7 @@ export class MotorcycleDetailComponent  implements OnInit, OnDestroy
               if (reviews)
               {
                 this.reviews = reviews;
-                this.getAndSetOwnReview();
+                this.getAndSetOwnReviews();
                 this.setScoreOfBike();
               }
             })
@@ -146,7 +154,6 @@ export class MotorcycleDetailComponent  implements OnInit, OnDestroy
     );
 
     this.subscriptions?.push(subMotorcycle);
-
   }
 
   ngOnDestroy(): void {
@@ -155,8 +162,10 @@ export class MotorcycleDetailComponent  implements OnInit, OnDestroy
     })
   }
 
-  getAndSetOwnReview()
+  getAndSetOwnReviews()
   {
+    this.reviewsMine = [];
+
     if (!this.reviews || !this.userLoggedIn)
     {
       return;
@@ -166,7 +175,7 @@ export class MotorcycleDetailComponent  implements OnInit, OnDestroy
     {
       if (this.reviews[i].user_id == this.userLoggedIn._id)
       {
-        this.reviewMine = this.reviews[i];
+        this.reviewsMine.push(this.reviews[i]);
         break;
       }
     }
@@ -288,7 +297,7 @@ export class MotorcycleDetailComponent  implements OnInit, OnDestroy
         )
         .subscribe((reviewCreated) => {
           if (reviewCreated) {
-            this.reviewMine = reviewCreated;
+            this.reviewsMine.push(reviewCreated);
             this.reviews?.push(reviewCreated);
             this.setScoreOfBike();
             console.log('Created new review');
@@ -309,5 +318,18 @@ export class MotorcycleDetailComponent  implements OnInit, OnDestroy
 
   get reviewMessage() {
     return this.formReview?.get('message');
+  }
+
+  isReviewOneOfMine(idReview: string): boolean
+  {
+    for(let i = 0; i < this.reviewsMine.length; i++)
+    {
+      if (this.reviewsMine[i]._id == idReview)
+      {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

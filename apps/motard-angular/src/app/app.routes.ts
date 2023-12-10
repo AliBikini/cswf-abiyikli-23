@@ -3,6 +3,7 @@ import { AboutComponent } from 'libs/frontend/frontend-angular/src/lib/about/abo
 import { GangDetailComponent } from 'libs/frontend/frontend-angular/src/lib/gang/gang-detail/gang-detail.component';
 import { GangEditComponent } from 'libs/frontend/frontend-angular/src/lib/gang/gang-edit/gang-edit.component';
 import { GangListComponent } from 'libs/frontend/frontend-angular/src/lib/gang/gang-list/gang-list.component';
+import { HomeComponent } from 'libs/frontend/frontend-angular/src/lib/home/home.component';
 import { LoginComponent } from 'libs/frontend/frontend-angular/src/lib/login/login.component';
 import { MotorcycleDetailComponent } from 'libs/frontend/frontend-angular/src/lib/motorcycle/motorcycle-detail/motorcycle-detail.component';
 import { MotorcycleEditComponent } from 'libs/frontend/frontend-angular/src/lib/motorcycle/motorcycle-edit/motorcycle-edit.component';
@@ -24,6 +25,10 @@ export const appRoutes: Route[] =
     {
         path: '',
         component: LoginComponent
+    },
+    {
+        path: 'home',
+        component: HomeComponent
     },
     {
         path: 'register',

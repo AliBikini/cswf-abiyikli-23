@@ -1,11 +1,48 @@
 <h2>{{ gang?.name }}</h2>
 <img src="{{ gang?.linkEmblem }}" class="img-thumbnail" alt="...">
 <p>Owner: {{ gang?.userOwner?.nameFirst }} {{ gang?.userOwner?.nameLast }}</p>
-<p>Founded in: {{ gang?.dateCreated }}</p>
+<p>Founded in: {{ gang?.dateCreated | date: 'longDate' }}</p>
 <p>{{ gang?.description }}</p>
-<a routerLink="edit" class="btn btn-primary">Edit</a>
 
-<div *ngIf="userLoggedIn && gang">
-    <a *ngIf="!isMember" class="btn btn-primary" (click)="joinGang()">Join</a>
-    <a *ngIf="isMember" class="btn btn-primary" (click)="leaveGang()">Leave</a>
+<div class="row">
+    <div class="col-1">
+        <div *ngIf="userLoggedIn && gang && userLoggedIn._id != gang.userOwner?._id">
+            <a *ngIf="!isMember" class="btn btn-primary" (click)="joinGang()">Join</a>
+            <a *ngIf="isMember" class="btn btn-primary" (click)="leaveGang()">Leave</a>
+        </div>
+    </div>
+
+    <div class="col">
+        <a *ngIf="gang?.userOwner?._id == userLoggedIn?._id" routerLink="edit" class="btn btn-primary">Edit</a>
+        <a *ngIf="userLoggedIn?.role == Roles.admin && gang?.userOwner?.role != Roles.admin && gang?.userOwner?._id != userLoggedIn?._id" routerLink="edit" class="btn btn-primary">Edit (as admin)</a>
+    </div>
+
+    <div class="col">
+    </div>
 </div>
+
+<div class="row" style="padding-top: 24px;"> <!-- RECO -->
+    <div *ngIf="motorcyclesReco.length > 0">
+        <h3><i-bs name="hand-thumbs-up-fill" style="color:dodgerblue" width="25" height="25"></i-bs> Members in this gang like these motorcycles: </h3>
+        <div class="row">
+            <a *ngFor="let motorcycleReco of motorcyclesReco" class="col-4 link-underline link-underline-opacity-0" style="padding-top: 16px;" routerLink="/motorcycle/{{motorcycleReco._id}}">
+                <div class="border border-2 rounded-1">
+                    <div class="row">
+                        <div class="col-7" style="margin: 4px;">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h4 class="mb-1">{{motorcycleReco.nameModel}}</h4>
+                            </div>
+    
+                            <p>{{motorcycleReco.year}}</p>
+                        </div>
+                        <div class="col">
+                            <img class="img-fluid" src="{{motorcycleReco.linkImage}}" style="width: 256px;">
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+

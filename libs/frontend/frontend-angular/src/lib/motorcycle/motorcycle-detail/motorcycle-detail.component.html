@@ -146,7 +146,7 @@
                 </div>
             </div>
 
-            <div class="container border" *ngIf="motorcycle && userLoggedIn && isOwnsThisMotorcycle != null && !reviewMine"> <!-- REVIEW FORM -->
+            <div class="container border" *ngIf="motorcycle && userLoggedIn && isOwnsThisMotorcycle != null && reviewsMine.length == 0"> <!-- REVIEW FORM -->
                 <div *ngIf="isOwnsThisMotorcycle">
                     <h4>Leave a review for the {{ motorcycle.nameModel }}</h4>
 
@@ -197,19 +197,20 @@
             <div>  <!-- REVIEWS -->
                 <div style="padding-top: 18px;"></div>
 
-                <div *ngIf="reviewMine">
-                    <h3>My review:</h3>
-                    <cswf-abiyikli-23-review-detail [reviewId]="reviewMine._id"></cswf-abiyikli-23-review-detail>
+                <div *ngIf="reviewsMine.length > 0">
+                    <h3 *ngIf="reviewsMine.length == 1">My review:</h3>
+                    <h3 *ngIf="reviewsMine.length > 1">My reviews:</h3>
+                    <cswf-abiyikli-23-review-detail *ngFor="let reviewMine of reviewsMine" [reviewId]="reviewMine._id"></cswf-abiyikli-23-review-detail>
                 </div>
 
                 <div style="padding-top: 18px;"></div>
 
-                <h3 *ngIf="!reviewMine">Reviews:</h3>
-                <h3 *ngIf="reviewMine">Other people's reviews:</h3>
+                <h3 *ngIf="reviewsMine.length == 0">Reviews:</h3>
+                <h3 *ngIf="reviewsMine.length >= 1">Other people's reviews:</h3>
                 
                 <div *ngIf="reviews" class="overflow-scroll">
                     <div *ngFor="let review of reviews">
-                        <cswf-abiyikli-23-review-detail *ngIf="review._id != reviewMine?._id" [reviewId]="review._id"></cswf-abiyikli-23-review-detail>
+                        <cswf-abiyikli-23-review-detail *ngIf="!isReviewOneOfMine(review._id)" [reviewId]="review._id"></cswf-abiyikli-23-review-detail>
 
                         <div style="padding-bottom: 8px;"></div>
                     </div>

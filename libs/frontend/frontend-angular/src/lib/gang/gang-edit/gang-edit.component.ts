@@ -4,8 +4,9 @@ import { Gang, User } from '@cswf-abiyikli-23/shared/api';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GangService } from '../gang.service';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../authentication.service';
+import { FormValidators } from '../../form.validators';
 
 @Component({
   selector: 'cswf-abiyikli-23-gang-edit',
@@ -21,18 +22,26 @@ export class GangEditComponent implements OnInit, OnDestroy
 
   linkImageDynamic: string = "";
 
-  gangForm = new FormGroup
-  ({
-    name: new FormControl,
-    description: new FormControl,
-    linkEmblem: new FormControl
+  gangForm = new FormGroup({
+    name: new FormControl<string>('', [
+      Validators.required,
+      this.formValidators.validatorLength(3, 30)
+    ]),
+    description: new FormControl<string>('', [
+      Validators.required,
+      this.formValidators.validatorLength(100, 1000)
+    ]),
+    linkEmblem: new FormControl<string>('', [
+      Validators.required
+    ])
   })
   
   constructor (    
     private route: ActivatedRoute,
     private gangService: GangService,
     private router: Router,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private formValidators: FormValidators
     ){}
 
   ngOnInit(): void 
@@ -103,9 +112,9 @@ export class GangEditComponent implements OnInit, OnDestroy
     {
       this.gangService.create
       ({
-        name: this.gangForm.value.name,
-        description: this.gangForm.value.description,
-        linkEmblem: this.gangForm.value.linkEmblem,
+        name: this.gangForm.value.name!,
+        description: this.gangForm.value.description!,
+        linkEmblem: this.gangForm.value.linkEmblem!,
         userOwner: this.userLoggedIn,
         dateCreated: new Date()
       }).subscribe((resp) => {
@@ -119,9 +128,9 @@ export class GangEditComponent implements OnInit, OnDestroy
   {
     this.gangService.update(id, 
     { 
-      name: this.gangForm.value.name,
-      description: this.gangForm.value.description,
-      linkEmblem: this.gangForm.value.linkEmblem,
+      name: this.gangForm.value.name!,
+      description: this.gangForm.value.description!,
+      linkEmblem: this.gangForm.value.linkEmblem!,
     }).subscribe((resp) => {
       console.log("Gang updated!");
       this.redirectTo(`gang/${this.gangId}`);
@@ -142,5 +151,20 @@ export class GangEditComponent implements OnInit, OnDestroy
   redirectTo(url: string)
   {
     this.router.navigateByUrl(url)
+  }
+
+  get name()
+  {
+    return this.gangForm.get('name');
+  }
+
+  get description()
+  {
+    return this.gangForm.get('description');
+  }
+
+  get linkEmblem()
+  {
+    return this.gangForm.get('linkEmblem');
   }
 }

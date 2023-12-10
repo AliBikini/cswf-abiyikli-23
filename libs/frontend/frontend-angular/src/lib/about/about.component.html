@@ -57,7 +57,8 @@
 </table>
 -->
 
-<div class="container">
+<!--
+    <div class="container">
     <h1>About page</h1>
     <h2>Beschrijving van project</h2>
     <p>
@@ -92,5 +93,464 @@
     <div class="container">
         <h2>Entiteit diagram</h2>
         <img class="img-fluid" src="assets/entitydiagram.png" />
+    </div>
+</div>
+-->
+<div class="container">
+    <h1>About page</h1>
+
+    <p><small>Requirements staan onderaan deze pagina</small></p>
+
+    <h2>Beschrijving van project</h2>
+    <p>
+    Motard.com is een website waarop gebruikers reviews kunnen achterlaten op motoren. Gebruikers kunnen motoren browsen, gegevens van de motoren bekijken, en reviews bekijken van andere gebruikers en zelf hun eigen reviews achterlaten.
+    Reviews worden geplaats op modellen, niet op unieke exemplaren van eigenaren.
+    <br />
+    <br />
+    Users kunnen ook gangs aanmaken en aan gangs deelnemen. Een 'Gang' is een groep motorrijders die bijelkaar horen (e.g. Hell's Angels). Een gang is een groep motorrijders die dezelfde interesses hebben. Bij de detail pagina van een gang worden de motoren getoond die de leden van de gang leuk vinden.
+    <br />
+    Hiermee kan de user zien of de gang motoren leuk vinden die hij/zij zelf ook leuk vind, en kan daarna besluiten om deel te nemen aan de gang.
+    <br />
+    <br />
+    Op elke motor review pagina krijgt de gebruiker te zien welke motoren andere users ook leuk vinden naast de huidige motor. Hiermee krijgt de gebruiker aanbevelingen voor andere motors te zien die hij misschien, net als de huidige motor, interessant zou vinden.
+    <br />
+    Naast motor die geliked zijn door users die de huidige motor leuk vinden, worden er ook motoren getoond die users leuk vinden ten opzichte van de huidige motor. Hiermee kan de user zien welke motoren andere users leuk vonden tegenover de huidige motor die zij NIET leuk vinden.
+    <br />
+    Ook laat de pagina zien bij welke gangs er veel leden zijn die deze motor leuk vinden, wat nog meer helpt met het zoeken van gangs die de user leuk zou vinden.
+    <br />
+    <br />
+    Uiteraard kunnen users registeren en inloggen, en hebben ze user rechten op basis van hun rol. Er is een "User" en "Admin" rol
+    Het aanmaken van motoren mag alleen gedaan worden door gebruikers met de "Admin" rol. Wanneer een motor is toegevoegd kunnen alle users de nieuwe motor bekijken en reviews achterlaten.
+    Users kunnen alleen gegevens wijzigen en verwijderen van entiteiten die zij zelf hebben gecreerd, OF als de huidige gebruiker de "Admin" rol heeft. Een admin kan bij alle gegevens van alle entiteiten en alle CRUD functionaliteiten uitvoeren, ongegacht of hij de eigenaar is van die entiteiten.
+    </p>
+    <div class="container" style="padding-bottom: 24px;">
+        <h2>Document Model</h2>
+        <img class="img-fluid" src="assets/documentmodel.png" />
+    </div>
+    <div class="container">
+        <h2>Entiteit diagram</h2>
+        <img class="img-fluid" src="assets/ed.png" />
+    </div>
+
+    <div style="padding-bottom: 64px;"></div>
+
+    <div> <!-- REQUIREMENTS -->
+        <h4>Functional Requirements</h4>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th scope="col-1">ID</th>
+                <th scope="col-5">Functional Requirement</th>
+                <th scope="col-5">Acceptatiecriteria</th>
+                <th scope="col-1">Prioriteit</th>
+            </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <th scope="row">1.1</th>
+                    <td>Als een gebruiker zonder account wil ik kunnen registeren zodat ik de webapplicatie kan gebruiken.</td>
+                    <td>
+                        <ul>
+                            <li>Een pagina moet aanwezig zijn waarin ik registreren als user</li>
+                            <li>Op de registreer pagina moeten alle velden worden gevalideert</li>
+                            <li>Er mogen geen meerdere users met dezelfde email worden geregistreerd</li>
+                            <li>Na het succesvol registreren, toegang tot de webapplicatie</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">1.2</th>
+                    <td>Als een gebruiker met een account wil ik kunnen inloggen met mijn gegevens, zodat ik de webapplicatie kan gebruiken.</td>
+                    <td>
+                        <ul>
+                            <li>Een pagina moet aanwezig zijn waarin ik kan inloggen</li>
+                            <li>Na het succesvol inloggen, toegang tot de webapplicatie</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">1.3</th>
+                    <td>Als een ingelogde gebruiker wil ik kunnen uitloggen, zodat ik kan stoppen met het gebruiken van de webapplicatie.</td>
+                    <td>
+                        <ul>
+                            <li>Een knop moet makkelijk aanwezig zijn waarmee de user kan uitloggen</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">2.1</th>
+                    <td>Als user wil ik een lijst van users zien, zodat ik weet welke andere users er zijn.</td>
+                    <td>
+                        <ul>
+                            <li>Een lijst van users moet worden weergegeven</li>
+                            <li>Per user moet de naam worden weergegeven (voornaam + achternaam)</li>
+                            <li>Per user moet een knop aanwezig zijn waarmee de detail gegevens kunnen worden bekeken</li>
+                            <li>Per user, als ik de dezelfde user ben of een admin ben, moet er een knop aanwezig zijn waarmee ik naar de edit pagina van de user kan gaan</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">2.2</th>
+                    <td>Als user wil ik de details van een user zien, zodat ik kan zien welke motoren andere users leuk vinden en in welke gangs ze zitten.</td>
+                    <td>
+                        <ul>
+                            <li>Een detail pagina van een user moet worden weergegeven</li>
+                            <li>De detail gegevens moeten zijn: voornaam + achternaam, geboortedatum, geslacht, motoren die de user bezit, gangs waaraan de user deelneemt</li>
+                            <li>Als ik de dezelfde user ben, of een admin ben, een knop waarmee ik naar de edit pagina kan gaan van deze user.</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">2.3</th>
+                    <td>Als user wil ik de gegevens van een user bewerken en opslaan, zodat ik mijn gegevens up to date kan houden of corrigeren.</td>
+                    <td>
+                        <ul>
+                            <li>Een edit pagina van een user moet worden weergegeven</li>
+                            <li>Op de edit pagina moeten de gegevens van de user bewerkt kunnen worden</li>
+                            <li>Op alle velde correcte validatie</li>
+                            <li>Alleen dezelfde user, of een admin, kan de gegevens wijzigen van een user.</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">3.1</th>
+                    <td>Als user wil ik een lijst van motoren zien, zodat ik weet welke moteren er zijn.</td>
+                    <td>
+                        <ul>
+                            <li>Een lijst van motoren moet worden weergegeven</li>
+                            <li>Per motor moet de naam worden weergegeven</li>
+                            <li>Per motor moet een knop aanwezig zijn waarmee de detail gegevens kunnen worden bekeken</li>
+                            <li>Als ik een admin ben moet er per motor een knop aanwezig zijn waarmee ik naar de edit pagina van de motor kan gaan</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">3.2</th>
+                    <td>Als user wil ik een de details van een motor zien, zodat ik de gegevens kan zien van de motor.</td>
+                    <td>
+                        <ul>
+                            <li>Een detail pagina van een motor moet worden weergegeven</li>
+                            <li>De detail gegevens moeten zijn: naam, bouwjaar, horsepower, top speed</li>
+                            <li>Als ik een admin ben moet er per motor een knop aanwezig zijn waarmee ik naar de edit pagina van de motor kan gaan</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">3.3</th>
+                    <td>Als admin wil ik een motor kunnen aanmaken, zodat users reviews kunnen achterlaten op de motoren.</td>
+                    <td>
+                        <ul>
+                            <li>Als ik een admin ben moet er "create" knopje aanwezig zijn waarmee ik naar de motor aanmaak pagina kan gaan</li>
+                            <li>Alleen een admin mag dit pagina bekijken en gebruiken</li>
+                            <li>Op de create pagina moeten alle velden correcte validatie hebben</li>
+                            <li>Na het klikken van een knop moet de motor aangemaakt worden en worden getoond</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">3.4</th>
+                    <td>Als admin wil ik een de gegevens van een motor wijzigen, of verwijderen.</td>
+                    <td>
+                        <ul>
+                            <li>Als ik een admin ben moet er een edit pagina van een motor worden weergegeven</li>
+                            <li>Alleen een admin mag dit pagina bekijken en gebruiken</li>
+                            <li>Op de edit pagina moeten de gegevens van de motor bewerkt kunnen worden</li>
+                            <li>Op alle velden correcte validatie</li>
+                            <li>Een knop moet aanwezig zijn waarmee ik de motor kan verwijderen</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">4.1</th>
+                    <td>Als user wil ik reviews van een motor kunnen bekijken, zodat ik kan lezen wat anderen vinden van een motor.</td>
+                    <td>
+                        <ul>
+                            <li>Een lijst van alle reviews voor een motor moet worden weergegeven</li>
+                            <li>Per review moet de user die de review heeft geplaatst, de oordeling (goed/slecht), en indien van toepassing de titel en bericht van de review worden getoond</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">4.2</th>
+                    <td>Als user wil ik mijn eigen review bovenaan de review lijst zien, zodat ik er snel bij kan en niet hoef te zoeken.</td>
+                    <td>
+                        <ul>
+                            <li>Tussen de lijst van reviews van een motor, als de review is geplaatst door mij, moet die afgezonderd worden en op een vaste plek worden getoond.</li>
+                        </ul>
+                    </td>
+                    <td>Should</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">4.3</th>
+                    <td>Als user wil ik de review score van een motor kunnen zien, zodat ik weet wat de algemene overeenstemming is van een motor.</td>
+                    <td>
+                        <ul>
+                            <li>Bij de details pagina van een motor word er getoond wat de review score is, op basis van alle geplaatste positieve en negatieve reviews.</li>
+                        </ul>
+                    </td>
+                    <td>Should</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">4.4</th>
+                    <td>Als user wil ik een review kunnen plaatsen bij een motor, zodat ik mijn mening kan delen over een motor.</td>
+                    <td>
+                        <ul>
+                            <li>Er moet een formulier aanwezig zijn bij de motor detail pagina waarin ik een review kan opstellen, en kan opslaan</li>
+                            <li>Alle velden van de formulier moeten correcte validatie zijn</li>
+                            <li>Er mag maar 1 review per gebruiker worden geplaatst op een motor</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">4.5</th>
+                    <td>Als user wil ik mijn eigen review kunnen verwijderen, zodat ik oude reviews kan verwijderen waar ik het niet meer mee eens ben, of zodat ik als admin ongepaste reviews kan verwijderen.</td>
+                    <td>
+                        <ul>
+                            <li>Een verwijder knop moet aanwezig zijn waarmee de review kan worden verwijderd</li>
+                            <li>Alleen dezelfde user die de review heeft geplaatst of een admin kan een review verwijderen</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">5.1</th>
+                    <td>Als user wil ik kunnen aangeven dat ik de eigenaar ben van een motor, zodat anderen kunnen zien welke motoren ik op dit moment bezit.</td>
+                    <td>
+                        <ul>
+                            <li>Een knop waarmee een user kan aangeven dat hij/zij de eigenaar is van een motor</li>
+                            <li>Een knop waarmee een user kan aangeven dat hij/zij niet meer de eigenaar is van een motor</li>
+                        </ul>
+                    </td>
+                    <td>Could</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">5.2</th>
+                    <td>Als user mag ik alleen reviews achterlaten bij motoren die ik zelf bezit, zodat ik geen reviews kan achterlaten bij motoren die ik nooit eerder heb gereden.</td>
+                    <td>
+                        <ul>
+                            <li>Een user kan geen review plaatsen bij een motor wanneer hij/zij niet de eigenaar is van de motor</li>
+                        </ul>
+                    </td>
+                    <td>Could</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">6.1</th>
+                    <td>Als user wil ik een lijst van gangs zien, zodat ik weet welke gangs er zijn.</td>
+                    <td>
+                        <ul>
+                            <li>Een lijst van gangs moet worden weergegeven</li>
+                            <li>Per gang moet de naam worden weergegeven</li>
+                            <li>Per gang moet een knop aanwezig zijn waarmee de detail gegevens kunnen worden bekeken</li>
+                            <li>Als ik de eigenaar van de gang of een admin ben moet er per gang een knop aanwezig zijn waarmee ik naar de edit pagina van de gang kan gaan</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">6.2</th>
+                    <td>Als user wil ik een de details van een gang zien, zodat ik de gegevens kan zien van de gang.</td>
+                    <td>
+                        <ul>
+                            <li>Een detail pagina van een gang moet worden weergegeven</li>
+                            <li>De detail gegevens moeten zijn: naam, eigenaar (user voornaam + achternaam), datum van creatie</li>
+                            <li>Als ik de eigenaar van de gang of een admin ben moet er een knop aanwezig zijn waarmee ik naar de edit pagina van de gang kan gaan</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">6.3</th>
+                    <td>Als user wil ik kunnen deelnemen aan een gang, zodat ik onderdeel kan zijn van een groep met dezelfde meningen als ik.</td>
+                    <td>
+                        <ul>
+                            <li>Een knop waarmee een user kan deelnemen aan de gang</li>
+                            <li>Een knop waarmee een user kan vertrekken uit de gang</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">6.4</th>
+                    <td>Als user wil ik een gang kunnen aanmaken, zodat ik kan beginnen met een groep vormen met dezelfde meningen als ik.</td>
+                    <td>
+                        <ul>
+                            <li>Er moet een knopje aanwezig zijn waarmee ik naar de gang creatie pagina kan gaan</li>
+                            <li>Op de create pagina moeten alle velden correcte validatie hebben</li>
+                            <li>Na het klikken van een knop moet de gang aangemaakt worden en worden getoond</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">6.5</th>
+                    <td>Als user wil ik een lijst van alle deelnemers van een gang zien, zodat ik kan zien wat voor mensen er in zitten.</td>
+                    <td>
+                        <ul>
+                            <li>Bij de gang detail pagina is er een lijst van users die deelnemers zijn van de gang</li>
+                            <li>Op de create pagina moeten alle velden correcte validatie hebben</li>
+                            <li>Per user moet een knop aanwezig zijn waarmee de detail gegevens kunnen worden bekeken van de user</li>
+                        </ul>
+                    </td>
+                    <td>Should</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">6.4</th>
+                    <td>Als user wil ik een gang kunnen wijzigen of verwijderen, zodat ik gegevens kan corrigeren of de gang kan beëindigen.</td>
+                    <td>
+                        <ul>
+                            <li>Er moet een knopje aanwezig zijn waarmee ik naar de gang edit pagina kan gaan</li>
+                            <li>Alleen de eigenaar van de gang of een admin mag de pagina bekijken en gebruiken</li>
+                            <li>Op de edit pagina moeten alle velden correcte validatie hebben</li>
+                            <li>Na het klikken van de update knop moeten de wijzigigen worden opgeslagen</li>
+                            <li>Na het klikken van de verwijder knop moet de gang worden verwijderd</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">7.1</th>
+                    <td>Als user, wanneer ik een motor bekijk, wil ik andere motoren zien die users net als deze motor ook leuk vinden, zodat ik kan zien welke motoren users ook leuk vinden.</td>
+                    <td>
+                        <ul>
+                            <li>Bij de motordetail pagina moet een lijst van motoren worden getoond die andere users leuk vinden net als de huidige motor</li>
+                            <li>De motoren in de lijst moeten klikbaar zijn en moeten de gebruiker navigeren naar de detail pagina van die motor</li>
+                            <li>Er worden geen motoren getoond die ik al leuk vind</li>
+                        </ul>
+                    </td>
+                    <td>Could</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">7.2</th>
+                    <td>Als user, wanneer ik een motor bekijk, wil ik motoren zien die users leuk vonden die deze motor NIET leuk vonden, zodat ik kan zien welke motoren andere users juist wel leuk vinden.</td>
+                    <td>
+                        <ul>
+                            <li>Bij de motordetail pagina moet een lijst van motoren worden getoond die andere users juist wel leuk vinden, ten opzichte van de huidige motor</li>
+                            <li>De motoren in de lijst moeten klikbaar zijn en moeten de gebruiker navigeren naar de detail pagina van die motor</li>
+                            <li>Er worden geen motoren getoond die ik al leuk vind</li>
+                        </ul>
+                    </td>
+                    <td>Could</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">7.3</th>
+                    <td>Als user, wanneer ik een motor bekijk, wil ik gangs zien die deelnemers hebben die dezelfde motor leuk vinden, zodat ik kan zien welke gangs interessant kunnen zijn voor mij.</td>
+                    <td>
+                        <ul>
+                            <li>Bij de motordetail pagina moet een lijst van gangs worden getoond waarin er deelnemers zijn die deze motor rijden</li>
+                            <li>De gangs in de lijst moeten klikbaar zijn en moeten de gebruiker navigeren naar de detail pagina van die gang</li>
+                            <li>Ik mag niet een deelnemer zijn van de gang</li>
+                        </ul>
+                    </td>
+                    <td>Could</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">7.4</th>
+                    <td>Als user, wanneer ik een gang bekijk, wil ik de motoren zien die de gang leuk vinden, zodat ik kan zien of deze gang interessant is voor mij.</td>
+                    <td>
+                        <ul>
+                            <li>Bij de gangdetail pagina moet een lijst van motoren worden getoond die de deelnemers van deze gang leuk vinden</li>
+                            <li>De motoren in de lijst moeten klikbaar zijn en moeten de gebruiker navigeren naar de detail pagina van die motor</li>
+                            <li>Er worden geen motoren getoond die ik al leuk vind</li>
+                        </ul>
+                    </td>
+                    <td>Could</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <h4>Non-Functional Requirements</h4>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th scope="col-1">ID</th>
+                <th scope="col-5">Non-Functional Requirement</th>
+                <th scope="col-5">Acceptatiecriteria</th>
+                <th scope="col-1">Prioriteit</th>
+            </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <th scope="row">0.1</th>
+                    <td>De webapplicatie moet authorisatie toepassen op basis van de rol van de ingelogde gebruiker.</td>
+                    <td>
+                        <ul>
+                            <li>Een user kan alleen zijn eigen entiteiten (eigen gangs en reviews en user gegevens) wijzigen of verwijderen.</li>
+                            <li>Alleen een admin mag motoren aanmaken/wijzigen/verwijderen</li>
+                            <li>Een admin heeft toegang tot bijna alle CRUD functionaliteiten binnen de webapplicatie, inclusief die van andere users.</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">0.2</th>
+                    <td>Bij alle forms moet er correcte validatie toegepast worden.</td>
+                    <td>
+                        <ul>
+                            <li>Een user kan alleen entiteiten aanmaken/wijzigen indien de formulier kloppen is zonder validatie fouten.</li>
+                            <li>De validatie bij alle velden van formulieren moet logisch en passend zijn</li>
+                            <li>Wanneer er validatie fouten opkomen, moet dit duidelijk worden aangegeven aan de gebruiker zodat de user op de hoogte is van de velden die moeten worden aangepast.</li>
+                        </ul>
+                    </td>
+                    <td>Must</td>
+                </tr>
+
+                <tr>
+                    <th scope="row">0.3</th>
+                    <td>De gebruiker moet op de hoogte blijven van de status van de web applicatie.</td>
+                    <td>
+                        <ul>
+                            <li>Wanneer er elementen worden geladen van de backend, moet de webapplicatie dit duidelijk aangeven</li>
+                            <li>Wanneer er een fout op treedt moet de webapplicatie dit duidelijk tonen aan de gebruiker.</li>
+                        </ul>
+                    </td>
+                    <td>Should</td>
+                </tr>
+
+            </tbody>
+        </table>
     </div>
 </div>

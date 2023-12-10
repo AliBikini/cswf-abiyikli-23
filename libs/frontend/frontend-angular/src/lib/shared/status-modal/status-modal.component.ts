@@ -26,7 +26,7 @@ export class StatusModalComponent implements OnInit, OnDestroy
 
   closableTimerSub: Subscription | null = null;
 
-  constructor(private statusModalService: StatusModalService)
+  constructor(private statusModalService: StatusModalService, private authService: AuthenticationService)
   {}
 
   ngOnDestroy(): void {
@@ -36,6 +36,10 @@ export class StatusModalComponent implements OnInit, OnDestroy
   ngOnInit(): void {
     this.statusModalService.statusModal$.subscribe((job: TStatusModalJob) => {
       this.applyJob(job);
+    })
+
+    this.authService.userCurrent$.subscribe((user) => {
+      console.log("yep mhm");
     })
   }
 

@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Gang, User } from '@cswf-abiyikli-23/shared/api';
+import { Gang, IdentityRole, Motorcycle, User } from '@cswf-abiyikli-23/shared/api';
 import { GangService } from '../gang.service';
 import { Subscription, tap } from 'rxjs';
 import { AuthenticationService } from '../../authentication.service';
 import { UserService } from '../../user/user.service';
+import { RecoService } from '../../reco.service';
 
 @Component({
   selector: 'cswf-abiyikli-23-gang-detail',
@@ -18,6 +19,8 @@ export class GangDetailComponent  implements OnInit, OnDestroy
   gangId: string | null = null;
   gang: Gang | null = null;
   dateString: string | null = null;
+  Roles = IdentityRole;
+  motorcyclesReco: Motorcycle[] = [];
 
   subscriptions: Subscription[] = [];
 
@@ -26,6 +29,7 @@ export class GangDetailComponent  implements OnInit, OnDestroy
     private gangService: GangService,
     private authenticationService: AuthenticationService,
     private userService: UserService,
+    private recoService: RecoService,
     private router: Router
   ){}
 
@@ -56,6 +60,16 @@ export class GangDetailComponent  implements OnInit, OnDestroy
             if (this.userLoggedIn)
             {
               this.checkIfUserIsMember();
+
+              if (this.gang)
+              {
+                this.recoService.getMotorcyclesRiddenByGang(this.userLoggedIn._id, this.gang?._id, false).subscribe((motorcycles: Motorcycle[] | null)=> {
+                  if (motorcycles)
+                  {
+                    this.motorcyclesReco = motorcycles;
+                  }
+                })
+              }
             }
           })
 

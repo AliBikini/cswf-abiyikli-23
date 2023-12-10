@@ -15,10 +15,13 @@ export const httpOptions = {
     responseType: 'json',
 };
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthenticationService
 {
-    public userCurrent$ = new Subject<User | undefined>;
+    private userCurrent = new BehaviorSubject<User | undefined>(undefined);
+    public userCurrent$ = this.userCurrent.asObservable();
     private readonly TOKEN_STORAGE = 'token';
     private readonly headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -111,7 +114,9 @@ export class AuthenticationService
           const user: User = response.results.user;
           const role : IdentityRole = response.results.role;
           user.role = role;
-          this.userCurrent$.next(user);
+
+          setTimeout(() => this.userCurrent.next(user), 100);
+          //this.userCurrent.next(user);
           console.log('user retrieved');
           //console.log(user);
           return user;
@@ -121,7 +126,7 @@ export class AuthenticationService
           if (isLogoutIfNotFound == true)
           {
             this.logout();
-            this.userCurrent$.next(undefined);
+            this.userCurrent.next(undefined);
             localStorage.removeItem(this.TOKEN_STORAGE);
           }
           return of(undefined);
@@ -137,7 +142,7 @@ export class AuthenticationService
           if (success) {
             console.log('logout - removing local user info');
             localStorage.removeItem(this.TOKEN_STORAGE);
-            this.userCurrent$.next(undefined);
+            this.userCurrent.next(undefined);
             this.statusModalService.giveJob({isShow: true, title: "Logged out", message: "Please login to continue"});
             console.log('Log out success!');
           } else {
@@ -153,8 +158,6 @@ export class AuthenticationService
 
     getUserLoggedIn(isLogoutIfNotFound: boolean = false): Observable<User | undefined> 
     {
-      console.log("haaaaaaaa");
-      console.log(isLogoutIfNotFound);
       return this.retrieveUser(this.getTokenFromLocalStorage(), isLogoutIfNotFound);
     }
 
@@ -164,7 +167,7 @@ export class AuthenticationService
 
     userMayEdit(itemUserId: string): Observable<boolean> 
     {
-      return this.userCurrent$.pipe(
+      return this.userCurrent.pipe(
         map((user: User | undefined) => (user ? user._id === itemUserId : false))
       );
     }

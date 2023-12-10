@@ -10,16 +10,13 @@ import { StatusModalComponent } from '../shared/status-modal/status-modal.compon
 import { StatusModalService } from '../shared/status-modal/status-modal.service';
 
 @Component({
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
-  providers: [AuthenticationService, FormValidators],
   selector: 'cswf-abiyikli-23-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy
 {
-  subscription: Subscription | null = null;;
+  subscriptions: Subscription[] = [];
   formLogin: FormGroup | null = null;
 
   isLoading: boolean = false;
@@ -39,23 +36,25 @@ export class LoginComponent implements OnInit, OnDestroy
       ]),
     });
 
-    this.subscription = this.authenticationService
+    const sub = this.authenticationService
     .getUserLoggedIn()
     .subscribe((identity: User | undefined) => 
     {
       if (identity) 
       {
         console.log('User already logged in > to dashboard');
-        this.router.navigate(['about']);
+        this.router.navigate(['home']);
       }
     });
+
+    this.subscriptions.push(sub);
   }
 
   ngOnDestroy(): void 
   {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.subscriptions.forEach((sub) => {
+      sub.unsubscribe();
+    });
   }
 
   onSubmitForm() 
@@ -67,14 +66,20 @@ export class LoginComponent implements OnInit, OnDestroy
       const email = this.formLogin!.value.email;
       const password = this.formLogin!.value.password;
 
-      this.authenticationService
+      const subLogin = this.authenticationService
         .login(email!, password!)
         .subscribe((user) => {
           if (user) {
             console.log('Logged in');
-            this.router.navigate(['user']);
+            const subRetrieveUser = this.authenticationService.retrieveUser(this.authenticationService.getTokenFromLocalStorage()).subscribe(() => {
+              this.router.navigate(['home']);
+            })
+
+            this.subscriptions.push(subRetrieveUser);
           }
         });
+
+      this.subscriptions.push(subLogin);
     } else {
       this.statusModal.giveJob({isShow: false})
       console.error('loginForm invalid');

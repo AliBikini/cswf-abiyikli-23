@@ -9,9 +9,6 @@ import { FormValidators } from '../form.validators';
 import { IdentityRole } from 'libs/shared/api/src/lib/models/enums';
 
 @Component({
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
-  providers: [AuthenticationService, FormValidators],
   selector: 'cswf-abiyikli-23-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],

@@ -94,102 +94,22 @@ export class RecoService extends Service
         return observable;
     }
 
-    /**
-     * Get a single item from the service.
-     *
-     */
-    public read<Type>(endPointName: string, isValidateToken: boolean, id: string | null, options?: any): Observable<Type> {
-        const endPoint = this.endPoint + endPointName;
-        const endPointSingle = `${endPoint}/${id}`;
-        console.log(`read ${endPointSingle}`);
+    public getMotorcyclesRiddenByGang(user_id: string, gang_id: string, isValidateToken: boolean, options?: any): Observable<Motorcycle[] | null> {
+        const endPoint = this.endPoint + "/motorcycle/riddenByMembers";
+        console.log(`list ${endPoint}`);
 
         const observable = this.http
-            .get<TApiResponse<Type>>(endPointSingle, {
-                ...options,
-                headers: this.getHeaders(isValidateToken),
-                ...this.httpOptions
-            })
-            .pipe(
-                tap(console.log),
-                map((response: any) => response.results as Type),
-                catchError(this.handleError)
-            );
-
-        if (isValidateToken)
-        {
-            return this.validateCurrentTokenObservableIncludingRequestObservable(observable);
-        }
-
-        return observable;
-    }
-
-    public create<Type>(endPointName: string, isValidateToken: boolean, optionsCreate: any): Observable<Type> 
-    {
-        const endPoint = this.endPoint + endPointName;
-        console.log(`create ${endPoint}`);
-
-        const observable = this.http
-        .post<TApiResponse<Type>>(endPoint, {
-            ...optionsCreate,
-        }, {
-            headers: this.getHeaders(isValidateToken)!,
-        })
-        .pipe(
-            tap(console.log),
-            map((response: any) => response.results as Type),
-            catchError(this.handleError)
-        );
-
-        if (isValidateToken)
-        {
-            return this.validateCurrentTokenObservableIncludingRequestObservable(observable);
-        }
-
-        return observable;
-    }
-
-    public update<Type>(endPointName: string, isValidateToken: boolean, id: string, optionsUpdate: any): Observable<Type> 
-    {
-        const endPoint = this.endPoint + endPointName;
-        const endPointUpdate = `${endPoint}/${id}`;
-        console.log(`update ${endPointUpdate}`);
-
-        const observable = this.http
-            .post<TApiResponse<Type>>(endPointUpdate, {
-                ...this.httpOptions,
-                ...optionsUpdate
-            }, {
-                headers: this.getHeaders(isValidateToken)!
-            })
-            .pipe(
-                tap(console.log),
-                map((response: any) => response.results as Type),
-                catchError(this.handleError)
-            );
-
-        if (isValidateToken)
-        {
-            return this.validateCurrentTokenObservableIncludingRequestObservable(observable);
-        }
-
-        return observable;
-    }
-
-    public delete<Type>(endPointName: string, isValidateToken: boolean, id: string)
-    {
-        const endPoint = this.endPoint + endPointName;
-        const endPointDelete = `${endPoint}/${id}`;
-        console.log(`delete ${endPointDelete}`);
-
-        const observable = this.http
-            .delete<TApiResponse<Type>>(endPointDelete, {
-                headers: this.getHeaders(isValidateToken)!
-            })
-            .pipe(
-                tap(console.log),
-                map((response: any) => response.results as Type[]),
-                catchError(this.handleError)
-            );
+                            .get<TApiResponse<Motorcycle[]>>(endPoint, {
+                                ...options,
+                                headers: this.getHeaders(isValidateToken),
+                                params: { user_id: user_id, gang_id: gang_id },
+                                ...this.httpOptions,
+                            })
+                            .pipe(
+                                map((response: any) => response.results as Motorcycle[]),
+                                tap(console.log),
+                                catchError(this.handleError)
+                            );
 
         if (isValidateToken)
         {

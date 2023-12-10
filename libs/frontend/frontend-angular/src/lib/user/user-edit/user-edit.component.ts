@@ -4,10 +4,12 @@ import { TMotorcycle, TUser } from '@cswf-abiyikli-23/shared/api';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../user.service';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { RouterModule } from '@nestjs/core';
 import { MotorcycleService } from '../../motorcycle/motorcycle.service';
 import { Gender, IdentityRole } from 'libs/shared/api/src/lib/models/enums';
+import { FormValidators } from '../../form.validators';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'cswf-abiyikli-23-user-edit',
@@ -19,138 +21,112 @@ export class UserEditComponent implements OnInit, OnDestroy
 
   userId: string | null = null;
   user: TUser | null = null;
-  subscription: Subscription | null = null;
-  motorcycles: TMotorcycle[] | null = [];
-
-  userForm = this.fb.group
-  ({
-    nameFirst: new FormControl,
-    nameLast: new FormControl,
-    dateBirth: new FormControl,
-    gender: new FormControl,
-    //motorcyclesOwned: this.fb.array<TMotorcycle>([])
-  })
+  subs: Subscription [] = [];
+  userForm: FormGroup | null = null;
   
   constructor (    
     private route: ActivatedRoute,
     private userService: UserService,
-    private motorcycleService: MotorcycleService,
     private fb: FormBuilder,
+    private formValidators: FormValidators,
     private router: Router){}
 
   ngOnInit(): void 
   {
-    this.subscription = this.route.paramMap.pipe
+    this.userForm = new FormGroup({
+      nameFirst: new FormControl<string>('', [
+        Validators.required,
+        this.formValidators.validatorLength(3, 20)
+      ]),
+      nameLast: new FormControl<string>('', [
+        Validators.required,
+        this.formValidators.validatorLength(3, 20)
+      ]),
+      dateBirth: new FormControl<Date>(new Date(), [
+        Validators.required
+      ]),
+      gender: new FormControl<string>('Other', [
+        Validators.required
+      ])
+    })
+
+    const subParam = this.route.paramMap.pipe
     (
     ).subscribe
     ((params) => 
       {
-        this.userForm = this.fb.group
-        ({
-          nameFirst: new FormControl,
-          nameLast: new FormControl,
-          dateBirth: new FormControl,
-          gender: new FormControl,
-          //motorcyclesOwned: this.fb.array([this.motorcycles?.at(0)!])
-        })
-
         this.userId = params.get('id');
 
         if (this.userId)
         {
-          this.userService.read(this.userId).subscribe((resp) => 
+          const subUser = this.userService.read(this.userId).subscribe((resp) => 
           {
             this.user = resp;
             this.applyUserToForm();
-            this.userForm.updateValueAndValidity();
+            this.userForm?.updateValueAndValidity();
           }); 
+
+          this.subs.push(subUser);
         }
         else
         {
-          // this.user = { _id: '-1', nameFirst: '', nameLast: '', dateBirth: new Date, gender: Gender.other, role: IdentityRole.user, motorcyclesOwned: [ this.motorcycles?.at(0)! ], reviewsPlaced: [], gangsJoined: [] }
-          // this.applyUserToForm();
-          // this.userForm.updateValueAndValidity();
-
           this.router.navigate(['/user']);
         }
       }
     );
+
+    this.subs.push(subParam);
   }
 
   applyUserToForm(): void
   {
-    this.userForm.setValue
+    console.log("datebirth");
+    console.log(this.user!.dateBirth);
+    const date = this.getDateFromUser();
+
+    this.userForm?.setValue
     ({
-      nameFirst: this.user?.nameFirst,
-      nameLast: this.user?.nameLast,
-      dateBirth: this.user?.dateBirth,
-      gender: this.user?.gender,
-      //motorcyclesOwned: this.user!.motorcyclesOwned as TMotorcycle[]
+      nameFirst: this.user!.nameFirst,
+      nameLast: this.user!.nameLast,
+      dateBirth: date,
+      gender: this.user!.gender,
     })
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) this.subscription.unsubscribe();
-  }
-
-  onChangeMotorcycleOwnedSelect(param: any)
-  {
-    console.log(param);
-  }
-
-  addOwnedMotorcycle() {
-    this.motorcyclesOwnedArray.push(this.fb.group(this.motorcycles!.at(0)!));
-  }
-
-  deleteOwnedMotorcycle(index: number) {
-    this.motorcyclesOwnedArray.removeAt(index);
+    this.subs.forEach((sub) => {
+      sub.unsubscribe();
+    })
   }
 
   onSubmitForm() 
   {
-    console.warn(this.userForm.value);
+    console.warn(this.userForm?.value);
 
-    this.userForm.updateValueAndValidity();
+    this.userForm?.updateValueAndValidity();
     if (this.userId)
     {
       this.updateExistingUser(this.userId);
     }
-    else
-    {
-      //this.createNewUser();
-    }
   }
-
-  // createNewUser()
-  // {
-  //   this.userService.create({ 
-  //     nameFirst: this.userForm.value.nameFirst,  
-  //     nameLast: this.userForm.value.nameLast,  
-  //     dateBirth: this.userForm.value.dateBirth,  
-  //     role: IdentityRole.user, 
-  //     gender: this.userForm.value.gender,
-  //     motorcyclesOwned: this.userForm.value.motorcyclesOwned as TMotorcycle[],
-  //     reviewsPlaced: [],
-  //     gangsJoined: []
-  //   }).subscribe((resp) => {
-  //     console.log("New user added!");
-  //     this.redirectTo(`/user/${resp._id}`);
-  //   })
-  // }
 
   updateExistingUser(id: string)
   {
     this.userService.update(id, { 
-      nameFirst: this.userForm.value.nameFirst,  
-      nameLast: this.userForm.value.nameLast,  
-      dateBirth: this.userForm.value.dateBirth,  
+      nameFirst: this.userForm!.value.nameFirst!,  
+      nameLast: this.userForm!.value.nameLast!,  
+      dateBirth: this.userForm!.value.dateBirth!,  
       role: IdentityRole.user, 
-      gender: this.userForm.value.gender,
-      //motorcyclesOwned: this.userForm.value.motorcyclesOwned as TMotorcycle[]
+      gender: this.userForm!.value.gender!,
     }).subscribe((resp) => {
       console.log("User updated!");
       this.redirectTo(`/user/${this.userId}`);
     })
+  }
+
+  getDateFromUser()
+  {
+    return formatDate(this.user!.dateBirth, 'yyyy-MM-dd', 'en');
   }
 
   deleteUser()
@@ -169,8 +145,23 @@ export class UserEditComponent implements OnInit, OnDestroy
     this.router.navigateByUrl(url)
   }
 
-  get motorcyclesOwnedArray(): FormArray {
-    //return this.userForm!.get('motorcyclesOwned') as FormArray;
-    throw new DOMException();
+  get nameFirst()
+  {
+    return this.userForm?.get('nameFirst');
+  }
+
+  get nameLast()
+  {
+    return this.userForm?.get('nameLast');
+  }
+
+  get dateBirth()
+  {
+    return this.userForm?.get('dateBirth');
+  }
+
+  get gender()
+  {
+    return this.userForm?.get('gender');
   }
 }

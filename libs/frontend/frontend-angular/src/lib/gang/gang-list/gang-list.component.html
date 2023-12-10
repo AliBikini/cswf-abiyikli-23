@@ -16,15 +16,12 @@
                 </div>
                 <div class="col">
                     <div class="row">
-                        <div class="col">
-                        </div>
-                        <div class="col">
+                        <div class="col d-grid gap-2">
+                            <a *ngIf="gang.userOwner?._id == userLoggedIn?._id" routerLink="{{gang._id}}/edit" class="btn btn-primary">Edit</a>
+                            <a *ngIf="userLoggedIn?.role == Roles.admin && gang?.userOwner?.role != Roles.admin && gang?.userOwner?._id != userLoggedIn?._id" routerLink="{{gang._id}}/edit" class="btn btn-primary">Edit (as admin)</a>
                         </div>
                         <div class="col d-grid gap-2">
                             <a routerLink="{{gang._id}}" class="btn btn-primary">View</a>
-                        </div>
-                        <div class="col d-grid gap-2">
-                            <a routerLink="{{gang._id}}/edit" class="btn btn-primary">Edit</a>
                         </div>
                     </div>
                 </div>

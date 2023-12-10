@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Gang } from '@cswf-abiyikli-23/shared/api';
+import { Gang, IdentityRole, User } from '@cswf-abiyikli-23/shared/api';
 import { Subscription } from 'rxjs';
 import { GangService } from '../gang.service';
+import { AuthenticationService } from '../../authentication.service';
 
 @Component({
   selector: 'cswf-abiyikli-23-motorcycle-list',
@@ -11,18 +12,30 @@ import { GangService } from '../gang.service';
 export class GangListComponent implements OnInit, OnDestroy
 {
   gangs: Gang[] | null = null;
-  subscription: Subscription | undefined = undefined;
+  subs: Subscription[] = [];
+  userLoggedIn: User | undefined = undefined;
+  Roles = IdentityRole;
 
-  constructor(private gangService: GangService) {}
+  constructor(private gangService: GangService, private authService: AuthenticationService) {}
 
   ngOnInit(): void {
-      this.subscription = this.gangService.list().subscribe((results) => {
+      const subGangs = this.gangService.list().subscribe((results) => {
           console.log(`results: ${results}`);
           this.gangs = results;
       });
+
+      this.subs.push(subGangs);
+
+      const subUserLoggedIn = this.authService.userCurrent$.subscribe((user) => {
+        this.userLoggedIn = user;
+      })
+
+      this.subs.push(subUserLoggedIn);
   }
 
   ngOnDestroy(): void {
-      if (this.subscription) this.subscription.unsubscribe();
+      this.subs.forEach((sub) => {
+        sub.unsubscribe();
+      })
   }
 }

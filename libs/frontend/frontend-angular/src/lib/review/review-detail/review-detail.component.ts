@@ -11,8 +11,6 @@ import { AuthenticationService } from '../../authentication.service';
 
 @Component({
   selector: 'cswf-abiyikli-23-review-detail',
-  standalone: true,
-  imports: [CommonModule, RouterLink, NgxBootstrapIconsModule],
   templateUrl: './review-detail.component.html',
   styleUrls: ['./review-detail.component.css'],
 })
@@ -65,6 +63,7 @@ export class ReviewDetailComponent implements OnInit, OnDestroy
   }
 
   ngOnDestroy(): void {
+    this.review = null;
     this.subs.forEach((sub) => {
       sub.unsubscribe();
     })

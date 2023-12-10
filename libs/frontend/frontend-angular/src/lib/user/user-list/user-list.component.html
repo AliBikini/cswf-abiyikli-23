@@ -14,10 +14,11 @@
                         <div class="col">
                         </div>
                         <div class="col d-grid gap-2">
-                            <a routerLink="{{user._id}}" class="btn btn-primary">View</a>
+                            <a *ngIf="user?._id == userLoggedIn?._id" routerLink="{{user._id}}/edit" class="btn btn-primary">Edit</a>
+                            <a *ngIf="userLoggedIn?.role == Roles.admin && user?.role != Roles.admin && user?._id != userLoggedIn?._id" routerLink="{{user._id}}/edit" class="btn btn-primary">Edit (as admin)</a>
                         </div>
                         <div class="col d-grid gap-2">
-                            <a routerLink="{{user._id}}/edit" class="btn btn-primary">Edit</a>
+                            <a routerLink="{{user._id}}" class="btn btn-primary">View</a>
                         </div>
                     </div>
                 </div>

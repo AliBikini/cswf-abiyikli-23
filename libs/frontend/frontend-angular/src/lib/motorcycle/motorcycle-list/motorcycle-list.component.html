@@ -1,7 +1,7 @@
 <h1>Motorcycles</h1>
 
 <div style="padding-bottom: 12px;">
-    <a routerLink="new" class="btn btn-primary">New</a>
+    <a *ngIf="isAdmin" routerLink="new" class="btn btn-primary">New</a>
 </div>
 
 <ul class="list-group">
@@ -16,14 +16,10 @@
                 </div>
                 <div class="col">
                     <div class="row">
-                        <div class="col">
-                        </div>
-                        <div class="col">
-                        </div>
                         <div class="col d-grid gap-2">
                             <a routerLink="{{motorcycle._id}}" class="btn btn-primary">View</a>
                         </div>
-                        <div class="col d-grid gap-2">
+                        <div *ngIf="isAdmin" class="col d-grid gap-2">
                             <a routerLink="{{motorcycle._id}}/edit" class="btn btn-primary">Edit</a>
                         </div>
                     </div>
